@@ -161,6 +161,12 @@ select{-webkit-appearance:none;appearance:none}
 .busy-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold-d),var(--gold));box-shadow:0 0 8px rgba(212,168,67,0.4)}
 .cancel-btn{font-size:10px;letter-spacing:1px;color:var(--red);border:1px solid rgba(255,61,90,0.35);padding:6px 11px;border-radius:8px;flex-shrink:0;text-transform:uppercase;transition:all .15s}
 .cancel-btn:active{background:rgba(255,61,90,0.1)}
+.combat-hp-bar{height:8px;border-radius:4px;background:rgba(255,255,255,0.1);overflow:hidden;margin:4px 0 8px}
+.combat-hp-fill{height:100%;background:#44ff88;border-radius:4px;transition:width .4s}
+.combat-hp-fill.low{background:#ff4455}
+.combat-action-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:var(--tx);border-radius:10px;padding:10px 14px;font-size:12px;cursor:pointer;text-align:left;width:100%;margin-bottom:6px;font-family:Rajdhani,sans-serif;transition:all .15s}
+.combat-action-btn:active{background:rgba(212,168,67,0.15);border-color:var(--gold)}
+.combat-log-entry{font-size:11px;color:var(--tx2);padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
 /* ACTION BUTTONS */
 .myacts{display:flex;gap:8px;flex-wrap:wrap}
 .abtn{flex:1;min-width:calc(33% - 6px);font-size:11px;letter-spacing:1px;padding:14px 4px;border-radius:12px;text-transform:uppercase;border:1px solid rgba(255,255,255,0.07);background:linear-gradient(160deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));color:var(--tx3);transition:all .2s;font-family:"Rajdhani",sans-serif;position:relative}
@@ -536,6 +542,28 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
 /* SHOP OVERLAY */
 #shop-overlay{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:500;background:rgba(4,4,8,.97);overflow-y:auto;-webkit-overflow-scrolling:touch}
 #shop-overlay.on{display:block}
+/* ── TUTORIAL ── */
+#tut-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:3000;pointer-events:none}
+#tut-wrap.on{display:block}
+#tut-overlay{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:all;background:transparent;cursor:pointer}
+#tut-spot{display:none;position:fixed;border-radius:16px;pointer-events:none;z-index:3001;transition:left .35s ease,top .35s ease,width .35s ease,height .35s ease;box-shadow:0 0 0 0px rgba(212,168,67,0),0 0 0 2000px rgba(0,0,0,0.84)}
+#tut-spot.lit{box-shadow:0 0 0 5px rgba(212,168,67,0.6),0 0 0 2000px rgba(0,0,0,0.84)}
+#tut-bubble{position:fixed;z-index:3002;background:linear-gradient(145deg,#180e30 0%,#0d0818 100%);border:1px solid rgba(212,168,67,0.45);border-radius:20px;padding:22px 20px 16px;width:280px;pointer-events:all;box-shadow:0 20px 60px rgba(0,0,0,0.95),0 0 0 1px rgba(212,168,67,0.08);transition:left .35s ease,top .35s ease;opacity:0;transform:scale(.95)}
+#tut-bubble.in{opacity:1;transform:scale(1);transition:left .35s ease,top .35s ease,opacity .25s,transform .25s}
+.tut-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.tut-stepnum{font-size:9px;color:var(--tx3);letter-spacing:3px;text-transform:uppercase}
+.tut-pips{display:flex;gap:4px;align-items:center}
+.tut-pip{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.15);display:inline-block;transition:background .2s,transform .2s}
+.tut-pip.on{background:var(--gold);transform:scale(1.3);box-shadow:0 0 5px rgba(212,168,67,0.7)}
+.tut-ttl{font-family:"Cinzel",serif;font-size:15px;color:var(--gold);margin-bottom:10px;letter-spacing:1px;line-height:1.3}
+.tut-body{font-family:Rajdhani,sans-serif;font-size:13px;color:var(--tx2);line-height:1.7;margin-bottom:18px}
+.tut-btns{display:flex;align-items:center;justify-content:space-between}
+.tut-skip-btn{background:none;border:none;color:var(--tx3);font-size:11px;cursor:pointer;letter-spacing:1px;padding:6px 4px;font-family:Rajdhani,sans-serif;text-transform:uppercase}
+.tut-skip-btn:hover{color:var(--tx2)}
+.tut-next-btn{background:linear-gradient(135deg,#d4a843,#9a6e20);color:#07040f;border:none;border-radius:10px;padding:10px 20px;font-family:"Cinzel",serif;font-size:11px;letter-spacing:2px;cursor:pointer;font-weight:700;box-shadow:0 4px 16px rgba(212,168,67,0.25)}
+.tut-next-btn:active{transform:scale(.96)}
+.tut-highlight-pulse{animation:tut-pulse 2s infinite}
+@keyframes tut-pulse{0%,100%{box-shadow:0 0 0 5px rgba(212,168,67,0.6),0 0 0 2000px rgba(0,0,0,0.84)}50%{box-shadow:0 0 0 8px rgba(212,168,67,0.85),0 0 0 2000px rgba(0,0,0,0.84)}}
 </style>
 </head>
 <body>
@@ -567,6 +595,7 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
       <div style="font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;text-transform:uppercase">About</div>
       <div style="font-size:13px;color:var(--tx2)">AETHERMOOR &mdash; Chronicle Edition</div>
       <div style="font-size:11px;color:var(--tx3);margin-top:4px">Version v1.0 &mdash; A collaborative world-building RPG.</div>
+      <button onclick="closeSettings();startTutorial();" style="margin-top:14px;background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(212,168,67,0.04));border:1px solid rgba(212,168,67,0.35);color:var(--gold);padding:10px 16px;border-radius:10px;font-size:11px;letter-spacing:2px;cursor:pointer;width:100%;font-family:Cinzel,serif;text-transform:uppercase">&#9670; Replay Tutorial</button>
     </div>
     <div class="st-card">
       <div style="font-size:10px;letter-spacing:3px;color:var(--red);margin-bottom:8px;text-transform:uppercase">Danger Zone</div>
@@ -767,6 +796,8 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
           <div class="ctitle" style="color:var(--red)">Rivalry</div>
           <div id="pvp-status" style="font-size:11px;color:var(--tx2);margin-bottom:10px"></div>
           <div id="pvp-actions" style="display:flex;flex-direction:column;gap:8px"></div>
+          <div id="pvp-combat" style="margin-top:10px"></div>
+          <div id="pvp-player-list" style="margin-top:10px"></div>
         </div>
       </div>
       <!-- ACTIVE ARCS (war, building, org missions - player can still act inside) -->
@@ -800,8 +831,8 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
       <div class="card"><div class="card-body">
         <div class="ctitle">Party Overview</div>
         <div class="ovgrid">
-          <div class="ovc"><div class="ovv" id="ov-lv">2</div><div class="ovk">Combined Lv</div></div>
-          <div class="ovc"><div class="ovv" id="ov-rank">F</div><div class="ovk">World Rank</div></div>
+          <div class="ovc"><div class="ovv" id="ov-lv">2</div><div class="ovk" id="ov-lv-label">Combined Lv</div></div>
+          <div class="ovc"><div class="ovv" id="ov-rank">F</div><div class="ovk" id="ov-rank-label">World Rank</div></div>
           <div class="ovc"><div class="ovv" id="ov-dung">0</div><div class="ovk">Dungeons</div></div>
           <div class="ovc"><div class="ovv" id="ov-boss">0</div><div class="ovk">Bosses</div></div>
           <div class="ovc"><div class="ovv" id="ov-war">0</div><div class="ovk">Wars Won</div></div>
@@ -1850,7 +1881,7 @@ var QUICK_ACTS=[
      {w:1,em:'&#128556;',title:'Burned',t:function(pl){return pl.name+' paid good coin for a polished lie. The contact had already vanished.';},xp:22,gold:-35}
    ]},
   {id:'qa_underground',em:'&#9760;',name:'Visit the Underground',desc:'Seek out the criminal network. Deals happen below the surface.',
-   filter:function(pl,W){return (W.infamy||0)>=5||pl.level>=5;},
+   filter:function(pl,W){return (pl.infamy||0)>=5||pl.level>=5;},
    outcomes:[
      {w:3,em:'&#9760;',title:'Contact Made',t:function(pl){return pl.name+' established a working connection deep in the underground network.';},xp:52,gold:0,infamy:2},
      {w:2,em:'&#128176;',title:'Quick Job',t:function(pl){return pl.name+' picked up a simple job and completed it without any complication at all.';},xp:68,gold:58,infamy:3},
@@ -1913,7 +1944,7 @@ var QUICK_ACTS=[
      {w:1,em:'&#127941;',title:'Legendary Speech',t:function(pl){return pl.name+' delivered something that will be retold for many, many years.';},xp:145,gold:0,infamy:-5}
    ]},
   {id:'qa_demon_deal',em:'&#128165;',name:'Accept a Dark Pact',desc:'Something in the shadows offered terms. Consider carefully.',
-   filter:function(pl,W){return pl.level>=7&&(W.infamy||0)>=15;},
+   filter:function(pl,W){return pl.level>=7&&(pl.infamy||0)>=15;},
    outcomes:[
      {w:2,em:'&#128165;',title:'Accepted',t:function(pl){return pl.name+' shook a hand that had no warmth. The power arrived immediately.';},xp:125,gold:0,infamy:10},
      {w:2,em:'&#128547;',title:'Refused',t:function(pl){return pl.name+' rejected the offer without hesitation. The entity seemed almost impressed.';},xp:52,gold:0},
@@ -1926,7 +1957,7 @@ var QUICK_ACTS=[
      {w:1,em:'&#128565;',title:'Bombed',t:function(pl){return pl.name+' lost the crowd completely within the first minute. Character building.';},xp:12,gold:0}
    ]},
   {id:'qa_rob_traveler',em:'&#128081;',name:'Ambush a Traveler',desc:'Old-fashioned roadside robbery. High risk, fast coin.',
-   filter:function(pl,W){return pl.level>=5&&(W.infamy||0)>0;},
+   filter:function(pl,W){return pl.level>=5&&(pl.infamy||0)>0;},
    outcomes:[
      {w:3,em:'&#128176;',title:'Clean Score',t:function(pl){return pl.name+' moved fast and walked away with a very heavy purse.';},xp:64,gold:85,infamy:4},
      {w:2,em:'&#128073;',title:'Resistance',t:function(pl){return pl.name+' was fought back harder than expected but still came away with something.';},xp:38,gold:44,infamy:5},
@@ -3354,7 +3385,7 @@ var ACHIEVEMENTS=[
   {id:'dungeon_delver',em:'&#9670;',name:'Dungeon Delver',desc:'Complete your first dungeon.',check:function(pl){return (pl.dungeonsCleared||0)>=1;}},
   {id:'ancient_allies',em:'&#128100;',name:'Ancient Allies',desc:'Recruit 3 NPCs to your crew.',check:function(pl){return (pl.crew||[]).length>=3;}},
   {id:'fame_seeker',em:'&#9733;',name:'Fame Seeker',desc:'Accumulate 500 Fame.',check:function(pl){return (pl.fame||0)>=500;}},
-  {id:'shadow_walker',em:'&#9775;',name:'Shadow Walker',desc:'Reach 50 infamy.',check:function(pl,w){return (w&&w.infamy||0)>=50;}},
+  {id:'shadow_walker',em:'&#9775;',name:'Shadow Walker',desc:'Reach 50 infamy.',check:function(pl,w){return (pl.infamy||0)>=50;}},
   {id:'tier_a',em:'&#127775;',name:'Tier A',desc:'Reach A-rank.',check:function(pl){return pl.xp>=(42000);}},
   {id:'level_ten',em:'&#128171;',name:'Rising Legend',desc:'Reach level 10.',check:function(pl){return pl.level>=10;}},
   {id:'level_twenty',em:'&#128293;',name:'Legend Walks',desc:'Reach level 20.',check:function(pl){return pl.level>=20;}},
@@ -3942,6 +3973,7 @@ function patchW(w){
     if(!pl.lastAPTime)pl.lastAPTime=Date.now();
     if(!pl.storyFeed)pl.storyFeed=[];
     if(!pl.qaDeck)pl.qaDeck=[];
+    if(!pl.infamy)pl.infamy=0;
   }
   ['p1','p2','p3','p4'].forEach(function(p){if(w[p])pP(w[p]);else w[p]={name:'--',classIdx:(p==='p1'?0:p==='p2'?1:p==='p3'?2:3),raceId:'human',level:1,xp:0,xpNeeded:100,skillPoints:3,unlockedNodes:{},lastSeen:0,spawnType:'',location:'',busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:{stone:0,wood:0,crystals:0,gold:0},hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{},hp:null,maxHP:null,unlockedAchievements:[],factionStanding:{},completedMilestones:[],mentor:null,lordDisciple:null,metLords:[]};});
 }
@@ -3953,6 +3985,7 @@ function handleWsMsg(e){
     if(!W.log)W.log=[];if(!W.arcs)W.arcs=[];if(W.nemesis===undefined)W.nemesis=null;
     if(!W.worldBosses)W.worldBosses=[];
     if(!W.pvpState)W.pvpState={};
+    if(!W.pvpCombat)W.pvpCombat={active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:[]};
     if(W.log.length>lastLogLen){W.log.slice(lastLogLen).forEach(function(entry){appLog(entry.t,entry.c,entry.ts);});lastLogLen=W.log.length;}
     renderAll();syn('live');
     checkDone();renderEvent();renderArcs();renderNemesis();renderIntel();renderWorldStatus();
@@ -4898,7 +4931,7 @@ function renderCrafting(){
 }
 
 async function doCraft(recipeId){
-  if(busy)return;busy=true;syn('p');
+  if(busy){busy=false;}busy=true;syn('p');
   try{
     var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
     var r=CRAFTING.find(function(x){return x.id===recipeId;});if(!r){busy=false;return;}
@@ -5210,10 +5243,16 @@ function buildActBtns(){
   }).join('');
 }
 function renderOv(){
-  var cl=W.p1.level+W.p2.level+(W.p3&&W.p3.name&&W.p3.name!=='--'?W.p3.level:0)+(W.p4&&W.p4.name&&W.p4.name!=='--'?W.p4.level:0);
-  $g('ov-lv').textContent=cl;$g('ov-rank').textContent=RANK_LABELS[Math.min(RANK_LABELS.length-1,Math.floor(cl/4))];
+  var activePlayers=['p1','p2','p3','p4'].filter(function(p){return W[p]&&W[p].name&&W[p].name!=='--';});
+  var inParty=activePlayers.length>=2;
+  var cl=0;activePlayers.forEach(function(p){cl+=(W[p].level||1);});
+  var myPl=W['p'+mySlot];
+  $g('ov-lv').textContent=inParty?cl:(myPl&&myPl.level||1);
+  $g('ov-rank').textContent=inParty?RANK_LABELS[Math.min(RANK_LABELS.length-1,Math.floor(cl/4))]:'--';
+  var lbl=$g('ov-lv-label');if(lbl)lbl.textContent=inParty?'Combined Lv':'Your Level';
+  var rl=$g('ov-rank-label');if(rl)rl.style.opacity=inParty?'1':'0.35';
   $g('ov-dung').textContent=W.dungeons||0;$g('ov-boss').textContent=W.bosses||0;
-  $g('ov-war').textContent=W.wars||0;$g('ov-rep').textContent=W.infamy||0;
+  $g('ov-war').textContent=W.wars||0;var mp='p'+mySlot;$g('ov-rep').textContent=(W[mp]&&W[mp].infamy)||0;
 }
 function updateHints(){}
 function renderIntel(){
@@ -6723,7 +6762,7 @@ function renderQuestBoard(){
 }
 
 // ═══ POLITICS ═══
-var FACTIONS=[
+var POLITICS_FACTIONS=[
   {id:'crown',name:'The Crown',em:'&#9672;',color:'#c9a84c',desc:'The ruling monarchy and its apparatus. Stability, law, and privilege.',agenda:'Maintain order. Suppress threats. Expand the kingdom.',perks:['Access to royal contracts','Guards ignore minor infractions','Noble privileges in Crown cities']},
   {id:'guild',name:'The Adventurers\' Guild',em:'&#9876;',color:'#4fc3f7',desc:'The continent-spanning organization that classifies threats and distributes work.',agenda:'Regulate power. Prevent catastrophes. Profit from it.',perks:['Priority mission access','Guild rank recognition','Access to restricted bounties']},
   {id:'obsidian',name:'The Obsidian Hand',em:'&#9760;',color:'#aa88ff',desc:'The shadow guild. Older than the Guild. Serves requests the Guild refuses.',agenda:'Power for those who can use it. No morality attached.',perks:['Contracts above the law','Underground network access','Infamy generates income instead of heat']},
@@ -6741,7 +6780,7 @@ var POLITICAL_RANKS=[
   {id:'regent',label:'Regent',threshold:2000},
 ];
 
-function getFactionStanding(pl,factionId){
+function getPoliticsFactionStanding(pl,factionId){
   return(pl.politicsFactions&&pl.politicsFactions[factionId])||0;
 }
 function getPoliticalRank(standing){
@@ -6757,8 +6796,8 @@ function renderPoliticsOverlay(){
   var pl=W['p'+mySlot];
   var totalStanding=Object.values(pl.politicsFactions||{}).reduce(function(a,b){return a+b;},0);
   $g('politics-sub').textContent='Total Standing: '+totalStanding;
-  el.innerHTML=FACTIONS.map(function(f){
-    var standing=getFactionStanding(pl,f.id);
+  el.innerHTML=POLITICS_FACTIONS.map(function(f){
+    var standing=getPoliticsFactionStanding(pl,f.id);
     var rank=getPoliticalRank(standing);
     var nextRank=null;for(var i=0;i<POLITICAL_RANKS.length;i++){if(POLITICAL_RANKS[i].threshold>standing){nextRank=POLITICAL_RANKS[i];break;}}
     var pct=Math.min(100,nextRank?Math.floor(standing/nextRank.threshold*100):100);
@@ -6808,7 +6847,7 @@ function doFactionAction(factionId,actionId){
     }
     return;
   }
-  var f=FACTIONS.find(function(x){return x.id===factionId;});if(!f)return;
+  var f=POLITICS_FACTIONS.find(function(x){return x.id===factionId;});if(!f)return;
   var gain=actionId==='lobby'?20:60;
   var xpGain=actionId==='lobby'?300:1000;
   var cdKey='politics_'+factionId+'_'+actionId;
@@ -6900,6 +6939,8 @@ function renderPvpPanel(){
     ((pl.baseLevel||0)>=3?'<button onclick="dispatchAgents('+targetSlot+')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx2);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%;margin-bottom:5px">&#128100; Dispatch Agents (200g) &mdash; -50% their XP</button>':'')+
     ((pl.fame||0)>=200?'<button onclick="swayPublic('+targetSlot+')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx2);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%;margin-bottom:5px">&#127908; Sway Public (50 fame) &mdash; -25% XP 6h</button>':'')+
     '<button onclick="embargoPlayer('+targetSlot+')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx2);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%">&#128196; Embargo (100g) &mdash; +50% shop prices 12h</button>';
+  try{renderCombatPanel();}catch(e){}
+  try{renderPlayerList();}catch(e){}
 }
 
 function challengeRival(){
@@ -7062,6 +7103,214 @@ function embargoPlayer(targetSlot){
   W.pvpState.embargo[targetSlot]=Date.now()+43200000;
   pushLog(pl.name+' placed an embargo on Player '+targetSlot+'. Their shop prices increased by 50% for 12h.','lpty');
   writeW(W).catch(function(){});renderAll();
+}
+
+// ═══ TURN-BASED COMBAT SYSTEM ═══
+function challengePlayerCombat(targetSlot){
+  if(!W||!mySlot)return;
+  var tpl=W['p'+targetSlot];
+  if(!tpl||!tpl.name||tpl.name==='--'){pushLog('That player is not active.','lpty');return;}
+  if(targetSlot===mySlot){pushLog('Cannot challenge yourself.','lpty');return;}
+  if(!W.pvpCombat)W.pvpCombat={active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:[]};
+  if(W.pvpCombat.active){pushLog('A combat is already in progress.','lpty');return;}
+  var pl=W['p'+mySlot];
+  var myHp=getMaxHP(pl);
+  W.pvpCombat.pending=true;
+  W.pvpCombat.pendingFrom=mySlot;
+  W.pvpCombat.challenger=mySlot;
+  W.pvpCombat.defender=targetSlot;
+  W.pvpCombat.hp={};
+  W.pvpCombat.maxHp={};
+  W.pvpCombat.hp[mySlot]=myHp;
+  W.pvpCombat.maxHp[mySlot]=myHp;
+  W.pvpCombat.round=1;
+  W.pvpCombat.log=[];
+  pushLog(pl.name+' challenges Player '+targetSlot+' to combat!','lpty');
+  writeW(W).catch(function(){});renderPvpPanel();
+}
+function acceptCombat(){
+  if(!W||!mySlot||!W.pvpCombat||!W.pvpCombat.pending)return;
+  if(W.pvpCombat.defender!==mySlot)return;
+  var defHp=getMaxHP(W['p'+mySlot]);
+  W.pvpCombat.hp[mySlot]=defHp;
+  W.pvpCombat.maxHp[mySlot]=defHp;
+  W.pvpCombat.active=true;
+  W.pvpCombat.pending=false;
+  W.pvpCombat.turn=W.pvpCombat.challenger;
+  W.pvpCombat.round=1;
+  W.pvpCombat.log=['Combat begins! Round 1.'];
+  pushLog('Combat begins! Player '+W.pvpCombat.challenger+' goes first.','lpty');
+  writeW(W).catch(function(){});renderPvpPanel();
+}
+function declineCombat(){
+  if(!W||!mySlot||!W.pvpCombat)return;
+  W.pvpCombat.pending=false;
+  W.pvpCombat.active=false;
+  W.pvpCombat.pendingFrom=null;
+  pushLog('Challenge declined.','lpty');
+  writeW(W).catch(function(){});renderPvpPanel();
+}
+function combatAction(actionType){
+  if(!W||!mySlot||!W.pvpCombat||!W.pvpCombat.active)return;
+  if(W.pvpCombat.turn!==mySlot)return;
+  var combat=W.pvpCombat;
+  var pl=W['p'+mySlot];
+  var opSlot=mySlot===combat.challenger?combat.defender:combat.challenger;
+  var op=W['p'+opSlot];
+  if(!op||!op.name||op.name==='--')return;
+  var myHp=combat.hp[mySlot]||0;
+  var opHp=combat.hp[opSlot]||0;
+  var msg='';
+  var dmg=0;
+  if(actionType==='attack'){
+    dmg=rnd(10,25);
+    opHp=Math.max(0,opHp-dmg);
+    msg=pl.name+' attacks for '+dmg+' damage!';
+  } else if(actionType==='power'){
+    if(Math.random()<0.7){
+      dmg=rnd(20,40);
+      opHp=Math.max(0,opHp-dmg);
+      msg=pl.name+' unleashes a power strike for '+dmg+' damage!';
+    } else {
+      msg=pl.name+' power strike misses!';
+    }
+  } else if(actionType==='defend'){
+    dmg=rnd(5,12);
+    opHp=Math.max(0,opHp-dmg);
+    msg=pl.name+' defends and counters for '+dmg+'!';
+  } else if(actionType==='heal'){
+    var healAmt=rnd(15,25);
+    var maxH=combat.maxHp[mySlot]||getMaxHP(pl);
+    myHp=Math.min(maxH,myHp+healAmt);
+    msg=pl.name+' recovers '+healAmt+' HP!';
+  }
+  combat.hp[mySlot]=myHp;
+  combat.hp[opSlot]=opHp;
+  if(!combat.log)combat.log=[];
+  combat.log.unshift(msg);
+  if(combat.log.length>6)combat.log=combat.log.slice(0,6);
+  // Switch turn
+  combat.turn=opSlot;
+  if(combat.turn===combat.challenger){combat.round=(combat.round||1)+1;}
+  // Check win condition
+  if(opHp<=0){
+    var winXP=(pl.level||1)*50;
+    var loseXP=(op.level||1)*20;
+    pl.xp=(pl.xp||0)+winXP;doLvl(pl,'p'+mySlot);
+    pl.fame=(pl.fame||0)+10;
+    op.xp=(op.xp||0)+loseXP;doLvl(op,'p'+opSlot);
+    combat.log.unshift(pl.name+' wins! +'+winXP+' XP. '+op.name+' gets '+loseXP+' XP.');
+    pushLog(pl.name+' defeated '+op.name+' in turn-based combat! +'+winXP+' XP, +10 fame.','lpty');
+    W.pvpCombat={active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:combat.log.slice(0,6)};
+  } else {
+    pushLog(msg,'lpty');
+  }
+  writeW(W).catch(function(){});renderAll();renderPvpPanel();
+}
+function addToParty(targetSlot){
+  if(!W||!mySlot)return;
+  var tpl=W['p'+targetSlot];
+  if(!tpl||!tpl.name||tpl.name==='--'){pushLog('That player is not active.','lpty');return;}
+  if(targetSlot===mySlot){pushLog('You are already in your own party.','lpty');return;}
+  if(!W.partyStatus){
+    W.partyStatus={requested:'p'+mySlot,timestamp:Date.now()};
+    pushLog('Party request sent to Player '+targetSlot+'.','lpty');
+    writeW(W).catch(function(){});renderPartyPanel();
+  } else {
+    pushLog('Party action already in progress.','lpty');
+  }
+}
+function renderCombatPanel(){
+  var el=$g('pvp-combat');if(!el||!W)return;
+  var combat=W.pvpCombat;
+  if(!combat){el.innerHTML='';return;}
+  var html='';
+  if(combat.pending&&combat.pendingFrom!==null){
+    var challenger=W['p'+combat.challenger];
+    var defender=W['p'+combat.defender];
+    var challengerName=challenger&&challenger.name!=='--'?challenger.name:'Player '+combat.challenger;
+    var defenderName=defender&&defender.name!=='--'?defender.name:'Player '+combat.defender;
+    if(combat.defender===mySlot){
+      html='<div style="background:rgba(255,68,85,0.08);border:1px solid rgba(255,68,85,0.25);border-radius:10px;padding:12px;margin-bottom:8px">'+
+        '<div style="font-size:12px;color:var(--red);margin-bottom:8px">&#9876; '+challengerName+' challenges you to combat!</div>'+
+        '<button onclick="acceptCombat()" class="combat-action-btn" style="border-color:rgba(68,255,136,0.4);color:#44ff88">Accept Challenge</button>'+
+        '<button onclick="declineCombat()" class="combat-action-btn" style="border-color:rgba(255,255,255,0.1);color:var(--tx3)">Decline</button>'+
+        '</div>';
+    } else if(combat.challenger===mySlot){
+      html='<div style="font-size:11px;color:var(--tx3);padding:8px 0">Challenge sent to '+defenderName+'. Waiting for response...</div>';
+    }
+    el.innerHTML=html;return;
+  }
+  if(combat.active){
+    var chal=W['p'+combat.challenger];
+    var def=W['p'+combat.defender];
+    if(!chal||!def){el.innerHTML='';return;}
+    var chalName=chal.name!=='--'?chal.name:'Player '+combat.challenger;
+    var defName=def.name!=='--'?def.name:'Player '+combat.defender;
+    var chalHp=combat.hp[combat.challenger]||0;
+    var chalMax=combat.maxHp[combat.challenger]||getMaxHP(chal);
+    var defHp=combat.hp[combat.defender]||0;
+    var defMax=combat.maxHp[combat.defender]||getMaxHP(def);
+    var chalPct=chalMax>0?Math.max(0,Math.min(100,Math.round(chalHp/chalMax*100))):0;
+    var defPct=defMax>0?Math.max(0,Math.min(100,Math.round(defHp/defMax*100))):0;
+    html='<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;margin-bottom:8px">'+
+      '<div style="font-size:11px;letter-spacing:2px;color:var(--tx3);margin-bottom:10px">ROUND '+combat.round+' &mdash; TURN-BASED COMBAT</div>'+
+      '<div style="font-size:12px;color:var(--tx2);margin-bottom:2px">'+chalName+' &mdash; '+chalHp+'/'+chalMax+'</div>'+
+      '<div class="combat-hp-bar"><div class="combat-hp-fill'+(chalPct<30?' low':'')+'" style="width:'+chalPct+'%"></div></div>'+
+      '<div style="font-size:12px;color:var(--tx2);margin-bottom:2px">'+defName+' &mdash; '+defHp+'/'+defMax+'</div>'+
+      '<div class="combat-hp-bar"><div class="combat-hp-fill'+(defPct<30?' low':'')+'" style="width:'+defPct+'%"></div></div>';
+    if(combat.log&&combat.log.length){
+      html+='<div style="border-top:1px solid rgba(255,255,255,0.07);margin:8px 0;padding-top:8px">';
+      var logEntries=combat.log.slice(0,5);
+      for(var li=0;li<logEntries.length;li++){
+        html+='<div class="combat-log-entry">'+logEntries[li]+'</div>';
+      }
+      html+='</div>';
+    }
+    if(combat.turn===mySlot){
+      html+='<div style="font-size:11px;color:var(--gold);margin:8px 0 6px;letter-spacing:1px">YOUR TURN</div>'+
+        '<button onclick="combatAction(\'attack\')" class="combat-action-btn">&#9876; Attack (10-25 dmg)</button>'+
+        '<button onclick="combatAction(\'power\')" class="combat-action-btn">&#128165; Power Strike (20-40 dmg, 70% hit)</button>'+
+        '<button onclick="combatAction(\'defend\')" class="combat-action-btn">&#9737; Defend &amp; Counter (5-12 dmg)</button>'+
+        '<button onclick="combatAction(\'heal\')" class="combat-action-btn">&#9825; Recover (15-25 HP)</button>';
+    } else {
+      html+='<div style="font-size:11px;color:var(--tx3);margin-top:8px;font-style:italic">Waiting for opponent\'s move...</div>';
+    }
+    html+='</div>';
+    el.innerHTML=html;return;
+  }
+  // Show last combat log if any
+  if(combat.log&&combat.log.length){
+    html='<div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:8px;margin-top:4px">';
+    html+='<div style="font-size:9px;letter-spacing:2px;color:var(--tx3);margin-bottom:6px">LAST COMBAT</div>';
+    var lastLog=combat.log.slice(0,3);
+    for(var lj=0;lj<lastLog.length;lj++){
+      html+='<div class="combat-log-entry">'+lastLog[lj]+'</div>';
+    }
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+function renderPlayerList(){
+  var el=$g('pvp-player-list');if(!el||!W||!mySlot)return;
+  var html='<div style="border-top:1px solid rgba(255,255,255,0.07);padding-top:10px;margin-top:4px"><div style="font-size:9px;letter-spacing:2px;color:var(--tx3);margin-bottom:8px">OTHER PLAYERS</div>';
+  var found=false;
+  ['p1','p2','p3','p4'].forEach(function(p){
+    var n=parseInt(p[1]);
+    if(n===mySlot)return;
+    var tpl=W[p];
+    if(!tpl||!tpl.name||tpl.name==='--')return;
+    found=true;
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'+
+      '<span style="font-size:12px;color:var(--tx2)">'+tpl.name+' (Lv '+tpl.level+')</span>'+
+      '<div style="display:flex;gap:5px">'+
+      '<button onclick="challengePlayerCombat('+n+')" style="background:rgba(255,68,85,0.1);border:1px solid rgba(255,68,85,0.3);color:var(--red);font-size:10px;padding:5px 8px;border-radius:7px;cursor:pointer">&#9876; Duel</button>'+
+      '<button onclick="addToParty('+n+')" style="background:rgba(68,255,136,0.1);border:1px solid rgba(68,255,136,0.3);color:#44ff88;font-size:10px;padding:5px 8px;border-radius:7px;cursor:pointer">+ Party</button>'+
+      '</div></div>';
+  });
+  if(!found){html+='<div style="font-size:11px;color:var(--tx3);font-style:italic">No other active players.</div>';}
+  html+='</div>';
+  el.innerHTML=html;
 }
 
 // ═══ NPC PARTY MEMBERS ═══
@@ -7609,6 +7858,7 @@ function doQuickAct(id){
   if(act.filter&&!act.filter(pl,W))return;
   // Spend AP
   pl.ap=Math.max(0,(pl.ap||0)-1);
+  try{renderChronicle();}catch(e){}
   // Weighted random outcome
   var totalW=0;
   var outs=act.outcomes;
@@ -7625,14 +7875,15 @@ function doQuickAct(id){
   // Apply XP
   pl.xp=(pl.xp||0)+xpGain;
   doLvl(pl,'p'+mySlot);
+  renderP('p'+mySlot);
   // Apply gold
   if(goldGain!==0){
     if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
     pl.resources.gold=Math.max(0,(pl.resources.gold||0)+goldGain);
   }
   // Apply infamy
-  if(infamyGain>0){W.infamy=(W.infamy||0)+infamyGain;}
-  else if(infamyGain<0){W.infamy=Math.max(0,(W.infamy||0)+infamyGain);}
+  if(infamyGain>0){pl.infamy=(pl.infamy||0)+infamyGain;}
+  else if(infamyGain<0){pl.infamy=Math.max(0,(pl.infamy||0)+infamyGain);}
   // Apply resources (positive = gain, negative = consume)
   if(outcome.res){
     if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
@@ -7697,6 +7948,154 @@ function closeQO(){
   var wrap=$g('qo-wrap');
   if(wrap)wrap.className='qo-wrap';
   renderChronicle();
+}
+
+// ═══════════════════════════════════════════════════
+//  TUTORIAL SYSTEM
+// ═══════════════════════════════════════════════════
+var TUT_IDX=0;
+var TUT_ACTIVE=false;
+var TUT_STEPS=[
+  {target:null,
+   title:'Welcome to Aethermoor',
+   text:'This short tour will walk you through the core systems. Tap NEXT — or tap anywhere on the dark overlay — to advance. Tap SKIP to jump straight in.'},
+  {target:'chronicle-card',tab:'you',pos:'b',
+   title:'The Chronicle',
+   text:'Your instant-action panel. Three cards, always ready. Each one plays out a story beat right now — no timers, no waiting. Just tap and see what happens.'},
+  {target:'ap-row',tab:'you',pos:'b',
+   title:'Action Points (AP)',
+   text:'Every Chronicle action costs 1 AP. You have 50 max. They refill on their own — 1 every 90 seconds. Running low means come back later. Running full means get moving.'},
+  {target:'qa-grid',tab:'you',pos:'t',
+   title:'Your Three Options',
+   text:'These are your current cards. Tap one to act. The deck rotates after each use so you always get fresh choices. Some cards are locked until you have the right gold, materials, or level — the description tells you why.'},
+  {target:'card-p1',tab:'you',pos:'b',
+   title:'Your Character',
+   text:'Name, class, race, level, and XP. Every action — Chronicle or solo — feeds into that bar. Fill it and you level up, which triggers a full stat boost and gives you Skill Points to spend.'},
+  {target:'solo-acts',tab:'world',pos:'t',
+   title:'Solo Actions',
+   text:'These run on real time. Start a Hunt (30 min), an Explore (1 hr), or a Meditate (4 hrs). Close the app and come back. When the timer expires, XP and rewards are automatically applied.'},
+  {target:'guide-card',tab:'you',pos:'b',
+   title:'What To Do Next',
+   text:'This card always tells you your next best move based on your current state. Unlocking a skill? It tells you. Missing gold for a quest? It says so. Follow it to never feel lost.'},
+  {target:'bn-skills',pos:'t',
+   title:'Skill Tree',
+   text:'Spend your Skill Points here. Each class has a unique tree with passive bonuses and active powers. Some abilities can be triggered mid-action. Unlocking nodes changes how the whole game plays.'},
+  {target:'bn-loot',pos:'t',
+   title:'Your Loot',
+   text:'Every item you earn or craft lands here. Equip weapons, armor, and accessories to change your stats. Rare gear from dungeons and shops can completely flip your class build.'},
+  {target:'bn-lore',pos:'t',
+   title:'Intel',
+   text:'World events, NPC contacts you\'ve met, personal quests, faction standings, and the running story log. Everything you\'ve done is recorded here. Your partner\'s actions show up here too.'},
+  {target:'botnav',pos:'t',
+   title:'Navigation',
+   text:'YOU is your home base. WORLD has dungeons, shops, and party arcs. SKILLS is your talent tree. LOOT is your inventory. INTEL tracks the story and your contacts.'},
+  {target:null,
+   title:'The World Is Already Running',
+   text:'Every action leaves a permanent mark on the session. Your partners see what you do. NPCs remember how you treat them. Fame and infamy build over time. Go make something happen.'}
+];
+function startTutorial(){
+  TUT_IDX=0;TUT_ACTIVE=true;
+  var w=$g('tut-wrap');if(!w)return;
+  w.classList.add('on');
+  var bub=$g('tut-bubble');if(bub){bub.className='tut-bubble';}
+  showTutStep(0);
+}
+function tutNext(){
+  if(!TUT_ACTIVE)return;
+  TUT_IDX++;
+  if(TUT_IDX>=TUT_STEPS.length){tutSkip();return;}
+  // Fade out bubble then reposition
+  var bub=$g('tut-bubble');if(bub)bub.classList.remove('in');
+  setTimeout(function(){showTutStep(TUT_IDX);},200);
+}
+function tutSkip(){
+  TUT_ACTIVE=false;
+  var w=$g('tut-wrap');if(w)w.classList.remove('on');
+  var spot=$g('tut-spot');if(spot){spot.style.display='none';spot.classList.remove('lit','tut-highlight-pulse');}
+  localStorage.setItem('am_tut_done','1');
+  // Switch back to You tab
+  try{switchTab('you');}catch(e){}
+}
+function showTutStep(idx){
+  var step=TUT_STEPS[idx];
+  if(!step){tutSkip();return;}
+  // Update text content
+  var stepNumEl=$g('tut-stepnum');
+  var ttlEl=$g('tut-ttl');
+  var bodyEl=$g('tut-body');
+  var pipsEl=$g('tut-pips');
+  var nxtEl=$g('tut-nxt');
+  if(stepNumEl)stepNumEl.textContent='STEP '+(idx+1)+' OF '+TUT_STEPS.length;
+  if(ttlEl)ttlEl.textContent=step.title;
+  if(bodyEl)bodyEl.textContent=step.text;
+  if(nxtEl)nxtEl.innerHTML=(idx===TUT_STEPS.length-1)?'PLAY ›':'NEXT ›';
+  if(pipsEl){
+    var ph='';
+    for(var pi=0;pi<TUT_STEPS.length;pi++){
+      ph+='<span class="tut-pip'+(pi===idx?' on':'')+'"></span>';
+    }
+    pipsEl.innerHTML=ph;
+  }
+  // Switch tab if needed, then position
+  if(step.tab){
+    try{switchTab(step.tab);}catch(e){}
+    setTimeout(function(){_tutPosition(step);},280);
+  }else{
+    _tutPosition(step);
+  }
+}
+function _tutPosition(step){
+  var spot=$g('tut-spot');
+  var bubble=$g('tut-bubble');
+  if(!spot||!bubble)return;
+  var vw=window.innerWidth;
+  var vh=window.innerHeight;
+  var BW=290;var BH=240; // bubble dims estimate
+  if(!step.target){
+    // Centered — no spotlight
+    spot.style.display='none';
+    spot.classList.remove('lit','tut-highlight-pulse');
+    bubble.style.left=Math.max(10,Math.round(vw/2-BW/2))+'px';
+    bubble.style.top=Math.max(20,Math.round(vh/2-BH/2))+'px';
+    setTimeout(function(){bubble.classList.add('in');},30);
+    return;
+  }
+  var el=document.getElementById(step.target);
+  if(!el){tutNext();return;}
+  // Scroll element into view smoothly
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  setTimeout(function(){
+    var r=el.getBoundingClientRect();
+    var pad=10;
+    // Position spotlight
+    spot.style.display='block';
+    spot.style.left=(r.left-pad)+'px';
+    spot.style.top=(r.top-pad)+'px';
+    spot.style.width=(r.width+pad*2)+'px';
+    spot.style.height=(r.height+pad*2)+'px';
+    spot.className='';
+    spot.id='tut-spot';
+    void spot.offsetWidth; // force reflow for animation
+    spot.classList.add('lit','tut-highlight-pulse');
+    // Position bubble
+    var bl=Math.max(10,Math.min(vw-BW-10,Math.round(r.left+r.width/2-BW/2)));
+    var bt;
+    var elCenter=r.top+r.height/2;
+    // Decide above or below
+    if(step.pos==='t'||elCenter>vh*0.55){
+      // Put bubble ABOVE element
+      bt=r.top-pad-BH-18;
+      if(bt<20){bt=r.bottom+pad+18;} // flip if no room above
+    }else{
+      // Put bubble BELOW element
+      bt=r.bottom+pad+18;
+      if(bt+BH>vh-10){bt=r.top-pad-BH-18;} // flip if no room below
+    }
+    bt=Math.max(20,Math.min(vh-BH-10,bt));
+    bubble.style.left=bl+'px';
+    bubble.style.top=bt+'px';
+    setTimeout(function(){bubble.classList.add('in');},30);
+  },320);
 }
 </script>
 <!-- PWA INSTALL BANNER -->
@@ -7807,6 +8206,23 @@ function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
   <div class="qo-text" id="qo-text"></div>
   <div class="qo-rewards" id="qo-rewards"></div>
   <button class="qo-btn" onclick="closeQO()">CONTINUE &#8250;</button>
+</div>
+<!-- TUTORIAL -->
+<div id="tut-wrap">
+  <div id="tut-overlay" onclick="tutNext()"></div>
+  <div id="tut-spot"></div>
+  <div id="tut-bubble">
+    <div class="tut-meta">
+      <span class="tut-stepnum" id="tut-stepnum">STEP 1 OF 10</span>
+      <span class="tut-pips" id="tut-pips"></span>
+    </div>
+    <div class="tut-ttl" id="tut-ttl">Welcome</div>
+    <div class="tut-body" id="tut-body"></div>
+    <div class="tut-btns">
+      <button class="tut-skip-btn" onclick="tutSkip()">Skip</button>
+      <button class="tut-next-btn" id="tut-nxt" onclick="tutNext()">NEXT &#8250;</button>
+    </div>
+  </div>
 </div>
 </body>
 </html>

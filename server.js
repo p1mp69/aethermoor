@@ -92,6 +92,7 @@ function patchPlayer(p) {
   if (!p.storyFeed) p.storyFeed = [];
   if (!p.qaDeck) p.qaDeck = [];
   if (!p.pvpState) p.pvpState = {};
+  if (!p.infamy) p.infamy = 0;
   return p;
 }
 
@@ -120,6 +121,7 @@ function patchWorld(w) {
   if (!w.bosses) w.bosses = 0;
   if (!w.wars) w.wars = 0;
   if (!w.infamy) w.infamy = 0;
+  if (!w.pvpCombat) w.pvpCombat = {active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:[]};
   return w;
 }
 
