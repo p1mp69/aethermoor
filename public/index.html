@@ -57,6 +57,7 @@ select{-webkit-appearance:none;appearance:none}
 .slot-em{font-size:24px}.slot-n{font-family:"Cinzel",serif;font-size:12px}.slot-sub{font-size:10px;color:var(--tx3);letter-spacing:1px}
 .slot.sel1{border-color:var(--p1);background:var(--p1g)}.slot.sel1 .slot-n{color:var(--p1)}
 .slot.sel2{border-color:var(--p2);background:var(--p2g)}.slot.sel2 .slot-n{color:var(--p2)}
+.slot.sel3{border-color:var(--orange);background:rgba(255,170,51,.07)}.slot.sel3 .slot-n{color:var(--orange)}
 .spawn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
 .spawn-card{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:12px 10px;cursor:pointer;transition:all .15s;text-align:center}
 .spawn-card:active{transform:scale(.96)}.spawn-card.selected{border-color:var(--gold);background:rgba(201,168,76,.07)}
@@ -91,7 +92,7 @@ select{-webkit-appearance:none;appearance:none}
 .ctitle{font-family:"Cinzel",serif;font-size:11px;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
 /* PLAYER CARDS */
 .pcard{border-radius:16px;overflow:hidden;background:var(--s1);border:1px solid var(--b1)}
-.pcard.p1{border-top:3px solid var(--p1)}.pcard.p2{border-top:3px solid var(--p2)}.pcard.offline{opacity:.5}
+.pcard.p1{border-top:3px solid var(--p1)}.pcard.p2{border-top:3px solid var(--p2)}.pcard.p3{border-top:3px solid var(--orange)}.pcard.offline{opacity:.5}
 .card-head{padding:14px 16px;border-bottom:1px solid var(--b1)}
 .ph{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
 .pav{width:48px;height:48px;border-radius:10px;background:var(--s2);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
@@ -101,26 +102,27 @@ select{-webkit-appearance:none;appearance:none}
 .otag{font-size:9px;letter-spacing:2px;color:var(--red);border:1px solid var(--red);padding:2px 6px;border-radius:4px;display:none}
 .pcard.offline .otag{display:inline}
 .pcls{font-size:11px;letter-spacing:2px;text-transform:uppercase}
-.p1 .pcls{color:var(--p1)}.p2 .pcls{color:var(--p2)}
+.p1 .pcls{color:var(--p1)}.p2 .pcls{color:var(--p2)}.p3 .pcls{color:var(--orange)}
 .psubtitle{font-size:10px;color:var(--gold);letter-spacing:1px;margin-top:2px;font-style:italic}
 .ploc{font-size:10px;color:var(--tx3);margin-top:1px}
 .lvrow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .lvbdg{font-family:"Cinzel",serif;font-size:11px;padding:3px 10px;border-radius:6px;background:var(--s2);border:1px solid var(--b2);letter-spacing:1px;flex-shrink:0}
-.p1 .lvbdg{color:var(--p1)}.p2 .lvbdg{color:var(--p2)}
+.p1 .lvbdg{color:var(--p1)}.p2 .lvbdg{color:var(--p2)}.p3 .lvbdg{color:var(--orange)}
 .xptr{flex:1;height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
 .xpf{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.22,.68,0,1.2)}
-.p1 .xpf{background:var(--p1)}.p2 .xpf{background:var(--p2)}
+.p1 .xpf{background:var(--p1)}.p2 .xpf{background:var(--p2)}.p3 .xpf{background:var(--orange)}
 .xplbl{font-size:10px;color:var(--tx3);min-width:58px;text-align:right;flex-shrink:0}
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px;margin-bottom:10px}
 .srow{display:flex;justify-content:space-between;align-items:center;font-size:12px}
 .sk{color:var(--tx3)}.sv{font-weight:600;color:var(--tx);min-width:24px;text-align:right}
 .sbar{width:34px;height:3px;background:var(--s3);border-radius:2px;overflow:hidden}
-.sbf{height:100%;border-radius:2px}.p1 .sbf{background:var(--p1)}.p2 .sbf{background:var(--p2)}
+.sbf{height:100%;border-radius:2px}.p1 .sbf{background:var(--p1)}.p2 .sbf{background:var(--p2)}.p3 .sbf{background:var(--orange)}
 .sright{display:flex;align-items:center;gap:4px}
 .active-skills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;min-height:28px}
 .askill{font-size:9px;letter-spacing:1px;padding:4px 9px;border-radius:8px;border:1px solid var(--b2);color:var(--tx2);text-transform:uppercase;background:var(--s2)}
 .p1 .askill.hot{border-color:var(--p1);color:var(--p1);background:var(--p1g)}
 .p2 .askill.hot{border-color:var(--p2);color:var(--p2);background:var(--p2g)}
+.p3 .askill.hot{border-color:var(--orange);color:var(--orange);background:rgba(255,170,51,.1)}
 .busy-bar{background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px}
 .busy-icon{font-size:18px;flex-shrink:0}.busy-text{flex:1;min-width:0}
 .busy-action{font-size:12px;font-weight:600;color:var(--gold);margin-bottom:2px}
@@ -134,6 +136,7 @@ select{-webkit-appearance:none;appearance:none}
 .abtn:active:not(:disabled){transform:scale(.95)}.abtn:disabled{opacity:.25;cursor:not-allowed}
 .p1 .abtn.hi{border-color:var(--p1);color:var(--p1);background:var(--p1g)}
 .p2 .abtn.hi{border-color:var(--p2);color:var(--p2);background:var(--p2g)}
+.p3 .abtn.hi{border-color:var(--orange);color:var(--orange);background:rgba(255,170,51,.1)}
 .sp-badge{position:absolute;top:3px;right:3px;background:var(--gold);color:var(--void);font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
 /* PARTY ACTIONS */
 .pacts{display:grid;grid-template-columns:1fr 1fr;gap:9px}
@@ -187,7 +190,7 @@ select{-webkit-appearance:none;appearance:none}
 .logsc::-webkit-scrollbar{width:2px}.logsc::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
 .li{display:flex;gap:8px;font-size:12px;line-height:1.5}
 .lts{font-family:"Cinzel",serif;font-size:9px;color:var(--tx3);flex-shrink:0;margin-top:2px;letter-spacing:1px;min-width:40px}
-.ltx{color:var(--tx3)}.ltx.lp1{color:var(--p1)}.ltx.lp2{color:var(--p2)}.ltx.lpty{color:var(--gold)}.ltx.llv{color:var(--green)}.ltx.lsk{color:var(--purple)}.ltx.lwrld{color:var(--orange)}.ltx.lnem{color:var(--enemy)}
+.ltx{color:var(--tx3)}.ltx.lp1{color:var(--p1)}.ltx.lp2{color:var(--p2)}.ltx.lp3{color:var(--orange)}.ltx.lpty{color:var(--gold)}.ltx.llv{color:var(--green)}.ltx.lsk{color:var(--purple)}.ltx.lwrld{color:var(--orange)}.ltx.lnem{color:var(--enemy)}
 /* OVERVIEW */
 .ovgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .ovc{background:var(--s2);border-radius:12px;padding:12px;text-align:center}
@@ -332,7 +335,7 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
 .fame-rank{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid;background:transparent}
 .fame-title-chip{font-size:9px;color:var(--tx3);font-style:italic;letter-spacing:1px}
 /* INTRO */
-.intro-wrap{display:none;position:fixed;inset:0;z-index:250;flex-direction:column;align-items:center;justify-content:center;padding:28px;gap:14px;text-align:center;overflow:hidden;background:#040408}
+.intro-wrap{display:none;position:fixed;inset:0;z-index:250;flex-direction:column;align-items:center;justify-content:center;padding:28px;gap:14px;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#040408}
 .intro-wrap.on{display:flex}
 .intro-bg{position:absolute;inset:0;pointer-events:none}
 .intro-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 15% 25%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 82% 12%,rgba(201,168,76,.5),transparent),radial-gradient(1px 1px at 43% 78%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 71% 55%,rgba(79,195,247,.4),transparent),radial-gradient(1px 1px at 28% 61%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 91% 38%,rgba(170,136,255,.4),transparent),radial-gradient(1px 1px at 5% 88%,rgba(255,255,255,.3),transparent),radial-gradient(1px 1px at 62% 8%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 35% 44%,rgba(201,168,76,.3),transparent),radial-gradient(1px 1px at 78% 91%,rgba(255,255,255,.5),transparent),radial-gradient(2px 2px at 55% 33%,rgba(201,168,76,.4),transparent),radial-gradient(1px 1px at 19% 72%,rgba(79,195,247,.3),transparent),radial-gradient(1px 1px at 96% 67%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 8% 48%,rgba(255,255,255,.3),transparent),radial-gradient(2px 2px at 48% 95%,rgba(170,136,255,.3),transparent)}
@@ -466,6 +469,17 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
           <div class="myacts" id="ac-p2"></div>
         </div>
       </div>
+      <div class="pcard p3" id="card-p3">
+        <div class="card-head">
+          <div class="ph"><div class="pav" id="av-p3">&#9672;</div><div style="flex:1;min-width:0"><div class="pnl"><span class="pnm" id="nm-p3">&mdash;</span><span class="ytag" id="you-p3" style="display:none">YOU</span><span class="otag">OFFLINE</span></div><div class="pcls" id="cls-p3">awaiting awakening</div><div class="psubtitle" id="title-p3"></div><div class="ploc" id="loc-p3"></div></div></div>
+          <div class="lvrow"><div class="lvbdg" id="lv-p3">Lv 1</div><div class="xptr"><div class="xpf" id="xpf-p3" style="width:0%"></div></div><div class="xplbl" id="xpl-p3">0/100</div></div>
+          <div class="sgrid" id="sg-p3"></div><div class="active-skills" id="ask-p3"></div>
+        </div>
+        <div class="card-body">
+          <div class="busy-bar" id="busy-p3" style="display:none"><div class="busy-icon" id="busy-em-p3">&#9672;</div><div class="busy-text"><div class="busy-action" id="busy-act-p3"></div><div class="busy-timer" id="busy-timer-p3"></div><div class="busy-progress"><div class="busy-fill" id="busy-fill-p3"></div></div></div><button class="cancel-btn" onclick="cancelAction(3)">Cancel</button></div>
+          <div class="myacts" id="ac-p3"></div>
+        </div>
+      </div>
       <!-- ABILITIES -->
       <div class="card" id="ability-panel">
         <div class="card-body">
@@ -484,9 +498,12 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
       </div>
       <!-- MAGIC SCHOOLS -->
       <div class="card">
-        <div class="card-body">
-          <div class="ctitle">Magic Schools</div>
-          <div id="magic-panel"></div>
+        <div class="card-body" style="padding:10px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="ctitle" style="margin-bottom:0">Magic Schools</div>
+            <button onclick="openMagicOverlay()" style="background:transparent;border:1px solid var(--purple);color:var(--purple);padding:6px 14px;border-radius:8px;font-size:10px;letter-spacing:2px;cursor:pointer">OPEN &#9737;</button>
+          </div>
+          <div id="magic-panel-summary" style="font-size:10px;color:var(--tx3);margin-top:6px"></div>
         </div>
       </div>
       <!-- PARTY PANEL -->
@@ -2240,7 +2257,7 @@ function $g(id){return document.getElementById(id);}
   }).join('');
 })();
 function pickSpawn(id){mySpawn=id;document.querySelectorAll('.spawn-card').forEach(function(c){c.classList.remove('selected');});var el=$g('sp-'+id);if(el)el.classList.add('selected');chk();}
-function pickSlot(n){mySlot=n;$g('sl1').className='slot'+(n===1?' sel1':'');$g('sl2').className='slot'+(n===2?' sel2':'');var sl3=$g('sl3');if(sl3)sl3.className='slot'+(n===3?' sel1':'');chk();}
+function pickSlot(n){mySlot=n;$g('sl1').className='slot'+(n===1?' sel1':'');$g('sl2').className='slot'+(n===2?' sel2':'');var sl3=$g('sl3');if(sl3)sl3.className='slot'+(n===3?' sel3':'');chk();}
 function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',s='';for(var i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];$g('inp-sid').value=s;chk();}
 function chk(){var ok=mySlot&&mySpawn&&$g('inp-sid').value.trim()&&$g('inp-name').value.trim()&&$g('spawn-location').value;$g('enterbtn').disabled=!ok;}
 function checkRejoin(){
@@ -2254,9 +2271,25 @@ function doRejoin(){
   if(!savedSession)return;
   $g('inp-sid').value=savedSession.sid;
   mySlot=savedSession.slot;
-  document.querySelectorAll('.slot').forEach(function(s){s.classList.remove('sel1','sel2');});
+  document.querySelectorAll('.slot').forEach(function(s){s.classList.remove('sel1','sel2','sel3');});
   var slotEl=$g('sl'+savedSession.slot);
   if(slotEl)slotEl.classList.add('sel'+savedSession.slot);
+  // Restore spawn
+  if(savedSession.spawn){
+    mySpawn=savedSession.spawn;
+    document.querySelectorAll('.spawn-card').forEach(function(c){c.classList.remove('selected');});
+    var spEl=$g('sp-'+mySpawn);if(spEl)spEl.classList.add('selected');
+  }
+  // Restore location
+  if(savedSession.location){
+    myLocation=savedSession.location;
+    var locSel=$g('spawn-location');if(locSel)locSel.value=savedSession.location;
+  }
+  // Restore name
+  if(savedSession.name&&savedSession.name!=='--'){
+    var nameInp=$g('inp-name');if(nameInp)nameInp.value=savedSession.name;
+    myName=savedSession.name;
+  }
   enterWorld();
 }
 function updateRaceHint(){
@@ -2389,7 +2422,7 @@ async function enterWorld(){
     ];
     pushLog(lines[Math.floor(Math.random()*3)],'lwrld');
     await writeW(W);lastLogLen=W.log.length;hideLd();
-    localStorage.setItem('am_session',JSON.stringify({sid:sid,slot:mySlot,name:W['p'+mySlot].name}));
+    localStorage.setItem('am_session',JSON.stringify({sid:sid,slot:mySlot,name:W['p'+mySlot].name,spawn:mySpawn,location:myLocation}));
     $g('pg-join').classList.remove('on');$g('pg-game').classList.add('on');
     $g('sbdg').textContent='# '+sid;var youEl=$g('you-'+mp);if(youEl)youEl.style.display='inline';
     buildActBtns();buildLoreCls();renderAll();renderIntel();renderWorldStatus();
@@ -2403,7 +2436,7 @@ function leaveWorld(){
   W=null;lastLogLen=0;mySlot=0;mySpawn=null;busy=false;cbBusy=false;
   $g('pg-game').classList.remove('on');$g('pg-join').classList.add('on');
   $g('logsc').innerHTML='';
-  ['p1','p2'].forEach(function(p){$g('you-'+p).style.display='none';});
+  ['p1','p2','p3'].forEach(function(p){var el=$g('you-'+p);if(el)el.style.display='none';});
 }
 
 // ═══ HEARTBEAT ═══
@@ -2418,7 +2451,7 @@ function tick(){
   var wd=Math.floor(el/86400000)+1,wy=Math.floor(wd/365)+1,dy=((wd-1)%365)+1;
   $g('clock-date').textContent='Day '+dy+', Year '+wy+' of the Awakening';
   $g('clock-time').textContent=real.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:false});
-  var cl=W.p1.level+W.p2.level;
+  var cl=W.p1.level+W.p2.level+(W.p3&&W.p3.name&&W.p3.name!=='--'?W.p3.level:0);
   $g('clock-arc').textContent=ARCS[Math.min(ARCS.length-1,Math.floor(cl/8))];
   updateBars();renderArcs();checkAutoArcs();
   var wt=$g('tab-world');if(wt&&wt.classList.contains('on'))renderWorldStatus();
@@ -2427,8 +2460,8 @@ function tick(){
 // ═══ BUSY BARS ═══
 function updateBars(){
   if(!W)return;
-  ['p1','p2'].forEach(function(p){
-    var pl=W[p];var bar=$g('busy-'+p);if(!bar)return;
+  ['p1','p2','p3'].forEach(function(p){
+    var pl=W[p];var bar=$g('busy-'+p);if(!bar||!pl)return;
     if(!pl.busyAction||!pl.busyUntil||pl.busyUntil<=Date.now()){bar.style.display='none';return;}
     bar.style.display='flex';
     var act=findSoloAct(pl.busyAction);
@@ -2625,7 +2658,9 @@ async function resolveEv(opt){
     var ev=W.worldEvent;var xp=opt===1?ev.xp1:ev.xp2;
     pushLog(myName+' chose: "'+(opt===1?ev.opt1:ev.opt2)+'". The world reacted accordingly.','lwrld');
     W.p1.xp+=Math.round(xp/2);W.p2.xp+=Math.round(xp/2);
-    doLvl(W.p1,'p1');doLvl(W.p2,'p2');W.worldEvent=null;W.worldEventExpiry=0;
+    doLvl(W.p1,'p1');doLvl(W.p2,'p2');
+    if(W.p3&&W.p3.name&&W.p3.name!=='--'){W.p3.xp+=Math.round(xp/4);doLvl(W.p3,'p3');}
+    W.worldEvent=null;W.worldEventExpiry=0;
     await writeW(W);lastLogLen=W.log.length;renderAll();renderIntel();
     $g('world-event-card').style.display='none';$g('nd-world').classList.remove('on');
   }catch(e){}busy=false;
@@ -2635,7 +2670,7 @@ async function resolveEv(opt){
 async function checkDone(){
   if(!W||cbBusy)return;
   // Check solo busy actions
-  var anySoloDone=['p1','p2'].some(function(p){var pl=W[p];return pl.busyAction&&pl.busyUntil&&pl.busyUntil<=Date.now();});
+  var anySoloDone=['p1','p2','p3'].some(function(p){var pl=W[p];return pl&&pl.busyAction&&pl.busyUntil&&pl.busyUntil<=Date.now();});
   // Check completed arcs
   var anyArcDone=W.arcs&&W.arcs.some(function(a){return a.endsAt&&a.endsAt<=Date.now()&&!a.collected;});
   if(!anySoloDone&&!anyArcDone)return;
@@ -2645,9 +2680,9 @@ async function checkDone(){
     if(!W.arcs)W.arcs=[];
     var changed=false;
     // Solo completions
-    ['p1','p2'].forEach(function(p){
+    ['p1','p2','p3'].forEach(function(p){
       var pl=W[p];
-      if(pl.busyAction&&pl.busyUntil&&pl.busyUntil<=Date.now()){
+      if(pl&&pl.busyAction&&pl.busyUntil&&pl.busyUntil<=Date.now()){
         var act=findSoloAct(pl.busyAction);
         var xp=pl.busyXP||0,msg=pl.busyMsg||'Action complete.';
         var actId=pl.busyAction;
@@ -2954,7 +2989,7 @@ function switchTab(name){['you','world','skills','loot','lore'].forEach(function
 function xpN(lv){return Math.round(100*Math.pow(1.5,lv-1));}function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});}
 
 // ═══ RENDER ═══
-function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderOv();updateHints();renderInventory();renderWorldStatus();renderAbilities();renderPartyPanel();renderHostControls();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicPanel();renderSubclassSummaryEl();}
+function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderP('p3');renderOv();updateHints();renderInventory();renderWorldStatus();renderAbilities();renderPartyPanel();renderHostControls();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();}
 function renderSubclassSummaryEl(){if(!W||!mySlot)return;var el=$g('subclass-summary');if(!el)return;var pl=W['p'+mySlot];el.innerHTML=renderSubclassSummary(pl);}
 function renderP(p){
   var pl=W[p];if(!pl)return;var c=CLS[pl.classIdx||0];var n=parseInt(p[1]);
@@ -2988,7 +3023,7 @@ function renderP(p){
   if(isMe){
     $g('card-'+p).classList.remove('compact');
   } else {
-    var opSlot=p==='p1'?1:2;
+    var opSlot=parseInt(p[1]);
     var ps=W&&W.partyStatus;
     var shareLevel=0;
     if(ps&&ps.active){shareLevel=ps['p'+opSlot+'Share']||1;}
@@ -3066,7 +3101,7 @@ function buildActBtns(){
   }).join('');
 }
 function renderOv(){
-  var cl=W.p1.level+W.p2.level;
+  var cl=W.p1.level+W.p2.level+(W.p3&&W.p3.name&&W.p3.name!=='--'?W.p3.level:0);
   $g('ov-lv').textContent=cl;$g('ov-rank').textContent=RANK_LABELS[Math.min(RANK_LABELS.length-1,Math.floor(cl/4))];
   $g('ov-dung').textContent=W.dungeons||0;$g('ov-boss').textContent=W.bosses||0;
   $g('ov-war').textContent=W.wars||0;$g('ov-rep').textContent=W.infamy||0;
@@ -3110,12 +3145,20 @@ async function doQuickAct(id){
     var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
     var mp='p'+mySlot;var pl=W[mp];
     var acts={
-      brawl:{xp:45,msg:'Got into a street fight. Won. Obviously.',infamy:1},
-      scan:{xp:20,msg:'Scanned the surroundings. Filed it away.',infamy:0},
+      brawl:{xp:45,msg:'Got into a street fight. Won. Obviously.',infamy:1,cd:300000},
+      scan:{xp:20,msg:'Scanned the surroundings. Filed it away.',infamy:0,cd:180000},
     };
     var act=acts[id];if(!act){busy=false;return;}
+    if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+    var cdKey='quick_'+id;
+    var cdUntil=pl.abilityCooldowns[cdKey]||0;
+    if(cdUntil>Date.now()){
+      pushLog(pl.name+': '+id+' on cooldown for '+fmtDur(cdUntil-Date.now())+'.','l'+mp);
+      busy=false;syn('live');return;
+    }
     pl.xp=(pl.xp||0)+act.xp;
     if(act.infamy)W.infamy=(W.infamy||0)+act.infamy;
+    pl.abilityCooldowns[cdKey]=Date.now()+act.cd;
     pl.lastSeen=Date.now();
     var lv=doLvl(pl,mp);
     if(!lv)pushLog(pl.name+': '+act.msg+' (+'+act.xp+' XP)','l'+mp);
@@ -3988,6 +4031,8 @@ function showIntro(spawnType){
 function closeIntro(){
   if(introTypeTimer){clearInterval(introTypeTimer);introTypeTimer=null;}
   $g('introwrap').classList.remove('on');
+  // ensure game scroll is not blocked
+  var tw=$g('tabs-wrap');if(tw)tw.style.overflowY='auto';
 }
 function renderKnownFaces(){
   var el=$g('known-faces');if(!el||!W)return;
@@ -4478,6 +4523,50 @@ var WORLD_ACTORS=[
 ];
 var worldActorCooldowns={};
 var lastWorldTick=0;
+// ═══ DEATH & REINCARNATION ═══
+var DEATH_TEXTS=[
+  'The system did not save you. It catalogued you.',
+  'Your record is marked. Not ended. Transformed.',
+  'Everything you built is ash. Everything you are remains — half of it.',
+  'The world does not mourn. The world resets around you.',
+  'You had a name. You had connections. They are filed under: previous version.',
+  'Death in this world is not an ending. It is an edit.',
+  'The ability registered the moment of failure. Then it registered what came after.',
+];
+function triggerDeath(reason){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if(pl._dying)return;pl._dying=true;
+  var el=$g('death-overlay');if(!el)return;
+  $g('death-title').textContent=reason||'Death';
+  $g('death-text').textContent=DEATH_TEXTS[Math.floor(Math.random()*DEATH_TEXTS.length)];
+  var oldLevel=pl.level;var newLevel=Math.max(1,Math.floor(pl.level/2));
+  $g('death-stats').innerHTML='<div style="font-size:9px;color:#ff4455;letter-spacing:3px;margin-bottom:8px">WHAT REMAINS</div>'
+    +'<div style="font-size:12px;color:#aaa;line-height:2">Level '+oldLevel+' → <span style="color:#fff">'+newLevel+'</span><br>'
+    +'Gold: '+Math.floor((pl.resources.gold||0)/2)+' · Crystals: '+Math.floor((pl.resources.crystals||0)/2)+'<br>'
+    +'<span style="color:#ff4455">All skills wiped · All relationships severed · Class randomized</span></div>';
+  el.classList.add('on');
+  setTimeout(function(){var btn=$g('reincarnate-btn');if(btn)btn.style.display='block';},3000);
+}
+async function reincarnate(){
+  if(!W||!mySlot||busy)return;busy=true;
+  try{
+    var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
+    var mp='p'+mySlot;var pl=W[mp];
+    var oldLevel=pl.level;
+    var newClassIdx=Math.floor(Math.random()*CLS.length);
+    var newLevel=Math.max(1,Math.floor(oldLevel/2));
+    var keptResources={stone:Math.floor((pl.resources.stone||0)/2),wood:Math.floor((pl.resources.wood||0)/2),crystals:Math.floor((pl.resources.crystals||0)/2),gold:Math.floor((pl.resources.gold||0)/2)};
+    var kept={name:pl.name,raceId:pl.raceId,spawnType:pl.spawnType,location:pl.location,lastSeen:Date.now()};
+    W[mp]={name:kept.name,classIdx:newClassIdx,raceId:kept.raceId,level:newLevel,xp:0,xpNeeded:xpN(newLevel),skillPoints:Math.max(1,Math.floor(newLevel/2)),unlockedNodes:{},lastSeen:kept.lastSeen,spawnType:kept.spawnType,location:kept.location,busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:keptResources,hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{}};
+    var newCls=CLS[newClassIdx];
+    pushLog(kept.name+' returned. Level '+oldLevel+' → '+newLevel+'. Now a '+newCls.n+'. The world does not remember the previous version.','llv');
+    W.infamy=Math.max(0,(W.infamy||0)-20);
+    await writeW(W);lastLogLen=W.log.length;
+    var el=$g('death-overlay');if(el)el.classList.remove('on');
+    renderAll();renderIntel();
+  }catch(e){console.log(e);}busy=false;
+}
 function worldTick(){
   if(!W||!mySlot)return;
   var now=Date.now();
@@ -4489,6 +4578,8 @@ function worldTick(){
   worldActorCooldowns[actor.id]=now+120000;
   var action=actor.actions[Math.floor(Math.random()*actor.actions.length)];
   applyWorldActorEffect(actor,action);
+  // Check death conditions
+  if(W&&mySlot){var dpl=W['p'+mySlot];if(dpl&&!dpl._dying&&(W.infamy||0)>85&&Math.random()<0.04){triggerDeath('World Rejection');}}
 }
 function applyWorldActorEffect(actor,action){
   if(!W)return;
@@ -4630,6 +4721,18 @@ async function castSpell(schoolId,spellId){
     pl.magicMastery[schoolId]=(pl.magicMastery[schoolId]||0)+1;
     await writeW(W);lastLogLen=W.log.length;renderAll();
   }catch(e){console.log(e);}busy=false;
+}
+function openMagicOverlay(){$g('magic-overlay').classList.add('on');renderMagicPanel();}
+function closeMagicOverlay(){$g('magic-overlay').classList.remove('on');}
+function renderMagicSummary(){
+  var el=$g('magic-panel-summary');if(!el||!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if(!pl.magicMastery)pl.magicMastery={};
+  var keys=Object.keys(pl.magicMastery);
+  var totalCasts=0;
+  for(var i=0;i<keys.length;i++){totalCasts+=pl.magicMastery[keys[i]];}
+  var schoolsUsed=keys.filter(function(k){return pl.magicMastery[k]>0;}).length;
+  el.textContent=totalCasts>0?(schoolsUsed+' school'+(schoolsUsed!==1?'s':'')+' mastered · '+totalCasts+' total cast'+(totalCasts!==1?'s':'')):'No spells cast yet. Tap OPEN to access all 5 schools.';
 }
 function renderMagicPanel(){
   var el=$g('magic-panel');if(!el||!W||!mySlot)return;
@@ -4862,5 +4965,28 @@ function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
   <!-- content injected by JS -->
 </div>
 <style>#career-event-overlay.on{display:block}</style>
+<!-- MAGIC OVERLAY -->
+<div id="magic-overlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(4,4,8,.97);overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <div style="padding:20px 16px;max-width:500px;margin:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-family:Cinzel,serif;font-size:18px;color:var(--gold)">&#9737; Magic Schools</div>
+      <button onclick="closeMagicOverlay()" style="background:none;border:none;color:var(--tx3);font-size:24px;cursor:pointer">&times;</button>
+    </div>
+    <div id="magic-panel"></div>
+  </div>
+</div>
+<style>#magic-overlay.on{display:block}</style>
+<!-- DEATH OVERLAY -->
+<div id="death-overlay" style="display:none;position:fixed;inset:0;z-index:700;background:#000;overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <div style="position:relative;z-index:1;padding:48px 24px;max-width:460px;margin:auto;text-align:center;min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:20px">
+    <div style="font-size:48px;filter:drop-shadow(0 0 30px rgba(255,68,85,.5))">&#9760;</div>
+    <div style="font-size:9px;letter-spacing:8px;color:#ff4455;text-transform:uppercase">System Override</div>
+    <div style="font-family:Cinzel,serif;font-size:24px;color:#ffffff;letter-spacing:3px" id="death-title">Death</div>
+    <div style="font-size:13px;color:#888;line-height:1.9;font-style:italic" id="death-text"></div>
+    <div style="background:rgba(255,68,85,.06);border:1px solid rgba(255,68,85,.2);border-radius:14px;padding:16px" id="death-stats"></div>
+    <button onclick="reincarnate()" id="reincarnate-btn" style="display:none;background:transparent;border:1px solid #ff4455;color:#ff4455;padding:16px 32px;border-radius:12px;font-size:12px;letter-spacing:4px;cursor:pointer;font-family:Rajdhani,sans-serif;margin-top:8px">RETURN &mdash; CHANGED</button>
+  </div>
+</div>
+<style>#death-overlay.on{display:block}</style>
 </body>
 </html>
