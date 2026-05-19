@@ -1718,8 +1718,9 @@ var CLS=[
   ]}
 ];
 
-// QUICK ACTS — instant narrative actions, no timer, cost 1 AP each
+// QUICK ACTS — instant narrative actions, cost 1 AP each. Filters enforce REAL prerequisites.
 var QUICK_ACTS=[
+  // ── ALWAYS AVAILABLE ──
   {id:'qa_wander',em:'&#128118;',name:'Wander the District',desc:'Drift through the streets and see what happens.',
    outcomes:[
      {w:4,em:'&#128118;',title:'Nothing Much',t:function(pl){return pl.name+' wandered about, overhearing gossip and watching the city breathe.';},xp:8,gold:0},
@@ -1727,13 +1728,14 @@ var QUICK_ACTS=[
      {w:2,em:'&#129309;',title:'Helpful Stranger',t:function(pl){return pl.name+' helped a lost merchant and received a grateful tip in return.';},xp:22,gold:15},
      {w:1,em:'&#128298;',title:'Street Trouble',t:function(pl){return pl.name+' stumbled into a street dispute and had to talk very fast to escape it.';},xp:28,gold:-5}
    ]},
-  {id:'qa_tavern',em:'&#127867;',name:'Hit the Tavern',desc:'Drink, listen, and watch. You learn things here.',
+  {id:'qa_tavern',em:'&#127867;',name:'Hit the Tavern',desc:'Drink, listen, and watch. Costs a few coins.',
+   filter:function(pl,W){return (pl.resources&&pl.resources.gold||0)>=5;},
    outcomes:[
      {w:3,em:'&#127867;',title:'Good Drinks',t:function(pl){return pl.name+' had a few rounds and enjoyed the noise of people who did not know them.';},xp:10,gold:-5},
-     {w:3,em:'&#129488;',title:'Overheard Rumor',t:function(pl){return pl.name+' caught wind of something interesting from the next table. Filed it away.';},xp:24,gold:0},
+     {w:3,em:'&#129488;',title:'Overheard Rumor',t:function(pl){return pl.name+' caught wind of something useful from the next table. Filed it away.';},xp:24,gold:-5},
      {w:2,em:'&#129386;',title:'Won at Dice',t:function(pl){return pl.name+' cleaned out the locals at a game of bones. They took it well. Mostly.';},xp:18,gold:35},
      {w:1,em:'&#128534;',title:'Lost the Pot',t:function(pl){return pl.name+' bet one round too many and walked home significantly lighter.';},xp:8,gold:-22},
-     {w:1,em:'&#129309;',title:'Made a Friend',t:function(pl){return pl.name+' talked for hours with a fascinating traveler and gained rare perspective.';},xp:38,gold:0}
+     {w:1,em:'&#129309;',title:'Made a Friend',t:function(pl){return pl.name+' talked for hours with a fascinating traveler and gained rare perspective.';},xp:38,gold:-5}
    ]},
   {id:'qa_train',em:'&#9876;',name:'Run Drills',desc:'Practice your fighting forms. Muscle memory is everything.',
    outcomes:[
@@ -1780,7 +1782,8 @@ var QUICK_ACTS=[
      {w:2,em:'&#128530;',title:'Believed',t:function(pl){return pl.name+' told a convincing lie and watched it travel across the district immediately.';},xp:36,gold:0,infamy:2},
      {w:1,em:'&#128556;',title:'Disbelieved',t:function(pl){return pl.name+' overplayed the story. No one bought it. Walked away gracefully.';},xp:10,gold:0}
    ]},
-  {id:'qa_gamble',em:'&#127922;',name:'Gamble',desc:'Put some coin on the line. Fortune favors the bold.',
+  {id:'qa_gamble',em:'&#127922;',name:'Gamble',desc:'Put coin on the line. Need at least 20 gold to play.',
+   filter:function(pl,W){return pl.resources&&(pl.resources.gold||0)>=20;},
    outcomes:[
      {w:3,em:'&#127922;',title:'Small Win',t:function(pl){return pl.name+' played a measured game and walked away with a profit.';},xp:15,gold:28},
      {w:2,em:'&#128176;',title:'Big Win',t:function(pl){return pl.name+' had a spectacular run. The table went cold for everyone else present.';},xp:28,gold:80},
@@ -1794,17 +1797,19 @@ var QUICK_ACTS=[
      {w:2,em:'&#128128;',title:'You Lost',t:function(pl){return pl.name+' got bested. A good lesson, even if the bruises took a position on it.';},xp:26,gold:0},
      {w:1,em:'&#127941;',title:'Crowd Formed',t:function(pl){return pl.name+' put on a real show. Spectators tossed coin at the display.';},xp:48,gold:22}
    ]},
-  {id:'qa_pray',em:'&#128142;',name:'Visit a Shrine',desc:'Offer something to the old gods and see what returns.',
+  {id:'qa_pray',em:'&#128142;',name:'Visit a Shrine',desc:'Leave an offering to the old gods. Costs a few coins.',
+   filter:function(pl,W){return pl.resources&&(pl.resources.gold||0)>=5;},
    outcomes:[
      {w:3,em:'&#128142;',title:'Silence',t:function(pl){return pl.name+' left an offering and walked away uncertain if anything had heard.';},xp:15,gold:-5},
-     {w:2,em:'&#10024;',title:'Blessing',t:function(pl){return pl.name+' felt warmth radiate from the stone. Something ancient acknowledged them.';},xp:44,gold:0},
-     {w:1,em:'&#9889;',title:'Warning',t:function(pl){return pl.name+' received an omen. Dark images that refused to leave the mind.';},xp:58,gold:0,infamy:1}
+     {w:2,em:'&#10024;',title:'Blessing',t:function(pl){return pl.name+' felt warmth radiate from the stone. Something ancient acknowledged them.';},xp:44,gold:-5,apBonus:3},
+     {w:1,em:'&#9889;',title:'Warning',t:function(pl){return pl.name+' received an omen. Dark images that refused to leave the mind.';},xp:58,gold:-5,infamy:1}
    ]},
-  {id:'qa_craft_quick',em:'&#9874;',name:'Craft Something',desc:'Make use of your hands. Quick work, honest result.',
+  {id:'qa_craft_quick',em:'&#9874;',name:'Craft Something',desc:'Work raw materials into a sellable piece. Requires stone or wood.',
+   filter:function(pl,W){return pl.resources&&((pl.resources.stone||0)+(pl.resources.wood||0))>0;},
    outcomes:[
-     {w:3,em:'&#9874;',title:'Rough Work',t:function(pl){return pl.name+' put together something serviceable. Not beautiful, but very functional.';},xp:26,gold:0,res:{stone:1}},
-     {w:2,em:'&#128165;',title:'Clean Work',t:function(pl){return pl.name+' produced a clean piece. Good form, solid utility throughout.';},xp:42,gold:18},
-     {w:1,em:'&#11088;',title:'Perfect Piece',t:function(pl){return pl.name+' hit a flow state. The result exceeded every expectation by a wide margin.';},xp:68,gold:32}
+     {w:3,em:'&#9874;',title:'Rough Work',t:function(pl){return pl.name+' hammered out a serviceable piece from raw materials. Sold it at a stall for coin.';},xp:30,gold:15,res:{stone:-1,wood:-1}},
+     {w:2,em:'&#128165;',title:'Clean Work',t:function(pl){return pl.name+' produced a clean, well-balanced piece. The buyer paid good coin without haggling.';},xp:52,gold:35,res:{stone:-2,wood:-1}},
+     {w:1,em:'&#11088;',title:'Masterwork',t:function(pl){return pl.name+' hit a flow state. The finished piece drew a small crowd. Three merchants fought over it.';},xp:88,gold:72,res:{stone:-2,wood:-2}}
    ]},
   {id:'qa_investigate',em:'&#128270;',name:'Investigate Rumors',desc:'Follow up on something you heard. Pull the thread.',
    filter:function(pl,W){return pl.level>=2;},
@@ -1837,12 +1842,12 @@ var QUICK_ACTS=[
      {w:2,em:'&#128165;',title:'Bandit Ambush',t:function(pl){return pl.name+' helped repel a roadside ambush. The merchants were very grateful.';},xp:62,gold:44},
      {w:1,em:'&#127775;',title:'Strange Cargo',t:function(pl){return pl.name+' noticed the goods did not add up. Asked no questions. Received their pay.';},xp:36,gold:26,infamy:1}
    ]},
-  {id:'qa_informant',em:'&#128170;',name:'Meet an Informant',desc:'Someone has something to sell. Go and listen.',
-   filter:function(pl,W){return pl.level>=3;},
+  {id:'qa_informant',em:'&#128170;',name:'Meet an Informant',desc:'Pay for intel from a contact. Need 35+ gold and connections.',
+   filter:function(pl,W){return pl.level>=3&&pl.resources&&(pl.resources.gold||0)>=35;},
    outcomes:[
-     {w:3,em:'&#128170;',title:'Intel Bought',t:function(pl){return pl.name+' paid for solid information and received something immediately actionable.';},xp:42,gold:-18},
-     {w:2,em:'&#128196;',title:'Gold Information',t:function(pl){return pl.name+' received a tip that could change the shape of things to come entirely.';},xp:68,gold:-22},
-     {w:1,em:'&#128556;',title:'Burned',t:function(pl){return pl.name+' paid good coin for a polished lie. The contact had already vanished.';},xp:20,gold:-32}
+     {w:3,em:'&#128170;',title:'Intel Bought',t:function(pl){return pl.name+' paid for solid information and received something immediately actionable.';},xp:48,gold:-22},
+     {w:2,em:'&#128196;',title:'Gold Information',t:function(pl){return pl.name+' received a tip that could change the shape of things to come entirely.';},xp:75,gold:-28},
+     {w:1,em:'&#128556;',title:'Burned',t:function(pl){return pl.name+' paid good coin for a polished lie. The contact had already vanished.';},xp:22,gold:-35}
    ]},
   {id:'qa_underground',em:'&#9760;',name:'Visit the Underground',desc:'Seek out the criminal network. Deals happen below the surface.',
    filter:function(pl,W){return (W.infamy||0)>=5||pl.level>=5;},
@@ -3932,8 +3937,8 @@ function patchW(w){
     if(pl.mentor===undefined)pl.mentor=null;
     if(pl.lordDisciple===undefined)pl.lordDisciple=null;
     if(!pl.metLords)pl.metLords=[];
-    if(pl.ap===undefined)pl.ap=5;
-    if(!pl.maxAP)pl.maxAP=5;
+    if(pl.ap===undefined)pl.ap=50;
+    if(!pl.maxAP||pl.maxAP<50)pl.maxAP=50;
     if(!pl.lastAPTime)pl.lastAPTime=Date.now();
     if(!pl.storyFeed)pl.storyFeed=[];
     if(!pl.qaDeck)pl.qaDeck=[];
@@ -3992,8 +3997,60 @@ async function enterWorld(){
       W[mp].classIdx=Math.floor(Math.random()*CLS.length);
       W[mp].skillPoints=3;W[mp].unlockedNodes={};W[mp].spawnType=mySpawn;W[mp].location=myLocation;
       var raceSel=$g('race-sel');W[mp].raceId=raceSel?raceSel.value:'human';
-      var sp=SPAWNS.find(function(s){return s.id===mySpawn;});if(sp)pushLog(myName+' arrived via '+sp.name+'. '+sp.bonus+'.','lwrld');
-      // Give each new player 2 starting contacts based on location
+      // Apply real spawn bonuses
+      if(!W[mp].resources)W[mp].resources={stone:0,wood:0,crystals:0,gold:0};
+      if(!W[mp].factionStanding)W[mp].factionStanding={};
+      if(!W[mp].npcRelationships)W[mp].npcRelationships={};
+      var spawnId=mySpawn;
+      if(spawnId==='truck'){
+        // Truck-Kun: high STR affinity, 50g starting gold, system feels you are owed something
+        W[mp].resources.gold+=50;W[mp].resources.stone+=5;
+        W[mp].skillPoints+=1; // extra point for surviving being hit by a truck
+        pushLog(myName+' died and came back. The system felt guilty. (+50g, +5 stone, +1 skill point)','lwrld');
+      } else if(spawnId==='reborn'){
+        // Reborn: extra time means extra patience — all-around boost
+        W[mp].skillPoints+=2;W[mp].resources.gold+=25;W[mp].resources.wood+=5;
+        // Neutral faction standing — you have had time to observe everyone
+        W[mp].factionStanding.guild=5;W[mp].factionStanding.kingdom=5;W[mp].factionStanding.tower=5;
+        pushLog(myName+' was reborn. Two decades of observation paid off. (+2 skill points, +25g, +5 wood, faction familiarity)','lwrld');
+      } else if(spawnId==='sleep'){
+        // Fell Asleep: lucky, confused, nothing makes sense but it keeps working out
+        W[mp].resources.gold+=Math.floor(Math.random()*80)+20; // random 20-100g
+        W[mp].resources.crystals+=3;
+        W[mp].skillPoints+=1;
+        pushLog(myName+' woke up here by accident. Lucky roll on arrival. (+20-100g random, +3 crystals, +1 skill point)','lwrld');
+      } else if(spawnId==='summoned'){
+        // Summoned Hero: political connections, kingdom standing, starting recognition
+        W[mp].resources.gold+=150;W[mp].factionStanding.kingdom=25;W[mp].factionStanding.guild=15;
+        W[mp].fame=30;
+        // Knows some important NPCs already
+        if(W[mp].metNpcs.indexOf('commander_rael')<0)W[mp].metNpcs.push('commander_rael');
+        if(W[mp].metNpcs.indexOf('elder_voss')<0)W[mp].metNpcs.push('elder_voss');
+        // NPCs trust them more from day one
+        W[mp].npcRelationships['commander_rael']=25;W[mp].npcRelationships['elder_voss']=20;
+        pushLog(myName+' was summoned by the kingdom. Political connections activated. (+150g, +25 kingdom standing, +30 fame, 2 known contacts)','lwrld');
+      } else if(spawnId==='murdered'){
+        // Betrayed and Killed: high infamy, chip on shoulder, revenge drive
+        W.infamy=(W.infamy||0)+15;W[mp].fame=10;W[mp].resources.gold+=10;
+        W[mp].resources.stone+=10;W[mp].resources.wood+=8;
+        W[mp].skillPoints+=1;
+        // Negative faction standing — the betrayal created enemies
+        W[mp].factionStanding.kingdom=-10;W[mp].factionStanding.guild=-5;
+        W[mp].factionStanding.obsidian=15; // underground respects survivors
+        pushLog(myName+' returned from death by betrayal. Trust: low. Resolve: absolute. (+infamy, resources, underground standing)','lwrld');
+      } else if(spawnId==='glitch'){
+        // Glitched In: random chaotic bonuses
+        var glitchGold=Math.floor(Math.random()*200);
+        var glitchSP=Math.floor(Math.random()*3);
+        var glitchRes=Math.floor(Math.random()*10);
+        W[mp].resources.gold+=glitchGold;W[mp].skillPoints+=glitchSP;
+        W[mp].resources.crystals+=glitchRes;W[mp].resources.stone+=glitchRes;
+        var rollFac=['kingdom','guild','obsidian','tower','old_blood'];
+        rollFac.forEach(function(f){W[mp].factionStanding[f]=(Math.random()<0.5?1:-1)*Math.floor(Math.random()*20);});
+        pushLog(myName+' glitched in. The system rolled dice. Results are final. (+'+glitchGold+'g, +'+glitchSP+'sp, +'+glitchRes+' crystals/stone, random factions)','lwrld');
+      }
+      var sp=SPAWNS.find(function(s){return s.id===mySpawn;});if(sp)pushLog('Arrival method: '+sp.name+' — '+sp.bonus,'lsk');
+      // Give each new player starting contacts based on location
       if(!W[mp].metNpcs)W[mp].metNpcs=[];
       var startingNPCs=getStartingNPCs(myLocation);
       startingNPCs.forEach(function(id){if(W[mp].metNpcs.indexOf(id)<0)W[mp].metNpcs.push(id);});
@@ -4040,6 +4097,8 @@ function tick(){
   var cl=W.p1.level+W.p2.level+(W.p3&&W.p3.name&&W.p3.name!=='--'?W.p3.level:0)+(W.p4&&W.p4.name&&W.p4.name!=='--'?W.p4.level:0);
   $g('clock-arc').textContent=ARCS[Math.min(ARCS.length-1,Math.floor(cl/8))];
   updateBars();renderArcs();checkAutoArcs();
+  // Auto-complete solo actions every tick (critical for solo players)
+  checkDone();
   var wt=$g('tab-world');if(wt&&wt.classList.contains('on')){renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();}
 }
 
@@ -4966,7 +5025,17 @@ function xpN(lv){return Math.round(100*Math.pow(1.5,lv-1));}function rnd(a,b){re
 function fmtGold(n){n=Math.floor(n||0);if(n===0)return'0g';var s=String(n);var out='';for(var i=0;i<s.length;i++){if(i>0&&(s.length-i)%3===0)out+=',';out+=s[i];}return out+'g';}
 
 // ═══ RENDER ═══
-function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderP('p3');renderP('p4');renderOv();updateHints();renderInventory();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderAbilities();renderPartyPanel();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();renderSkSummary();renderGuide();renderChronicle();renderShops();var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}}
+function renderAll(){
+  if(!W)return;
+  renderP('p1');renderP('p2');renderP('p3');renderP('p4');
+  renderOv();updateHints();renderInventory();renderWorldStatus();renderExpeditions();renderCrafting();
+  renderCareerActionsPanel();renderAbilities();renderPartyPanel();renderOrgSummary();renderQuestBoard();
+  try{renderPvpPanel();}catch(e){}
+  renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();renderSkSummary();renderGuide();
+  try{renderChronicle();}catch(e){}
+  try{renderShops();}catch(e){}
+  var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}
+}
 function renderSubclassSummaryEl(){if(!W||!mySlot)return;var el=$g('subclass-summary');if(!el)return;var pl=W['p'+mySlot];el.innerHTML=renderSubclassSummary(pl);}
 function renderP(p){
   var pl=W[p];if(!pl)return;var c=CLS[pl.classIdx||0];var n=parseInt(p[1]);
@@ -7442,12 +7511,13 @@ function getNewQADeck(pl,excludeId){
 }
 function tickQAAP(pl){
   if(!pl.lastAPTime)pl.lastAPTime=Date.now();
-  var msPerAP=3*60*1000; // 1 AP every 3 minutes
+  var msPerAP=90*1000; // 1 AP every 90 seconds
   var elapsed=Date.now()-pl.lastAPTime;
   if(elapsed>=msPerAP){
     var gained=Math.floor(elapsed/msPerAP);
     var oldAP=pl.ap||0;
-    pl.ap=Math.min(pl.maxAP||5,oldAP+gained);
+    pl.ap=Math.min(pl.maxAP||50,oldAP+gained);
+    if(pl.ap!==oldAP)writeW(W).catch(function(){});
     pl.lastAPTime=(pl.lastAPTime||Date.now())+gained*msPerAP;
   }
 }
@@ -7459,15 +7529,22 @@ function renderChronicle(){
   var pl=W['p'+mySlot];
   // Tick AP refill
   tickQAAP(pl);
-  // AP dots
+  // AP bar (progress bar style for 50 AP)
   var apRow=$g('ap-row');
   if(apRow){
-    var maxAP=pl.maxAP||5;
+    var maxAP=pl.maxAP||50;
     var curAP=pl.ap||0;
-    var dh='';
-    for(var d=0;d<maxAP;d++)dh+='<div class="ap-dot'+(d<curAP?' full':'')+'"></div>';
-    dh+='<span class="ap-lbl">'+curAP+'/'+maxAP+' AP</span>';
-    apRow.innerHTML=dh;
+    var pct=Math.round((curAP/maxAP)*100);
+    var apColor=curAP>=30?'var(--gold)':curAP>=10?'var(--orange)':'#ff6677';
+    var nextAPMs=90000-((Date.now()-(pl.lastAPTime||Date.now()))%90000);
+    var nextStr=curAP<maxAP?(' +1 in '+Math.ceil(nextAPMs/1000)+'s'):'';
+    apRow.innerHTML='<div style="display:flex;align-items:center;gap:6px;flex:1">'
+      +'<span style="font-size:10px;color:'+apColor+';font-weight:700;min-width:32px">'+curAP+'</span>'
+      +'<div style="flex:1;height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden">'
+      +'<div style="width:'+pct+'%;height:100%;background:'+apColor+';border-radius:3px;transition:width .5s"></div>'
+      +'</div>'
+      +'<span style="font-size:9px;color:var(--tx3)">'+maxAP+' AP'+nextStr+'</span>'
+      +'</div>';
   }
   // Init deck if empty
   if(!pl.qaDeck||pl.qaDeck.length===0)pl.qaDeck=getNewQADeck(pl,null);
@@ -7556,17 +7633,17 @@ function doQuickAct(id){
   // Apply infamy
   if(infamyGain>0){W.infamy=(W.infamy||0)+infamyGain;}
   else if(infamyGain<0){W.infamy=Math.max(0,(W.infamy||0)+infamyGain);}
-  // Apply resources
+  // Apply resources (positive = gain, negative = consume)
   if(outcome.res){
     if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
     var rk=outcome.res;
-    if(rk.gold)pl.resources.gold=(pl.resources.gold||0)+rk.gold;
-    if(rk.wood)pl.resources.wood=(pl.resources.wood||0)+rk.wood;
-    if(rk.stone)pl.resources.stone=(pl.resources.stone||0)+rk.stone;
-    if(rk.crystals)pl.resources.crystals=(pl.resources.crystals||0)+rk.crystals;
+    if(rk.gold!==undefined&&rk.gold!==0)pl.resources.gold=Math.max(0,(pl.resources.gold||0)+rk.gold);
+    if(rk.wood!==undefined&&rk.wood!==0)pl.resources.wood=Math.max(0,(pl.resources.wood||0)+rk.wood);
+    if(rk.stone!==undefined&&rk.stone!==0)pl.resources.stone=Math.max(0,(pl.resources.stone||0)+rk.stone);
+    if(rk.crystals!==undefined&&rk.crystals!==0)pl.resources.crystals=Math.max(0,(pl.resources.crystals||0)+rk.crystals);
   }
   // AP bonus outcome
-  if(outcome.apBonus){pl.ap=Math.min(pl.maxAP||5,(pl.ap||0)+outcome.apBonus);}
+  if(outcome.apBonus){pl.ap=Math.min(pl.maxAP||50,(pl.ap||0)+outcome.apBonus);}
   // Career progress tracking
   if(id==='qa_barter'||id==='qa_caravan'){if(!pl.careerProgress)pl.careerProgress={merchantActions:0};pl.careerProgress.merchantActions=(pl.careerProgress.merchantActions||0)+1;}
   if(id==='qa_meditate'){if(!pl.careerProgress)pl.careerProgress={meditateActions:0};pl.careerProgress.meditateActions=(pl.careerProgress.meditateActions||0)+1;}

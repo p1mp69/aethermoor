@@ -86,8 +86,8 @@ function patchPlayer(p) {
   if (p.mentor === undefined) p.mentor = null;
   if (p.lordDisciple === undefined) p.lordDisciple = null;
   if (!p.metLords) p.metLords = [];
-  if (p.ap === undefined) p.ap = 5;
-  if (!p.maxAP) p.maxAP = 5;
+  if (p.ap === undefined) p.ap = 50;
+  if (!p.maxAP || p.maxAP < 50) p.maxAP = 50;
   if (!p.lastAPTime) p.lastAPTime = Date.now();
   if (!p.storyFeed) p.storyFeed = [];
   if (!p.qaDeck) p.qaDeck = [];
