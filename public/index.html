@@ -470,6 +470,20 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
           <div id="passive-list"></div>
         </div>
       </div>
+      <!-- EVOLUTION PATH -->
+      <div class="card" id="subclass-card">
+        <div class="card-body">
+          <div class="ctitle">Evolution Path</div>
+          <div id="subclass-summary"></div>
+        </div>
+      </div>
+      <!-- MAGIC SCHOOLS -->
+      <div class="card">
+        <div class="card-body">
+          <div class="ctitle">Magic Schools</div>
+          <div id="magic-panel"></div>
+        </div>
+      </div>
       <!-- PARTY PANEL -->
       <div class="card" id="party-panel">
         <div class="card-body">
@@ -1312,6 +1326,129 @@ var SUB={
   'go-quiet':{em:'&#9670;',name:'Go Quiet',desc:'Radio silence. Maximum stealth. Higher payout.',xpBonus:400,timeSave:0},
   'improvise':{em:'&#9889;',name:'Improvise',desc:'The plan fell apart. You make something better on the spot.',xpBonus:350,timeSave:0.1},
   'abort-and-escape':{em:'&#128302;',name:'Abort and Escape',desc:'Cut your losses. Less xp but intel is preserved.',xpBonus:100,timeSave:0.3},
+};
+
+// ═══ SUB-CLASS EVOLUTION ═══
+var SUBCLASSES={
+  'Blade Sovereign':[
+    {tier:1,id:'bs_warlord',name:'Warlord',em:'&#9876;',desc:'Pure offense. Your strikes shatter armor and shatter wills.',bonus:{STR:12,AGI:5},passives:['Grind XP +20%','War arc XP +15%'],abDescr:'Weapon strikes inflict Rend — enemies become weaker each hit.'},
+    {tier:1,id:'bs_sentinel',name:'Sentinel',em:'&#9672;',desc:'Unmovable. A walking fortress of controlled devastation.',bonus:{VIT:15,STR:8},passives:['Rest heals bonus XP','Stone resource +3 per grind'],abDescr:'When hit, counter for 50% of the damage as instant XP.'},
+    {tier:1,id:'bs_duelist',name:'Duelist',em:'&#9711;',desc:'Precision over power. One clean strike ends it.',bonus:{AGI:12,LUK:8},passives:['AGI adds to XP rolls','Crit chance +15%'],abDescr:'Challenge a single foe. Double XP but no one else can intervene.'},
+  ],
+  'Starweaver':[
+    {tier:1,id:'sw_oracle',name:'Oracle',em:'&#10022;',desc:'You read the threads of fate. Nothing surprises you.',bonus:{INT:12,LUK:10},passives:['Intel reveals +50% richer','Explore XP +20%'],abDescr:'Foresee an outcome. Next action automatically takes the best sub-choice.'},
+    {tier:1,id:'sw_binder',name:'Fate Binder',em:'&#9671;',desc:'You weave fates together. Alliances bend to your will.',bonus:{INT:10,VIT:6,LUK:6},passives:['NPC relationship gains +30%','Party XP share +10%'],abDescr:'Bind two allies together — their next solo actions each gain a 40% XP boost.'},
+    {tier:1,id:'sw_unraveler',name:'The Unraveler',em:'&#9760;',desc:'You cut destiny loose. What should happen — does not.',bonus:{INT:15,AGI:5},passives:['Nemesis heat reduction +50%','Enemies plans are delayed'],abDescr:'Unravel an ongoing arc — pause a running party arc, banking all current XP.'},
+  ],
+  'Void Mage':[
+    {tier:1,id:'vm_nullifier',name:'Nullifier',em:'&#9675;',desc:'You erase what should not exist. Including the rules.',bonus:{INT:15,VIT:5},passives:['Infamy removed +50% from abilities','Void Collapse recharge -30%'],abDescr:'Null Pulse — strip all buffs from the nemesis. Reduce their heat by 50.'},
+    {tier:1,id:'vm_devourer',name:'Void Devourer',em:'&#9737;',desc:'The void is not empty. It is hungry. So are you.',bonus:{INT:12,STR:8},passives:['Meditate XP +25%','Crystals from every action +2'],abDescr:'Devour a world event — consume its energy for 3000 instant XP.'},
+    {tier:1,id:'vm_architect',name:'Void Architect',em:'&#9671;',desc:'The void is a canvas. You build inside it.',bonus:{INT:10,LUK:8,VIT:6},passives:['Org income +25%','Intel slots +3'],abDescr:'Open a rift — teleport to any location instantly. Next action has no timer.'},
+  ],
+  'Shadow Sovereign':[
+    {tier:1,id:'ss_phantom',name:'Phantom',em:'&#9670;',desc:'You were never here. There is no record of this conversation.',bonus:{AGI:15,LUK:10},passives:['Investigate XP +25%','Infamy generation -30%'],abDescr:'Erase yourself from the last 3 world log entries. Infamy -20.'},
+    {tier:1,id:'ss_puppeteer',name:'Puppeteer',em:'&#128101;',desc:'Every NPC in this city works for you. They just do not know it yet.',bonus:{AGI:8,INT:10,LUK:6},passives:['NPC cultivation 2x faster','Crew gives +15% bonus instead of +10%'],abDescr:'Pull strings — force a favorable world event to fire within 5 minutes.'},
+    {tier:1,id:'ss_blade',name:'Shadow Blade',em:'&#9760;',desc:'Precision and shadow combined into something that ends things quickly.',bonus:{AGI:12,STR:10},passives:['Grind and investigate both get +20% XP','Crit window wider'],abDescr:'Marked Target — triple XP from the next solo action. The cost is your position.'},
+  ],
+  'Blood Monarch':[
+    {tier:1,id:'bm_tyrant',name:'Blood Tyrant',em:'&#9876;',desc:'Power through domination. Your presence forces results.',bonus:{STR:15,VIT:8},passives:['Grind XP +25%','Enemies cannot retreat — war arcs end faster'],abDescr:'Blood Decree — all players gain +500 XP. You gain double. Infamy +5.'},
+    {tier:1,id:'bm_vein',name:'Vein Walker',em:'&#9671;',desc:'The blood is a road. You walk it places others cannot.',bonus:{AGI:10,INT:8,LUK:6},passives:['Heal from any action — +20 XP on every rest','Bleeding status inflicts bonus loot'],abDescr:'Blood Trail — follow anyone anywhere. Teleport to ally location instantly.'},
+    {tier:1,id:'bm_cursed',name:'Cursed Sovereign',em:'&#9760;',desc:'The price of your power is your humanity. You stopped caring.',bonus:{INT:12,STR:8,VIT:4},passives:['All negative events convert to XP','Higher infamy = more XP'],abDescr:'Curse Seal — triple damage to nemesis. You gain all XP they would have earned.'},
+  ],
+  'Iron Monarch':[
+    {tier:1,id:'im_fortress',name:'Living Fortress',em:'&#9878;',desc:'You do not retreat. The battle comes to you.',bonus:{VIT:20,STR:5},passives:['Rest XP +30%','Damage taken converts to bonus XP'],abDescr:'Siege Stance — immune to sabotage for 2 hours. War XP doubles during this window.'},
+    {tier:1,id:'im_commander',name:'War Commander',em:'&#128081;',desc:'You win wars before they start, by knowing what the enemy needs.',bonus:{STR:10,INT:8,VIT:6},passives:['War arc XP +25%','Party members get +10% to all actions in war'],abDescr:'Strategic Advance — end any war arc 30% faster. Retain 100% XP.'},
+    {tier:1,id:'im_smith',name:'Master Smith',em:'&#9935;',desc:'You forge weapons that outlast empires. Literally.',bonus:{STR:8,VIT:10,LUK:5},passives:['Item rarity bonus +1 tier on equip','Forge-grade items sell for 50% more'],abDescr:'Masterwork — upgrade any equipped item by one rarity tier permanently.'},
+  ],
+  'Thunder Monarch':[
+    {tier:1,id:'tm_storm',name:'Storm Avatar',em:'&#9889;',desc:'You do not call the storm. You are the storm. The distinction is philosophical.',bonus:{AGI:15,STR:10},passives:['Grind XP +20%','Lightning Rush cooldown -2 hours'],abDescr:'Eye of the Storm — 30 seconds of instant actions. Everything completes in 1 second.'},
+    {tier:1,id:'tm_conduit',name:'Thunder Conduit',em:'&#9728;',desc:'Every strike becomes an AoE. You stopped aiming at one thing.',bonus:{INT:10,STR:8,AGI:6},passives:['All aoe actions hit multiple targets','Party-wide XP share +15%'],abDescr:'Chain Lightning — cascade XP to all players and all party NPCs simultaneously.'},
+    {tier:1,id:'tm_herald',name:'Storm Herald',em:'&#10022;',desc:'You announce the storm. Cities prepare. Some run.',bonus:{STR:8,AGI:8,LUK:8},passives:['Infamy adds to grind XP','Fame reputation rises 20% faster'],abDescr:'Heralds Cry — instantly gain fame equal to current infamy. Infamy resets.'},
+  ],
+  'Beast Sovereign':[
+    {tier:1,id:'bsv_apex',name:'Apex Predator',em:'&#128062;',desc:'At the top of every food chain. In every food chain.',bonus:{STR:15,AGI:10},passives:['Grind XP +25%','NPC encounters always favor you'],abDescr:'Hunt Mode — track the nemesis. Next solo action yields nemesis intel and 2000 XP.'},
+    {tier:1,id:'bsv_alpha',name:'Pack Alpha',em:'&#10022;',desc:'You lead. The others follow without being asked.',bonus:{STR:10,VIT:8,LUK:6},passives:['Crew bonuses double','NPC party limit +2'],abDescr:'Alpha Call — rally all crew and NPC allies. Party-wide +50% XP for 1 hour.'},
+    {tier:1,id:'bsv_primordial',name:'Primordial',em:'&#9760;',desc:'Before civilization. Before language. Before the system. You remember.',bonus:{STR:12,VIT:12},passives:['Cannot have infamy above 30 (excess becomes XP)','Immune to political consequences'],abDescr:'Primordial Form — all stats double for 10 minutes. Cannot be interrupted.'},
+  ],
+  'Phantom Healer':[
+    {tier:1,id:'ph_cleric',name:'Battle Cleric',em:'&#9711;',desc:'You heal and you fight. Simultaneously. Without breaking stride.',bonus:{VIT:12,INT:8},passives:['Rest XP +25%','Healing also gives partner +100 XP'],abDescr:'Battle Mend — heal an ally to full and deal 500 XP worth of damage to an enemy simultaneously.'},
+    {tier:1,id:'ph_spirit',name:'Spirit Weaver',em:'&#9675;',desc:'The line between living and dead is a suggestion. You ignore suggestions.',bonus:{INT:12,LUK:10},passives:['Revive Aura cooldown -4 hours','Spirits of slain enemies give information'],abDescr:'Spirit Walk — ghost form for 5 minutes. See all hidden intel without spending actions.'},
+    {tier:1,id:'ph_curse_healer',name:'Curse Healer',em:'&#9760;',desc:'You take the wound into yourself and transmute it into power.',bonus:{VIT:10,INT:8,STR:6},passives:['Infamy taken converts to +XP','Pain becomes power — taking hits boosts next action'],abDescr:'Absorb Curse — take a debuff from an ally. Convert it to 1500 XP for both of you.'},
+  ],
+};
+var SUBCLASSES_T2={
+  'bs_warlord':{id:'bs_warlord2',name:'Warlord Supreme',em:'&#9876;',desc:'Armies. Nations. Concepts. You conquer them all.',bonus:{STR:20,AGI:8,VIT:5},passives:['All war XP tripled','Named bosses drop legendary items'],abDescr:'Total Conquest — end the current arc instantly. All participants gain maximum XP.'},
+  'bs_sentinel':{id:'bs_sentinel2',name:'Immovable Object',em:'&#9878;',desc:'Physics has tried. Physics failed.',bonus:{VIT:25,STR:12},passives:['Immune to time-extending debuffs','Stone and wood income doubled'],abDescr:'Absolute Defense — negate the next 3 sabotages. Convert each to +500 XP for yourself.'},
+  'bs_duelist':{id:'bs_duelist2',name:'The Last Stand',em:'&#9711;',desc:'One on one. One winner. You know how this ends.',bonus:{AGI:20,LUK:15,STR:5},passives:['Solo actions always crit','PvP actions give double XP'],abDescr:'Final Duel — challenge the other player directly. Winner gets 5000 XP. Loser gets 2000.'},
+  'sw_oracle':{id:'sw_oracle2',name:'Fate Seer',em:'&#10022;',desc:'Past, present, future — a single continuous moment you can navigate.',bonus:{INT:20,LUK:15},passives:['Never get a bad random outcome','Intel always provides actionable advantage'],abDescr:'Future Sight — see the next 3 random events before they happen. Choose one to skip.'},
+  'sw_binder':{id:'sw_binder2',name:'Destinys Architect',em:'&#9671;',desc:'You write destiny. Others live it.',bonus:{INT:15,LUK:12,VIT:8},passives:['Quests complete 50% faster','Relationships max out in half the time'],abDescr:'Rewrite — change the outcome of any completed event. Retroactive XP adjustment.'},
+  'vm_nullifier':{id:'vm_null2',name:'The Silence',em:'&#9675;',desc:'In the space between words, between heartbeats — that is where you live.',bonus:{INT:22,VIT:10},passives:['Abilities cost no resources','Infamy cannot exceed 10'],abDescr:'Absolute Null — cancel the nemesis next 3 actions. They gain nothing. You take everything.'},
+  'vm_devourer':{id:'vm_dev2',name:'Endless Hunger',em:'&#9737;',desc:'You have not stopped eating since you discovered you could eat everything.',bonus:{INT:18,STR:12},passives:['World event bonuses doubled when consumed','Crystals auto-generate 5/day'],abDescr:'Reality Feast — devour the current world event AND 2 previous ones. Gain combined XP from all three.'},
+  'ss_phantom':{id:'ss_phantom2',name:'Ghost Protocol',em:'&#9670;',desc:'You are a rumor. A city-wide conversation that ends when you walk in.',bonus:{AGI:22,LUK:15},passives:['Completely invisible to nemesis for 48 hours after activation','World log redaction — your entries disappear'],abDescr:'Ghost Mode — become undetectable for 6 hours. All actions during this period gain +50% XP.'},
+  'ss_puppeteer':{id:'ss_puppet2',name:'The Architect',em:'&#128101;',desc:'You did not build this city. You own it. The difference is tax revenue.',bonus:{INT:15,AGI:10,LUK:10},passives:['Can control 2 world events simultaneously','Shadow government activates 50% faster'],abDescr:'Pull All Strings — force 3 world events to fire simultaneously. Choose the outcomes.'},
+  'bm_tyrant':{id:'bm_tyrant2',name:'Eternal Tyrant',em:'&#9876;',desc:'Your bloodline is not a family. It is a force of nature.',bonus:{STR:20,VIT:12},passives:['Cannot be sabotaged','War arcs generate triple XP'],abDescr:'Blood Law — declare a law. For 2 hours, all XP in the game flows 20% toward you first.'},
+  'im_fortress':{id:'im_fort2',name:'The Unbreakable',em:'&#9878;',desc:'They have tried. Siege weapons. Armies. Concepts of inevitability. All of it failed.',bonus:{VIT:30,STR:8},passives:['All damage taken converted to bonus XP','Sabotage against you backfires on the sender'],abDescr:'Fortress World — turn your current location into an impenetrable base. All actions there gain +30% XP forever.'},
+  'im_commander':{id:'im_comm2',name:'Supreme Commander',em:'&#128081;',desc:'You do not win battles. You win wars before the first battle.',bonus:{STR:15,INT:12,VIT:8},passives:['War arcs auto-succeed','All party members gain +15% to everything'],abDescr:'Grand Strategy — plan a campaign. For 4 hours all war-related actions gain +100% XP for all players.'},
+  'tm_storm':{id:'tm_storm2',name:'Living Catastrophe',em:'&#9889;',desc:'The system has you categorized as a weather phenomenon.',bonus:{AGI:22,STR:15},passives:['All timers reduced by 20% permanently','Thunder Strike charges twice as fast'],abDescr:'Storm Surge — all players current actions complete simultaneously right now. Each gains full XP.'},
+  'tm_conduit':{id:'tm_cond2',name:'Thunder God',em:'&#9728;',desc:'You are the lightning and the place the lightning comes from.',bonus:{INT:18,STR:12,AGI:10},passives:['Party-wide buffs affect NPCs too','Chain Lightning hits the nemesis'],abDescr:'Divine Thunder — create a lightning storm lasting 10 minutes. All actions during it give double resources.'},
+  'bsv_apex':{id:'bsv_apex2',name:'World Hunter',em:'&#128062;',desc:'There is nothing left that can be called prey. You expanded the definition.',bonus:{STR:22,AGI:15},passives:['Named bosses drop unique items','Can track world bosses'],abDescr:'World Hunt — simultaneously track and fight 3 named bosses. Win all three for S-tier rewards.'},
+  'bsv_alpha':{id:'bsv_alpha2',name:'Legendary Alpha',em:'&#10022;',desc:'Your crew has stopped calling you leader. They call you First.',bonus:{STR:15,VIT:12,LUK:10},passives:['Crew limit removes — unlimited members','Pack actions can be taken simultaneously'],abDescr:'Ultimate Pack — all crew and party members take their strongest action simultaneously. Right now.'},
+  'ph_cleric':{id:'ph_cleric2',name:'Saint of Battle',em:'&#9711;',desc:'They tried to canonize you. You were mid-fight. They decided to wait.',bonus:{VIT:18,INT:12,STR:8},passives:['Healing crits occur 30% of the time for triple effect','Combat healing cannot be interrupted'],abDescr:'Divine Intervention — save anyone from any consequence once. Then once more. The system will note this.'},
+  'ph_spirit':{id:'ph_spirit2',name:'Beyond Death',em:'&#9675;',desc:'The dead asked what you were. You said: older.',bonus:{INT:20,LUK:15},passives:['Can communicate with the deceased for intel','Spirit world gives 2x meditation XP'],abDescr:'Spirit Realm — enter the spirit realm for 1 hour. All actions there give double XP and ghost-exclusive intel.'},
+};
+var MAGIC_SCHOOLS=[
+  {id:'void_school',name:'Void School',em:'&#9737;',color:'#aa88ff',desc:'Destruction from the space between things.',
+   spells:[
+    {id:'void_bolt',name:'Void Bolt',em:'&#9737;',cost:{crystals:3},effect:'instant_xp',val:800,desc:'Strike with concentrated void energy. Instant 800 XP.',cd:14400000},
+    {id:'void_rift',name:'Void Rift',em:'&#9675;',cost:{crystals:6},effect:'skip_action',val:1,desc:'Open a rift. Skip remaining time on current action.',cd:21600000},
+    {id:'void_implosion',name:'Void Implosion',em:'&#9760;',cost:{crystals:10,gold:5},effect:'instant_xp',val:2500,desc:'Collapse a pocket of void. 2500 instant XP.',cd:43200000},
+   ]},
+  {id:'arcane_school',name:'Arcane School',em:'&#10022;',color:'#4fc3f7',desc:'Structured magical theory. Power through precision.',
+   spells:[
+    {id:'arcane_surge',name:'Arcane Surge',em:'&#10022;',cost:{crystals:2},effect:'boost_next',val:0.5,desc:'Boost your next solo action by 50% XP.',cd:10800000},
+    {id:'arcane_bind',name:'Arcane Bind',em:'&#9671;',cost:{crystals:5},effect:'reduce_cooldowns',val:0.25,desc:'Reduce all ability cooldowns by 25%.',cd:28800000},
+    {id:'arcane_mastery',name:'Arcane Mastery',em:'&#128302;',cost:{crystals:8,gold:3},effect:'instant_mixed',val:{xp:1500,crystals:3},desc:'Channel pure arcane power. 1500 XP and 3 crystals.',cd:36000000},
+   ]},
+  {id:'blood_school',name:'Blood School',em:'&#9876;',color:'#ff4455',desc:'Magic carved from sacrifice. The most direct path.',
+   spells:[
+    {id:'blood_pact',name:'Blood Pact',em:'&#9876;',cost:{gold:5},effect:'instant_xp',val:1000,desc:'Pay in gold. Receive power. 1000 instant XP.',cd:18000000},
+    {id:'blood_rage',name:'Blood Rage',em:'&#9760;',cost:{gold:3},effect:'grind_boost',val:0.75,desc:'Rage fuels the next grind. +75% XP.',cd:14400000},
+    {id:'blood_sacrifice',name:'Sacrifice',em:'&#9671;',cost:{gold:10,crystals:5},effect:'instant_xp',val:3000,desc:'The highest cost. The highest gain. 3000 instant XP.',cd:43200000},
+   ]},
+  {id:'nature_school',name:'Nature School',em:'&#9672;',color:'#44dd88',desc:'The living world responds to your call. Sometimes willingly.',
+   spells:[
+    {id:'nature_growth',name:'Natures Growth',em:'&#9672;',cost:{wood:5},effect:'instant_mixed',val:{xp:500,wood:3},desc:'Accelerate natural growth. 500 XP and 3 wood return.',cd:10800000},
+    {id:'nature_call',name:'Wild Call',em:'&#128062;',cost:{wood:3},effect:'force_npc',val:1,desc:'Call upon the wilds. Force an NPC encounter now.',cd:21600000},
+    {id:'nature_restoration',name:'Restoration',em:'&#10022;',cost:{wood:8,crystals:3},effect:'instant_rest',val:1200,desc:'Restore natural balance. Instant rest completion plus 1200 XP.',cd:36000000},
+   ]},
+  {id:'storm_school',name:'Storm School',em:'&#9889;',color:'#ffaa33',desc:'Raw chaotic power. Loud. Effective. Hard to aim.',
+   spells:[
+    {id:'storm_strike',name:'Storm Strike',em:'&#9889;',cost:{crystals:2,gold:2},effect:'instant_xp',val:700,desc:'Call lightning down on a problem. 700 instant XP.',cd:10800000},
+    {id:'storm_surge',name:'Storm Surge',em:'&#9728;',cost:{crystals:4},effect:'arc_rush',val:0.15,desc:'Surge of storm energy. Reduce all arc timers by 15%.',cd:28800000},
+    {id:'storm_wrath',name:'Storm Wrath',em:'&#9889;',cost:{crystals:8,gold:5},effect:'instant_mixed',val:{xp:2000,gold:3},desc:'Full storm release. 2000 XP and 3 gold. Things break.',cd:43200000},
+   ]},
+];
+var CAREER_EVENTS={
+  Merchant:[
+    {id:'ce_merchant1',em:'&#128176;',title:'Lucrative Deal',text:'A foreign merchant offers an unusual trade. High risk, high reward, or play it safe?',opt1:{label:'Accept the trade',xp:400,gold:50,msg:'The trade paid off massively.'},opt2:{label:'Decline professionally',xp:100,gold:10,msg:'Smart. The other merchant looked nervous.'},opt3:{label:'Investigate them first',xp:200,intel:true,msg:'Good call. They were not who they claimed.'}},
+    {id:'ce_merchant2',em:'&#128221;',title:'Market Manipulation',text:'You could corner the local stone market. Illegal, effective, and very profitable.',opt1:{label:'Do it',xp:300,stone:15,infamy:5,msg:'The market is yours. For now.'},opt2:{label:'Report it to the guild',xp:200,gold:5,msg:'The guild owes you a favor.'},opt3:{label:'Find a legal version',xp:250,gold:20,msg:'Slightly less illegal. Slightly.'}},
+  ],
+  Blacksmith:[
+    {id:'ce_smith1',em:'&#9935;',title:'Rare Ore Discovered',text:'A courier arrives with a sample of ore you have never seen. The courier will not say where it came from.',opt1:{label:'Buy the entire supply',xp:300,stone:10,msg:'Whatever it is, you have it all now.'},opt2:{label:'Analyze it first',xp:400,intel:true,msg:'The analysis reveals something significant.'},opt3:{label:'Trace the courier',xp:250,gold:15,msg:'The trail leads somewhere interesting.'}},
+    {id:'ce_smith2',em:'&#9878;',title:'Commission: Impossible',text:'A masked client wants something built that should not be buildable. The payment is extraordinary.',opt1:{label:'Take the commission',xp:500,gold:30,msg:'You built it. You do not know how.'},opt2:{label:'Decline, report the client',xp:150,gold:5,msg:'The guard is very interested in your report.'},opt3:{label:'Build it, keep a copy',xp:400,gold:20,msg:'One of the most interesting decisions you have made.'}},
+  ],
+  Investigator:[
+    {id:'ce_inv1',em:'&#128302;',title:'The Hidden Case',text:'A sealed envelope arrives. No return address. Inside: evidence of something important involving someone important.',opt1:{label:'Pursue the case',xp:400,msg:'The rabbit hole is deep.'},opt2:{label:'Sell the information',xp:200,gold:40,infamy:3,msg:'Not your proudest moment. Paid well.'},opt3:{label:'Sit on it',xp:100,msg:'Information held is leverage kept.'}},
+    {id:'ce_inv2',em:'&#9760;',title:'You Are Being Followed',text:'Three separate times today, the same face in different crowds.',opt1:{label:'Confront them',xp:350,msg:'They had information. It cost a confrontation.'},opt2:{label:'Lead them into a trap',xp:500,msg:'They are now in your debt.'},opt3:{label:'Disappear',xp:200,msg:'They lost you. They will be back.'}},
+  ],
+  Warlord:[
+    {id:'ce_war1',em:'&#9876;',title:'Deserter Opportunity',text:'Three of the enemys best soldiers want to defect. They have intel and skills.',opt1:{label:'Accept them',xp:400,msg:'Three new assets. The enemy noticed.'},opt2:{label:'Trade them back for concessions',xp:300,gold:20,msg:'A profitable peace negotiation.'},opt3:{label:'Let them go',xp:100,msg:'Mercy is a strategy.'}},
+    {id:'ce_war2',em:'&#9878;',title:'Supply Line Vulnerability',text:'You spotted a gap in the enemys supply chain. Exploit it now or report it up the chain.',opt1:{label:'Exploit it yourself',xp:500,msg:'The enemy starves. Your reputation grows.'},opt2:{label:'Report it',xp:200,gold:10,msg:'The commanders are pleased. Somewhat.'},opt3:{label:'Use it as leverage',xp:350,msg:'You now have a quiet arrangement with both sides.'}},
+  ],
+  Scholar:[
+    {id:'ce_scholar1',em:'&#128302;',title:'Forbidden Text',text:'You found a text that should not exist. Reading it carries risk. Significant risk.',opt1:{label:'Read it completely',xp:600,msg:'What you learned cannot be unlearned.'},opt2:{label:'Summarize and store it',xp:400,intel:true,msg:'Knowledge contained. Temporarily.'},opt3:{label:'Destroy it',xp:150,msg:'Some things are better not known. Probably.'}},
+    {id:'ce_scholar2',em:'&#10022;',title:'Breakthrough Hypothesis',text:'A theory forming. If correct, it changes everything. If wrong, nothing.',opt1:{label:'Test it immediately',xp:500,msg:'It was correct. Things changed.'},opt2:{label:'Verify for months first',xp:300,msg:'You verified. You were right. Others got there first.'},opt3:{label:'Share it with a colleague',xp:350,msg:'The colleague credits you. Eventually.'}},
+  ],
 };
 
 // ═══ RARITY & ITEMS ═══
@@ -2207,7 +2344,7 @@ async function readW(){return W;}
 async function writeW(w){if(ws&&ws.readyState===1)ws.send(JSON.stringify({type:'update',sid:sid,world:w}));}
 
 function freshW(){
-  function fp(cls){return{name:'--',classIdx:cls,level:1,xp:0,xpNeeded:100,skillPoints:3,unlockedNodes:{},lastSeen:0,spawnType:'',location:'',busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:{stone:0,wood:0,crystals:0,gold:0},hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],raceId:'human',questProgress:{},worldModifiers:{}};}
+  function fp(cls){return{name:'--',classIdx:cls,level:1,xp:0,xpNeeded:100,skillPoints:3,unlockedNodes:{},lastSeen:0,spawnType:'',location:'',busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:{stone:0,wood:0,crystals:0,gold:0},hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],raceId:'human',questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{}};}
   return{
     p1:fp(0),p2:fp(1),p3:fp(2),
     arcs:[],nemesis:null,log:[],dungeons:0,bosses:0,wars:0,infamy:0,
@@ -2528,6 +2665,8 @@ async function checkDone(){
           // Personal quest progress
           checkPersonalQuestProgress(pl,p,actId,1);
           checkPersonalQuestProgress(pl,p,'any_action',1);
+          // Career event trigger
+          triggerCareerEvent(pl,p);
         }
         // NPC cultivate completion
         if(actId.indexOf('cultivate_')===0){
@@ -2803,7 +2942,8 @@ function switchTab(name){['you','world','skills','loot','lore'].forEach(function
 function xpN(lv){return Math.round(100*Math.pow(1.5,lv-1));}function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});}
 
 // ═══ RENDER ═══
-function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderOv();updateHints();renderInventory();renderWorldStatus();renderAbilities();renderPartyPanel();renderHostControls();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();}
+function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderOv();updateHints();renderInventory();renderWorldStatus();renderAbilities();renderPartyPanel();renderHostControls();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicPanel();renderSubclassSummaryEl();}
+function renderSubclassSummaryEl(){if(!W||!mySlot)return;var el=$g('subclass-summary');if(!el)return;var pl=W['p'+mySlot];el.innerHTML=renderSubclassSummary(pl);}
 function renderP(p){
   var pl=W[p];if(!pl)return;var c=CLS[pl.classIdx||0];var n=parseInt(p[1]);
   var isMe=n===mySlot;
@@ -2877,14 +3017,16 @@ function renderSt(p,pl,c){
   var sk=getSkillBonus(pl);
   var pv=getPassiveBonuses(pl);
   var rb=getRaceStatBonus(pl);
+  var sb=getSubclassBonus(pl);
   $g('sg-'+p).innerHTML=Object.entries(c.stats).map(function(kv){
-    var base=kv[1]+lvB,eqB=eq[kv[0]]||0,skB=sk[kv[0]]||0,pvB=pv[kv[0]]||0,rcB=rb[kv[0]]||0,t=base+eqB+skB+pvB+rcB;
+    var base=kv[1]+lvB,eqB=eq[kv[0]]||0,skB=sk[kv[0]]||0,pvB=pv[kv[0]]||0,rcB=rb[kv[0]]||0,scB=sb[kv[0]]||0,t=base+eqB+skB+pvB+rcB+scB;
     var pct=Math.min(100,Math.round(t/60*100));
     var extras='';
     if(eqB>0)extras+='<span style="font-size:9px;color:var(--green)"> +'+eqB+'</span>';
     if(skB>0)extras+='<span style="font-size:9px;color:var(--purple)"> +'+skB+'</span>';
     if(pvB>0)extras+='<span style="font-size:9px;color:var(--gold)"> +'+pvB+'</span>';
     if(rcB!==0)extras+='<span style="font-size:9px;color:#4fc3f7"> '+(rcB>0?'+':'')+rcB+'</span>';
+    if(scB>0)extras+='<span style="font-size:9px;color:#ff88cc"> +'+scB+'</span>';
     return'<div class="srow"><span class="sk">'+kv[0]+'</span><span class="sright"><span class="sbar"><span class="sbf" style="width:'+pct+'%"></span></span><span class="sv">'+t+extras+'</span></span></div>';
   }).join('');
   var rank=getRank(pl,W);var nextR=getNextRank(pl,W);var rScore=calcRankScore(pl,W);
@@ -3025,6 +3167,7 @@ function doLvl(pl,p){
     pushLog(pl.name+' ascended to level '+pl.level+'! +2 skill points.','llv');
     if(na)pushLog('System: New ability available for '+pl.name+': '+na.name+'. Check skill tree.','lsk');
     if(p==='p'+mySlot)showLu(pl.name,pl.level,c.n,na?na.name:null);
+    if(pl.level===10||pl.level===20){pl.subClassPending=(pl.level===10?1:2);if(p==='p'+mySlot)(function(tier){setTimeout(function(){showSubclassOverlay(tier);},600);})(pl.level===10?1:2);}
   }
   return lv;
 }
@@ -4348,6 +4491,221 @@ function applyWorldActorEffect(actor,action){
 }
 setInterval(worldTick,30000);
 
+// ═══ SUB-CLASS SYSTEM ═══
+function getSubclassBonus(pl){
+  var b={STR:0,AGI:0,INT:0,VIT:0,LUK:0};
+  if(!pl||!pl.subClass)return b;
+  var cls=CLS[pl.classIdx||0];
+  var opts=SUBCLASSES[cls.n];
+  if(!opts)return b;
+  var t1=opts.find(function(s){return s.id===pl.subClass.tier1;});
+  if(t1&&t1.bonus){Object.keys(t1.bonus).forEach(function(k){b[k]=(b[k]||0)+(t1.bonus[k]||0);});}
+  if(pl.subClass.tier2&&pl.subClass.tier1){
+    var t2=SUBCLASSES_T2[pl.subClass.tier1];
+    if(t2&&t2.bonus){Object.keys(t2.bonus).forEach(function(k){b[k]=(b[k]||0)+(t2.bonus[k]||0);});}
+  }
+  return b;
+}
+function showSubclassOverlay(tier){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];var cls=CLS[pl.classIdx||0];
+  var el=$g('subclass-overlay');if(!el)return;
+  var opts,title;
+  if(tier===1){
+    opts=SUBCLASSES[cls.n];
+    title='Choose Your Path';
+  } else {
+    var t1id=pl.subClass&&pl.subClass.tier1;
+    if(!t1id){return;}
+    var t2opt=SUBCLASSES_T2[t1id];
+    opts=t2opt?[t2opt]:null;
+    title='Ascendant Evolution';
+  }
+  if(!opts||!opts.length)return;
+  var html='<div style="position:relative;z-index:1;padding:24px 16px;max-width:460px;margin:auto;width:100%">'
+    +'<div style="font-size:9px;letter-spacing:6px;color:var(--gold-d);text-align:center;margin-bottom:8px;text-transform:uppercase">Level Milestone</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:20px;color:var(--gold);text-align:center;margin-bottom:4px">'+title+'</div>'
+    +'<div style="font-size:11px;color:var(--tx3);text-align:center;margin-bottom:20px">'+cls.e+' '+cls.n+' — choose your specialization. This decision shapes your power permanently.</div>';
+  opts.forEach(function(opt){
+    var statParts=[];
+    Object.keys(opt.bonus||{}).forEach(function(k){statParts.push('+'+opt.bonus[k]+' '+k);});
+    var statStr=statParts.join(' · ');
+    var passParts=opt.passives||[];
+    var passStr=passParts.join(' &middot; ');
+    html+='<div onclick="selectSubclass(\''+opt.id+'\','+tier+')" style="background:var(--s2);border:1px solid var(--b2);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--gold)\'" onmouseout="this.style.borderColor=\'var(--b2)\'">'
+      +'<div style="display:flex;gap:12px;align-items:flex-start">'
+      +'<span style="font-size:28px">'+opt.em+'</span>'
+      +'<div style="flex:1">'
+      +'<div style="font-family:Cinzel,serif;font-size:15px;color:var(--gold);margin-bottom:4px">'+opt.name+'</div>'
+      +'<div style="font-size:11px;color:var(--tx2);margin-bottom:8px;line-height:1.5;font-style:italic">'+opt.desc+'</div>'
+      +(statStr?'<div style="font-size:10px;color:var(--green);margin-bottom:4px">Stats: '+statStr+'</div>':'')
+      +(passStr?'<div style="font-size:10px;color:var(--p1);margin-bottom:4px">Passives: '+passStr+'</div>':'')
+      +'<div style="font-size:10px;color:var(--purple);font-style:italic">Ability: '+opt.abDescr+'</div>'
+      +'</div></div></div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+  el.classList.add('on');
+}
+async function selectSubclass(subId,tier){
+  if(!W||!mySlot||busy)return;busy=true;
+  try{
+    var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
+    var mp='p'+mySlot;var pl=W[mp];
+    if(!pl.subClass)pl.subClass={};
+    if(tier===1)pl.subClass.tier1=subId;
+    else pl.subClass.tier2=subId;
+    var cls=CLS[pl.classIdx||0];
+    var opts=SUBCLASSES[cls.n]||[];
+    var chosen=null;
+    if(tier===1){chosen=opts.find(function(s){return s.id===subId;});}
+    else{chosen=SUBCLASSES_T2[pl.subClass.tier1];}
+    var name=chosen?chosen.name:'Unknown Path';
+    pushLog(pl.name+' chose the '+name+' path. Their power shifts.','lsk');
+    pl.subClassPending=0;
+    await writeW(W);lastLogLen=W.log.length;
+    var el=$g('subclass-overlay');if(el)el.classList.remove('on');
+    renderAll();
+  }catch(e){}busy=false;
+}
+function renderSubclassSummary(pl){
+  if(!pl||!pl.subClass||!pl.subClass.tier1)return'<div style="font-size:10px;color:var(--tx3);font-style:italic">No path chosen yet. Reach level 10 to unlock.</div>';
+  var cls=CLS[pl.classIdx||0];
+  var opts=SUBCLASSES[cls.n]||[];
+  var t1=opts.find(function(s){return s.id===pl.subClass.tier1;});
+  var t2=pl.subClass.tier2?SUBCLASSES_T2[pl.subClass.tier1]:null;
+  var html='';
+  if(t1)html+='<div style="background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:10px 12px;margin-bottom:6px"><div style="font-size:9px;color:var(--gold-d);letter-spacing:2px;margin-bottom:3px">PATH (Lv 10)</div><div style="font-size:13px;color:var(--gold)">'+t1.em+' '+t1.name+'</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">'+t1.desc+'</div></div>';
+  if(t2)html+='<div style="background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:10px 12px"><div style="font-size:9px;color:var(--gold-d);letter-spacing:2px;margin-bottom:3px">ASCENDANT (Lv 20)</div><div style="font-size:13px;color:var(--gold)">'+t2.em+' '+t2.name+'</div><div style="font-size:10px;color:var(--tx3);margin-top:2px">'+t2.desc+'</div></div>';
+  return html||'<div style="font-size:10px;color:var(--tx3)">Path selected.</div>';
+}
+
+// ═══ MAGIC SCHOOLS ═══
+async function castSpell(schoolId,spellId){
+  if(!W||!mySlot||busy)return;busy=true;
+  try{
+    var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
+    var mp='p'+mySlot;var pl=W[mp];
+    if(!pl.spellCooldowns)pl.spellCooldowns={};
+    var now2=Date.now();
+    if(pl.spellCooldowns[spellId]&&pl.spellCooldowns[spellId]>now2){alert('Spell still recharging.');busy=false;return;}
+    var school=MAGIC_SCHOOLS.find(function(s){return s.id===schoolId;});
+    if(!school){busy=false;return;}
+    var spell=school.spells.find(function(sp){return sp.id===spellId;});
+    if(!spell){busy=false;return;}
+    var cost=spell.cost||{};
+    if(cost.crystals&&(pl.resources.crystals||0)<cost.crystals){alert('Not enough crystals (need '+cost.crystals+').');busy=false;return;}
+    if(cost.gold&&(pl.resources.gold||0)<cost.gold){alert('Not enough gold (need '+cost.gold+').');busy=false;return;}
+    if(cost.wood&&(pl.resources.wood||0)<cost.wood){alert('Not enough wood (need '+cost.wood+').');busy=false;return;}
+    if(cost.stone&&(pl.resources.stone||0)<cost.stone){alert('Not enough stone (need '+cost.stone+').');busy=false;return;}
+    if(cost.crystals)pl.resources.crystals-=cost.crystals;
+    if(cost.gold)pl.resources.gold-=cost.gold;
+    if(cost.wood)pl.resources.wood-=cost.wood;
+    if(cost.stone)pl.resources.stone-=cost.stone;
+    var eff=spell.effect;var val=spell.val;
+    if(eff==='instant_xp'){pl.xp=(pl.xp||0)+val;doLvl(pl,mp);}
+    else if(eff==='instant_mixed'){if(val.xp){pl.xp=(pl.xp||0)+val.xp;doLvl(pl,mp);}if(val.crystals)pl.resources.crystals=(pl.resources.crystals||0)+val.crystals;if(val.gold)pl.resources.gold=(pl.resources.gold||0)+val.gold;if(val.wood)pl.resources.wood=(pl.resources.wood||0)+val.wood;}
+    else if(eff==='boost_next'){pl.nextActionBoost=(pl.nextActionBoost||{actType:'any',mult:0});pl.nextActionBoost={actType:'any',mult:(pl.nextActionBoost.mult||0)+val};}
+    else if(eff==='skip_action'){if(pl.busyAction&&pl.busyUntil&&pl.busyUntil>Date.now()){var xpGain=pl.busyXP||0;pl.xp=(pl.xp||0)+xpGain;doLvl(pl,mp);pl.busyUntil=0;pl.busyAction=null;pl.busyXP=0;pl.busyMsg='';pushLog(pl.name+' cast '+spell.name+' — action completed instantly! (+'+xpGain+' XP)','lsk');}else{alert('No active action to skip.');busy=false;return;}}
+    else if(eff==='grind_boost'){pl.nextActionBoost={actType:'grind',mult:val};}
+    else if(eff==='arc_rush'){if(W.arcs)W.arcs.forEach(function(a){if(a.endsAt&&a.endsAt>Date.now())a.endsAt=Math.max(Date.now()+60000,a.endsAt-Math.round((a.endsAt-Date.now())*(val||0.1)));});}
+    else if(eff==='force_npc'){var pool=NPC_POOL.filter(function(n){return!(pl.metNpcs||[]).find(function(id){return id===n.id;});});if(pool.length){var npc=pool[rnd(0,pool.length-1)];if(!pl.metNpcs)pl.metNpcs=[];pl.metNpcs.push(npc.id);pushLog('Wild Call brought '+npc.name+' to you.','lsk');}else{pushLog('All NPCs already encountered.','');}}
+    else if(eff==='instant_rest'){pl.xp=(pl.xp||0)+val;doLvl(pl,mp);}
+    else if(eff==='reduce_cooldowns'){if(pl.abilityCooldowns)Object.keys(pl.abilityCooldowns).forEach(function(k){var rem=pl.abilityCooldowns[k]-Date.now();if(rem>0)pl.abilityCooldowns[k]=Date.now()+Math.round(rem*(1-val));});}
+    pl.spellCooldowns[spellId]=now2+(spell.cd||10800000);
+    if(eff!=='skip_action')pushLog(pl.name+' cast '+spell.name+'. '+spell.desc,'lsk');
+    if(!pl.magicMastery)pl.magicMastery={};
+    pl.magicMastery[schoolId]=(pl.magicMastery[schoolId]||0)+1;
+    await writeW(W);lastLogLen=W.log.length;renderAll();
+  }catch(e){console.log(e);}busy=false;
+}
+function renderMagicPanel(){
+  var el=$g('magic-panel');if(!el||!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if(!pl.spellCooldowns)pl.spellCooldowns={};
+  if(!pl.magicMastery)pl.magicMastery={};
+  var html='';
+  MAGIC_SCHOOLS.forEach(function(school){
+    var mastery=pl.magicMastery[school.id]||0;
+    html+='<div style="background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:12px;margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+      +'<div><span style="font-size:16px">'+school.em+'</span> <span style="font-family:Cinzel,serif;font-size:12px;color:'+school.color+'">'+school.name+'</span></div>'
+      +'<span style="font-size:9px;color:var(--tx3);letter-spacing:1px">Casts: '+mastery+'</span>'
+      +'</div>'
+      +'<div style="font-size:10px;color:var(--tx3);margin-bottom:8px;font-style:italic">'+school.desc+'</div>';
+    school.spells.forEach(function(spell){
+      var cd=pl.spellCooldowns[spell.id]||0;
+      var ready=cd<=Date.now();
+      var costParts=[];
+      Object.keys(spell.cost||{}).forEach(function(k){costParts.push(spell.cost[k]+' '+k);});
+      var costStr=costParts.join('+');
+      html+='<div style="background:var(--s1);border:1px solid '+(ready?'var(--b2)':'var(--b1)')+';border-radius:8px;padding:8px 10px;margin-bottom:6px;opacity:'+(ready?'1':'.55')+'">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center">'
+        +'<div><span style="font-size:14px">'+spell.em+'</span> <span style="font-size:12px;color:'+school.color+'">'+spell.name+'</span></div>'
+        +'<span style="font-size:9px;color:var(--tx3)">'+costStr+'</span>'
+        +'</div>'
+        +'<div style="font-size:10px;color:var(--tx2);margin:4px 0">'+spell.desc+'</div>'
+        +'<button onclick="castSpell(\''+school.id+'\',\''+spell.id+'\')" '+(ready?'':'disabled')+' style="background:transparent;border:1px solid '+school.color+';color:'+school.color+';padding:5px 12px;border-radius:6px;font-size:10px;letter-spacing:1px;cursor:pointer;width:100%;margin-top:4px">'
+        +(ready?'CAST':'Recharging: '+fmtDur(cd-Date.now()))+'</button>'
+        +'</div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+// ═══ CAREER EVENTS ═══
+var pendingCareerEvent=null;
+function triggerCareerEvent(pl,mp){
+  if(!pl||!pl.career)return;
+  var events=CAREER_EVENTS[pl.career];
+  if(!events||!events.length)return;
+  if(Math.random()>0.15)return;
+  var ev=events[rnd(0,events.length-1)];
+  pendingCareerEvent={ev:ev,mp:mp};
+  var el=$g('career-event-overlay');if(!el)return;
+  var html='<div style="position:relative;z-index:1;padding:24px 16px;max-width:460px;margin:auto;width:100%">'
+    +'<div style="font-size:9px;letter-spacing:6px;color:var(--orange);text-align:center;margin-bottom:8px;text-transform:uppercase">Career Event</div>'
+    +'<div style="font-size:28px;text-align:center;margin-bottom:8px">'+ev.em+'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:18px;color:var(--gold);text-align:center;margin-bottom:12px">'+ev.title+'</div>'
+    +'<div style="font-size:13px;color:var(--tx2);text-align:center;margin-bottom:20px;line-height:1.7">'+ev.text+'</div>';
+  var optList=[ev.opt1,ev.opt2,ev.opt3].filter(Boolean);
+  optList.forEach(function(opt,i){
+    var rewards='';
+    if(opt.xp)rewards+=' +'+opt.xp+'xp';
+    if(opt.gold)rewards+=' +'+opt.gold+'g';
+    if(opt.stone)rewards+=' +'+opt.stone+' stone';
+    if(opt.intel)rewards+=' +intel';
+    if(opt.infamy)rewards+=' +'+opt.infamy+' infamy';
+    html+='<div onclick="chooseCareerEvent('+i+')" style="background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor=\'var(--orange)\'" onmouseout="this.style.borderColor=\'var(--b2)\'">'
+      +'<div style="font-size:12px;color:var(--tx);margin-bottom:4px">'+opt.label+'</div>'
+      +'<div style="font-size:10px;color:var(--orange)">'+rewards.trim()+'</div>'
+      +'</div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+  el.classList.add('on');
+}
+async function chooseCareerEvent(idx){
+  if(!pendingCareerEvent||busy)return;busy=true;
+  var ev=pendingCareerEvent.ev;var mp=pendingCareerEvent.mp;
+  var opts=[ev.opt1,ev.opt2,ev.opt3].filter(Boolean);
+  var choice=opts[idx];if(!choice){busy=false;return;}
+  try{
+    var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
+    var pl=W[mp];
+    if(choice.xp){pl.xp=(pl.xp||0)+choice.xp;doLvl(pl,mp);}
+    if(choice.gold&&pl.resources)pl.resources.gold=(pl.resources.gold||0)+choice.gold;
+    if(choice.stone&&pl.resources)pl.resources.stone=(pl.resources.stone||0)+choice.stone;
+    if(choice.infamy)W.infamy=(W.infamy||0)+choice.infamy;
+    if(choice.intel){var unrevealed=INTEL.filter(function(ii){return!(pl.revealedIntel||[]).find(function(r){return r===ii.id;});});if(unrevealed.length){var ri=unrevealed[rnd(0,unrevealed.length-1)];if(!pl.revealedIntel)pl.revealedIntel=[];pl.revealedIntel.push(ri.id);pushLog('Career event revealed intel: '+ri.title,'lsk');}}
+    pushLog('Career Event: '+ev.title+' — '+choice.msg,'lpty');
+    pendingCareerEvent=null;
+    var el=$g('career-event-overlay');if(el)el.classList.remove('on');
+    await writeW(W);lastLogLen=W.log.length;renderAll();
+  }catch(e){}busy=false;
+}
+
 // ═══ PERSONAL QUESTS ═══
 var PERSONAL_QUESTS={
   classes:{
@@ -4462,5 +4820,15 @@ function triggerInstall(){
 function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/service-worker.js');</script>
+<!-- SUB-CLASS OVERLAY -->
+<div id="subclass-overlay" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(4,4,8,.96);overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <!-- content injected by JS -->
+</div>
+<style>#subclass-overlay.on{display:block}</style>
+<!-- CAREER EVENT OVERLAY -->
+<div id="career-event-overlay" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(4,4,8,.96);overflow-y:auto;-webkit-overflow-scrolling:touch">
+  <!-- content injected by JS -->
+</div>
+<style>#career-event-overlay.on{display:block}</style>
 </body>
 </html>
