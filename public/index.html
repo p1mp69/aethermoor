@@ -4,8 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <link rel="manifest" href="/manifest.json">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AETHERMOOR">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="167x167" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#07070f">
 <title>AETHERMOOR</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
@@ -4782,40 +4787,60 @@ function renderPersonalQuests(){
 }
 </script>
 <!-- PWA INSTALL BANNER -->
-<div id="pwa-banner" style="display:none;position:fixed;bottom:calc(16px + var(--sfb));left:16px;right:16px;background:var(--s2);border:1px solid var(--gold-d);border-radius:14px;padding:14px 16px;z-index:9000;box-shadow:0 4px 24px rgba(0,0,0,.4)">
-  <div style="font-size:9px;letter-spacing:3px;color:var(--gold);margin-bottom:4px">INSTALL APP</div>
-  <div id="pwa-banner-text" style="font-size:12px;color:var(--tx2);margin-bottom:10px;line-height:1.5">Add AETHERMOOR to your home screen for the best experience.</div>
-  <div style="display:flex;gap:8px">
-    <button onclick="triggerInstall()" style="flex:1;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:8px;border-radius:8px;font-size:11px;letter-spacing:2px;cursor:pointer">INSTALL</button>
-    <button onclick="dismissPWA()" style="background:transparent;border:1px solid var(--b2);color:var(--tx3);padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer">Later</button>
+<div id="pwa-banner" style="display:none;position:fixed;bottom:calc(16px + var(--sfb));left:16px;right:16px;background:var(--s2);border:1px solid var(--gold-d);border-radius:16px;padding:16px;z-index:9000;box-shadow:0 8px 32px rgba(0,0,0,.6)">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+    <div style="font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase">Install App</div>
+    <button onclick="dismissPWA()" style="background:none;border:none;color:var(--tx3);font-size:18px;line-height:1;padding:0;cursor:pointer">&times;</button>
+  </div>
+  <div id="pwa-banner-text" style="font-size:12px;color:var(--tx2);margin-bottom:12px;line-height:1.7"></div>
+  <div id="pwa-banner-steps" style="display:none;margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--s1);border-radius:10px;padding:10px 12px">
+      <span style="font-size:20px">1&#65039;&#8419;</span>
+      <div style="font-size:12px;color:var(--tx)">Tap the <strong style="color:var(--gold)">Share</strong> button at the bottom of Safari <span style="font-size:14px">&#8679;</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;background:var(--s1);border-radius:10px;padding:10px 12px">
+      <span style="font-size:20px">2&#65039;&#8419;</span>
+      <div style="font-size:12px;color:var(--tx)">Scroll down and tap <strong style="color:var(--gold)">"Add to Home Screen"</strong></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;background:var(--s1);border-radius:10px;padding:10px 12px">
+      <span style="font-size:20px">3&#65039;&#8419;</span>
+      <div style="font-size:12px;color:var(--tx)">Tap <strong style="color:var(--gold)">"Add"</strong> in the top right corner</div>
+    </div>
+  </div>
+  <div id="pwa-banner-btns" style="display:flex;gap:8px">
+    <button id="pwa-main-btn" onclick="triggerInstall()" style="flex:1;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px;border-radius:10px;font-size:11px;letter-spacing:2px;cursor:pointer;font-family:Rajdhani,sans-serif">INSTALL</button>
+    <button onclick="dismissPWA()" style="background:transparent;border:1px solid var(--b2);color:var(--tx3);padding:10px 16px;border-radius:10px;font-size:11px;cursor:pointer;font-family:Rajdhani,sans-serif">Later</button>
   </div>
 </div>
 <script>
 var deferredInstallPrompt=null;
 var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
 var isInStandaloneMode=window.matchMedia('(display-mode: standalone)').matches||(window.navigator.standalone===true);
-if(!isInStandaloneMode){
+function showPWABanner(){
+  var b=$g('pwa-banner');if(!b||isInStandaloneMode)return;
+  var txt=$g('pwa-banner-text');var steps=$g('pwa-banner-steps');var btn=$g('pwa-main-btn');
   if(isIOS){
-    var iosShown=localStorage.getItem('am_pwa_ios_shown');
-    if(!iosShown){
-      setTimeout(function(){
-        var b=$g('pwa-banner');var t=$g('pwa-banner-text');
-        if(b&&t){
-          t.textContent='On iOS: tap the Share button then "Add to Home Screen" to install.';
-          b.style.display='block';
-          localStorage.setItem('am_pwa_ios_shown','1');
-        }
-      },3000);
-    }
+    txt.textContent='Play AETHERMOOR from your home screen for the full app experience — no browser bar.';
+    steps.style.display='block';
+    btn.textContent='GOT IT';
+    btn.onclick=dismissPWA;
+  } else {
+    txt.textContent='Install AETHERMOOR as an app for the best experience.';
+    steps.style.display='none';
+    btn.textContent='INSTALL';
+    btn.onclick=triggerInstall;
   }
+  b.style.display='block';
+}
+if(!isInStandaloneMode){
+  setTimeout(showPWABanner,3000);
   window.addEventListener('beforeinstallprompt',function(e){
     e.preventDefault();deferredInstallPrompt=e;
-    setTimeout(function(){var b=$g('pwa-banner');if(b)b.style.display='block';},2000);
   });
 }
 function triggerInstall(){
   if(deferredInstallPrompt){deferredInstallPrompt.prompt();deferredInstallPrompt.userChoice.then(function(){deferredInstallPrompt=null;dismissPWA();});}
-  else{dismissPWA();}
+  else{showPWABanner();}
 }
 function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
 </script>
