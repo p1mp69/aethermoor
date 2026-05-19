@@ -468,6 +468,39 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
 .cac-name{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:2px}
 .cac-desc{font-size:10px;color:var(--tx3);line-height:1.5}
 .cac-time{font-size:10px;color:var(--orange);margin-top:3px}
+/* CHRONICLE */
+.chronicle-card{border:1px solid rgba(212,168,67,0.25);background:linear-gradient(135deg,rgba(212,168,67,0.06),rgba(212,168,67,0.02));border-radius:18px;overflow:hidden;margin-bottom:14px}
+.chron-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
+.chron-title{font-family:"Cinzel",serif;font-size:10px;color:var(--gold);letter-spacing:5px}
+.ap-row{display:flex;align-items:center;gap:5px}
+.ap-dot{width:9px;height:9px;border-radius:50%;background:var(--gold);opacity:0.15;transition:opacity .4s,transform .2s}
+.ap-dot.full{opacity:1;transform:scale(1.1)}
+.ap-lbl{font-size:9px;color:var(--tx3);margin-left:3px;letter-spacing:1px}
+.qa-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 14px 14px}
+.qa-card{background:linear-gradient(160deg,rgba(255,255,255,0.06),rgba(0,0,0,0));border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px 8px 10px;text-align:center;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;min-height:80px}
+.qa-card:active{transform:scale(.94);border-color:rgba(212,168,67,0.55);background:rgba(212,168,67,0.09)}
+.qa-card.no-ap{opacity:0.35;cursor:not-allowed;pointer-events:none}
+.qa-em{font-size:24px;line-height:1.1}
+.qa-name{font-size:9.5px;color:var(--tx2);font-weight:600;letter-spacing:0.5px;line-height:1.3}
+.qa-desc{font-size:8.5px;color:var(--tx3);line-height:1.4}
+.story-feed{padding:0 14px 14px;display:flex;flex-direction:column;gap:0}
+.story-hd{font-size:9px;color:var(--tx3);letter-spacing:3px;margin-bottom:6px}
+.story-entry{font-size:11px;color:var(--tx2);line-height:1.6;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;gap:8px;align-items:flex-start}
+.story-entry:last-child{border-bottom:none}
+.sentry-em{flex-shrink:0;font-size:13px;line-height:1.6}
+/* QUICK OUTCOME POPUP */
+.qo-wrap{display:none;position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(4,4,8,.96);z-index:220;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding:32px}
+.qo-wrap.on{display:flex}
+.qo-em{font-size:56px;filter:drop-shadow(0 0 24px rgba(212,168,67,.35))}
+.qo-em.pop{animation:qoPop .35s cubic-bezier(.17,.67,.4,1.4)}
+@keyframes qoPop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.qo-title{font-family:"Cinzel",serif;font-size:21px;color:var(--gold);letter-spacing:3px}
+.qo-text{font-size:13.5px;color:var(--tx2);line-height:1.85;max-width:310px;font-style:italic}
+.qo-rewards{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:4px 0}
+.qo-reward{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:5px 13px;font-size:12px;color:var(--tx2)}
+.qo-reward.neg{border-color:rgba(255,68,85,0.3);color:#ff6677;background:rgba(255,68,85,0.06)}
+.qo-btn{background:transparent;border:1px solid rgba(212,168,67,0.4);color:var(--gold);padding:14px 38px;border-radius:12px;font-size:12px;letter-spacing:4px;cursor:pointer;font-family:"Rajdhani",sans-serif;margin-top:4px;transition:all .2s}
+.qo-btn:active{background:rgba(212,168,67,0.12);transform:scale(.97)}
 </style>
 </head>
 <body>
@@ -556,6 +589,18 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
             <button onclick="dismissGuide()" style="font-size:10px;color:var(--tx3);background:none;border:none;cursor:pointer;letter-spacing:1px;padding:4px 8px">HIDE</button>
           </div>
           <div id="guide-content"></div>
+        </div>
+      </div>
+      <!-- CHRONICLE -->
+      <div class="chronicle-card" id="chronicle-card" style="display:none">
+        <div class="chron-head">
+          <div class="chron-title">&#9670; Chronicle</div>
+          <div class="ap-row" id="ap-row"></div>
+        </div>
+        <div class="qa-grid" id="qa-grid"></div>
+        <div class="story-feed" id="story-feed" style="display:none">
+          <div class="story-hd">RECENT</div>
+          <div id="story-entries"></div>
         </div>
       </div>
       <div class="pcard p1" id="card-p1">
@@ -1591,6 +1636,217 @@ var CLS=[
     {name:'Intrigue',color:'#2255cc',desc:'Shadows of power',nodes:[{id:'pol_b2n1',name:'Back Channel',r:0,mR:3,effect:'Private deals that cannot be traced.',uLv:1},{id:'pol_b2n2',name:'Leverage',r:0,mR:3,effect:'Everyone has a secret.',uLv:5},{id:'pol_b2n3',name:'Frame',r:0,mR:2,effect:'Redirect blame perfectly.',uLv:10}]},
     {name:'Authority',color:'#001166',desc:'Power made institutional',nodes:[{id:'pol_b3n1',name:'Office',r:0,mR:3,effect:'Institutional power behind actions.',uLv:3},{id:'pol_b3n2',name:'Decree',r:0,mR:2,effect:'Declarations carry legal force.',uLv:8},{id:'pol_b3n3',name:'Sovereign Will',r:0,mR:1,effect:'Peak political sovereignty.',uLv:20}]}
   ]}
+];
+
+// QUICK ACTS — instant narrative actions, no timer, cost 1 AP each
+var QUICK_ACTS=[
+  {id:'qa_wander',em:'&#128118;',name:'Wander the District',desc:'Drift through the streets and see what happens.',
+   outcomes:[
+     {w:4,em:'&#128118;',title:'Nothing Much',t:function(pl){return pl.name+' wandered about, overhearing gossip and watching the city breathe.';},xp:8,gold:0},
+     {w:3,em:'&#128176;',title:'Lucky Find',t:function(pl){return pl.name+' found a coin wedged between cobblestones. Small victories.';},xp:12,gold:8},
+     {w:2,em:'&#129309;',title:'Helpful Stranger',t:function(pl){return pl.name+' helped a lost merchant and received a grateful tip in return.';},xp:22,gold:15},
+     {w:1,em:'&#128298;',title:'Street Trouble',t:function(pl){return pl.name+' stumbled into a street dispute and had to talk very fast to escape it.';},xp:28,gold:-5}
+   ]},
+  {id:'qa_tavern',em:'&#127867;',name:'Hit the Tavern',desc:'Drink, listen, and watch. You learn things here.',
+   outcomes:[
+     {w:3,em:'&#127867;',title:'Good Drinks',t:function(pl){return pl.name+' had a few rounds and enjoyed the noise of people who did not know them.';},xp:10,gold:-5},
+     {w:3,em:'&#129488;',title:'Overheard Rumor',t:function(pl){return pl.name+' caught wind of something interesting from the next table. Filed it away.';},xp:24,gold:0},
+     {w:2,em:'&#129386;',title:'Won at Dice',t:function(pl){return pl.name+' cleaned out the locals at a game of bones. They took it well. Mostly.';},xp:18,gold:35},
+     {w:1,em:'&#128534;',title:'Lost the Pot',t:function(pl){return pl.name+' bet one round too many and walked home significantly lighter.';},xp:8,gold:-22},
+     {w:1,em:'&#129309;',title:'Made a Friend',t:function(pl){return pl.name+' talked for hours with a fascinating traveler and gained rare perspective.';},xp:38,gold:0}
+   ]},
+  {id:'qa_train',em:'&#9876;',name:'Run Drills',desc:'Practice your fighting forms. Muscle memory is everything.',
+   outcomes:[
+     {w:4,em:'&#9876;',title:'Solid Session',t:function(pl){return pl.name+' drilled the fundamentals until the movements felt completely natural.';},xp:30,gold:0},
+     {w:2,em:'&#128165;',title:'Breakthrough',t:function(pl){return pl.name+' felt something click into place. A technique finally worked as intended.';},xp:55,gold:0},
+     {w:1,em:'&#129704;',title:'Over-Trained',t:function(pl){return pl.name+' pushed past the limit and pulled something. Still — progress was made.';},xp:18,gold:0}
+   ]},
+  {id:'qa_meditate',em:'&#9774;',name:'Meditate',desc:'Clear the mind. Listen to what the world is saying.',
+   outcomes:[
+     {w:4,em:'&#9774;',title:'Quiet Focus',t:function(pl){return pl.name+' sat in silence until the noise of everything else finally faded.';},xp:22,gold:0},
+     {w:2,em:'&#10024;',title:'Vision',t:function(pl){return pl.name+' glimpsed something beyond the veil. A warning, or perhaps a promise.';},xp:48,gold:0},
+     {w:1,em:'&#128564;',title:'Just Slept',t:function(pl){return pl.name+' tried to meditate and fell asleep. Woke up refreshed. Close enough.';},xp:10,gold:0,apBonus:2}
+   ]},
+  {id:'qa_pickpocket',em:'&#128081;',name:'Lift a Wallet',desc:'Quick fingers, quick feet. High risk, potential reward.',
+   filter:function(pl,W){return pl.level>=2;},
+   outcomes:[
+     {w:3,em:'&#128176;',title:'Light Touch',t:function(pl){return pl.name+' slipped a purse from a distracted merchant without a sound. Clean.';},xp:26,gold:38,infamy:1},
+     {w:2,em:'&#128556;',title:'Fumbled',t:function(pl){return pl.name+' made contact but lost their nerve at the last possible second.';},xp:10,gold:0},
+     {w:2,em:'&#128073;',title:'Almost Caught',t:function(pl){return pl.name+' got clumsy and had to bolt through an alley. Made it. Barely.';},xp:16,gold:0,infamy:2},
+     {w:1,em:'&#128070;',title:'Caught!',t:function(pl){return pl.name+' was caught in the act. Paid a fine, kept the dignity. Mostly.';},xp:8,gold:-30,infamy:3}
+   ]},
+  {id:'qa_barter',em:'&#9878;',name:'Strike a Deal',desc:'Find a merchant and negotiate hard.',
+   outcomes:[
+     {w:3,em:'&#129488;',title:'Fair Price',t:function(pl){return pl.name+' got a reasonable deal on supplies. Everyone walked away satisfied.';},xp:18,gold:12},
+     {w:2,em:'&#128176;',title:'Talked Them Down',t:function(pl){return pl.name+' haggled with precision and paid far below the asking price.';},xp:32,gold:40},
+     {w:1,em:'&#128534;',title:'Outbargained',t:function(pl){return pl.name+' met a sharper merchant than expected. Lost ground in the exchange.';},xp:12,gold:-12}
+   ]},
+  {id:'qa_forage',em:'&#127807;',name:'Forage for Herbs',desc:'Search the outskirts for useful plants and fungi.',
+   outcomes:[
+     {w:4,em:'&#127807;',title:'Modest Harvest',t:function(pl){return pl.name+' gathered a useful handful of herbs from the quiet roadside.';},xp:20,gold:0,res:{wood:2}},
+     {w:2,em:'&#127808;',title:'Rich Find',t:function(pl){return pl.name+' located a hidden patch of rare herbs worth real coin.';},xp:38,gold:20,res:{wood:5,crystals:1}},
+     {w:1,em:'&#128027;',title:'Bad Encounter',t:function(pl){return pl.name+' disturbed something that lived in those plants. Retreated with speed.';},xp:10,gold:0}
+   ]},
+  {id:'qa_scout',em:'&#128065;',name:'Scout the Area',desc:'Move quietly and observe. Information is power.',
+   outcomes:[
+     {w:3,em:'&#128065;',title:'Area Mapped',t:function(pl){return pl.name+' memorized patrol routes, entry points, and points of interest.';},xp:32,gold:0},
+     {w:2,em:'&#127381;',title:'Spotted Something',t:function(pl){return pl.name+' noticed something hidden — a cache, an abandoned camp, a clue.';},xp:48,gold:15,res:{stone:2}},
+     {w:1,em:'&#128064;',title:'Spotted Back',t:function(pl){return pl.name+' thought they were unseen. They were not. Left the area calmly.';},xp:16,gold:0}
+   ]},
+  {id:'qa_rumor',em:'&#128172;',name:'Spread a Rumor',desc:'Plant information and watch where it grows.',
+   filter:function(pl,W){return pl.level>=2;},
+   outcomes:[
+     {w:3,em:'&#128172;',title:'Planted',t:function(pl){return pl.name+' seeded a story that will take on a life of its own soon.';},xp:22,gold:0,infamy:1},
+     {w:2,em:'&#128530;',title:'Believed',t:function(pl){return pl.name+' told a convincing lie and watched it travel across the district immediately.';},xp:36,gold:0,infamy:2},
+     {w:1,em:'&#128556;',title:'Disbelieved',t:function(pl){return pl.name+' overplayed the story. No one bought it. Walked away gracefully.';},xp:10,gold:0}
+   ]},
+  {id:'qa_gamble',em:'&#127922;',name:'Gamble',desc:'Put some coin on the line. Fortune favors the bold.',
+   outcomes:[
+     {w:3,em:'&#127922;',title:'Small Win',t:function(pl){return pl.name+' played a measured game and walked away with a profit.';},xp:15,gold:28},
+     {w:2,em:'&#128176;',title:'Big Win',t:function(pl){return pl.name+' had a spectacular run. The table went cold for everyone else present.';},xp:28,gold:80},
+     {w:2,em:'&#128534;',title:'Loss',t:function(pl){return pl.name+' played one round too many and left lighter than intended.';},xp:10,gold:-28},
+     {w:1,em:'&#128073;',title:'Table Drama',t:function(pl){return pl.name+' caught someone cheating and called it loudly. Chaos and gold followed.';},xp:32,gold:15,infamy:1}
+   ]},
+  {id:'qa_spar',em:'&#128170;',name:'Challenge a Fighter',desc:'Find someone to spar with. Test your actual limits.',
+   outcomes:[
+     {w:3,em:'&#9876;',title:'Evenly Matched',t:function(pl){return pl.name+' traded blows with a capable opponent. Both walked away wiser.';},xp:36,gold:0},
+     {w:2,em:'&#128165;',title:'You Won',t:function(pl){return pl.name+' dominated the bout cleanly. Their opponent bought a round of drinks after.';},xp:52,gold:12},
+     {w:2,em:'&#128128;',title:'You Lost',t:function(pl){return pl.name+' got bested. A good lesson, even if the bruises took a position on it.';},xp:26,gold:0},
+     {w:1,em:'&#127941;',title:'Crowd Formed',t:function(pl){return pl.name+' put on a real show. Spectators tossed coin at the display.';},xp:48,gold:22}
+   ]},
+  {id:'qa_pray',em:'&#128142;',name:'Visit a Shrine',desc:'Offer something to the old gods and see what returns.',
+   outcomes:[
+     {w:3,em:'&#128142;',title:'Silence',t:function(pl){return pl.name+' left an offering and walked away uncertain if anything had heard.';},xp:15,gold:-5},
+     {w:2,em:'&#10024;',title:'Blessing',t:function(pl){return pl.name+' felt warmth radiate from the stone. Something ancient acknowledged them.';},xp:44,gold:0},
+     {w:1,em:'&#9889;',title:'Warning',t:function(pl){return pl.name+' received an omen. Dark images that refused to leave the mind.';},xp:58,gold:0,infamy:1}
+   ]},
+  {id:'qa_craft_quick',em:'&#9874;',name:'Craft Something',desc:'Make use of your hands. Quick work, honest result.',
+   outcomes:[
+     {w:3,em:'&#9874;',title:'Rough Work',t:function(pl){return pl.name+' put together something serviceable. Not beautiful, but very functional.';},xp:26,gold:0,res:{stone:1}},
+     {w:2,em:'&#128165;',title:'Clean Work',t:function(pl){return pl.name+' produced a clean piece. Good form, solid utility throughout.';},xp:42,gold:18},
+     {w:1,em:'&#11088;',title:'Perfect Piece',t:function(pl){return pl.name+' hit a flow state. The result exceeded every expectation by a wide margin.';},xp:68,gold:32}
+   ]},
+  {id:'qa_investigate',em:'&#128270;',name:'Investigate Rumors',desc:'Follow up on something you heard. Pull the thread.',
+   filter:function(pl,W){return pl.level>=2;},
+   outcomes:[
+     {w:3,em:'&#128270;',title:'Thread Found',t:function(pl){return pl.name+' untangled a web of half-truths and found something real underneath.';},xp:40,gold:0},
+     {w:2,em:'&#128196;',title:'Evidence',t:function(pl){return pl.name+' located a document that confirmed exactly what was suspected.';},xp:55,gold:0},
+     {w:1,em:'&#128064;',title:'Being Watched',t:function(pl){return pl.name+' realized they were being followed before they could act on anything.';},xp:22,gold:0,infamy:1}
+   ]},
+  {id:'qa_read',em:'&#128218;',name:'Study an Old Text',desc:'Spend focused time with a tome or library.',
+   outcomes:[
+     {w:4,em:'&#128218;',title:'Knowledge Gained',t:function(pl){return pl.name+' absorbed a dense chapter that expanded their understanding considerably.';},xp:36,gold:0},
+     {w:2,em:'&#129504;',title:'Revelation',t:function(pl){return pl.name+' found a passage that reframed everything they thought they knew.';},xp:72,gold:0},
+     {w:1,em:'&#128564;',title:'Fell Asleep',t:function(pl){return pl.name+' tried to study and woke up with the book on their face. Still rested.';},xp:12,gold:0}
+   ]},
+  {id:'qa_assist',em:'&#129309;',name:'Help Someone Out',desc:'A stranger needs something. Be the person who stops.',
+   outcomes:[
+     {w:4,em:'&#129309;',title:'Gratitude',t:function(pl){return pl.name+' helped a stranger with a mundane problem and received genuine thanks.';},xp:24,gold:8},
+     {w:2,em:'&#128176;',title:'Well Rewarded',t:function(pl){return pl.name+' solved a bigger problem than expected and was compensated accordingly.';},xp:42,gold:32},
+     {w:1,em:'&#128553;',title:'Taken Advantage Of',t:function(pl){return pl.name+' was tricked into helping with something that benefited only the other party.';},xp:16,gold:-10}
+   ]},
+  {id:'qa_hunt',em:'&#127757;',name:'Hunt Game',desc:'Take to the surrounding wilderness and bring something back.',
+   outcomes:[
+     {w:4,em:'&#127757;',title:'Good Hunt',t:function(pl){return pl.name+' tracked and took down solid prey. The work was clean and satisfying.';},xp:36,gold:16,res:{wood:2}},
+     {w:2,em:'&#127993;',title:'Trophy Kill',t:function(pl){return pl.name+' found something worth bragging about. The hide fetched excellent coin.';},xp:58,gold:42},
+     {w:1,em:'&#128062;',title:'Empty Handed',t:function(pl){return pl.name+' spent hours in the deep woods and returned with nothing but blisters.';},xp:16,gold:0}
+   ]},
+  {id:'qa_caravan',em:'&#128652;',name:'Guard a Caravan',desc:'Earn honest coin by protecting merchants on the road.',
+   outcomes:[
+     {w:3,em:'&#128652;',title:'Uneventful Road',t:function(pl){return pl.name+' walked for hours, kept the merchants safe, and was paid as agreed.';},xp:32,gold:22},
+     {w:2,em:'&#128165;',title:'Bandit Ambush',t:function(pl){return pl.name+' helped repel a roadside ambush. The merchants were very grateful.';},xp:62,gold:44},
+     {w:1,em:'&#127775;',title:'Strange Cargo',t:function(pl){return pl.name+' noticed the goods did not add up. Asked no questions. Received their pay.';},xp:36,gold:26,infamy:1}
+   ]},
+  {id:'qa_informant',em:'&#128170;',name:'Meet an Informant',desc:'Someone has something to sell. Go and listen.',
+   filter:function(pl,W){return pl.level>=3;},
+   outcomes:[
+     {w:3,em:'&#128170;',title:'Intel Bought',t:function(pl){return pl.name+' paid for solid information and received something immediately actionable.';},xp:42,gold:-18},
+     {w:2,em:'&#128196;',title:'Gold Information',t:function(pl){return pl.name+' received a tip that could change the shape of things to come entirely.';},xp:68,gold:-22},
+     {w:1,em:'&#128556;',title:'Burned',t:function(pl){return pl.name+' paid good coin for a polished lie. The contact had already vanished.';},xp:20,gold:-32}
+   ]},
+  {id:'qa_underground',em:'&#9760;',name:'Visit the Underground',desc:'Seek out the criminal network. Deals happen below the surface.',
+   filter:function(pl,W){return (W.infamy||0)>=5||pl.level>=5;},
+   outcomes:[
+     {w:3,em:'&#9760;',title:'Contact Made',t:function(pl){return pl.name+' established a working connection deep in the underground network.';},xp:52,gold:0,infamy:2},
+     {w:2,em:'&#128176;',title:'Quick Job',t:function(pl){return pl.name+' picked up a simple job and completed it without any complication at all.';},xp:68,gold:58,infamy:3},
+     {w:1,em:'&#128128;',title:'Wrong Room',t:function(pl){return pl.name+' walked into a meeting they had no business attending. Talked their way out.';},xp:36,gold:0,infamy:4}
+   ]},
+  {id:'qa_rescue',em:'&#129395;',name:'Rescue Someone',desc:'There is someone in immediate trouble nearby.',
+   filter:function(pl,W){return pl.level>=2;},
+   outcomes:[
+     {w:3,em:'&#129395;',title:'Rescued',t:function(pl){return pl.name+' pulled someone out of a bad situation. They left owing a genuine debt.';},xp:58,gold:15},
+     {w:2,em:'&#127941;',title:'Hero of the Moment',t:function(pl){return pl.name+' became the hero of someone\'s worst day. They will remember it forever.';},xp:82,gold:22},
+     {w:1,em:'&#128128;',title:'Too Late',t:function(pl){return pl.name+' arrived just in time to watch the situation conclude without them.';},xp:26,gold:0}
+   ]},
+  {id:'qa_steal_info',em:'&#128196;',name:'Steal Documents',desc:'Break into an office and copy what you find.',
+   filter:function(pl,W){return pl.level>=4;},
+   outcomes:[
+     {w:3,em:'&#128196;',title:'Intel Secured',t:function(pl){return pl.name+' found and copied documents that could prove very useful in time.';},xp:58,gold:0,infamy:2},
+     {w:2,em:'&#128560;',title:'Interrupted',t:function(pl){return pl.name+' had to leave before finishing. Got most of it at the very least.';},xp:32,gold:0,infamy:1},
+     {w:1,em:'&#128073;',title:'Ambushed',t:function(pl){return pl.name+' walked into a trap. Barely made it out. Someone was expecting the visit.';},xp:22,gold:0,infamy:3}
+   ]},
+  {id:'qa_scheme',em:'&#129302;',name:'Concoct a Scheme',desc:'Think through an elaborate plan. Hypothetically, of course.',
+   filter:function(pl,W){return pl.level>=3;},
+   outcomes:[
+     {w:3,em:'&#129302;',title:'Solid Plan',t:function(pl){return pl.name+' worked out an approach that could actually succeed given the right moment.';},xp:42,gold:0},
+     {w:2,em:'&#11088;',title:'Genius Move',t:function(pl){return pl.name+' saw an angle nobody else would find. The plan was genuinely elegant.';},xp:74,gold:0},
+     {w:1,em:'&#128565;',title:'Overthought It',t:function(pl){return pl.name+' built a perfect plan that collapsed on the very first variable encountered.';},xp:22,gold:0}
+   ]},
+  {id:'qa_duel',em:'&#9876;',name:'Issue a Duel',desc:'Formal challenge. Reputation and honor on the line.',
+   filter:function(pl,W){return pl.level>=6;},
+   outcomes:[
+     {w:2,em:'&#127941;',title:'Won with Honor',t:function(pl){return pl.name+' disarmed their opponent cleanly and precisely. The crowd applauded.';},xp:84,gold:32,infamy:-2},
+     {w:2,em:'&#128128;',title:'Lost with Grace',t:function(pl){return pl.name+' lost but accepted the outcome without protest. Respect held firm.';},xp:46,gold:0},
+     {w:1,em:'&#9760;',title:'Nearly Killed',t:function(pl){return pl.name+' severely underestimated the opponent. Survived by the narrowest margin.';},xp:32,gold:0,infamy:2}
+   ]},
+  {id:'qa_beg',em:'&#129359;',name:'Work the Crowd',desc:'Pride can be rebuilt. Coin cannot be summoned from air.',
+   filter:function(pl,W){return !pl.resources||((pl.resources.gold||0)<15);},
+   outcomes:[
+     {w:4,em:'&#129359;',title:'A Few Coppers',t:function(pl){return pl.name+' worked the crowd and collected small sympathy from passing strangers.';},xp:8,gold:14},
+     {w:2,em:'&#129359;',title:'Decent Haul',t:function(pl){return pl.name+' told a compelling story of woe and the crowd responded quite generously.';},xp:16,gold:28},
+     {w:1,em:'&#128530;',title:'Ignored',t:function(pl){return pl.name+' spent an hour being politely ignored by everyone who passed by.';},xp:5,gold:3}
+   ]},
+  {id:'qa_spy',em:'&#128065;',name:'Surveil a Target',desc:'Watch. Listen. Document everything you observe.',
+   filter:function(pl,W){return pl.level>=4;},
+   outcomes:[
+     {w:3,em:'&#128065;',title:'Data Gathered',t:function(pl){return pl.name+' documented patterns, contacts, and habits with careful precision.';},xp:52,gold:0},
+     {w:2,em:'&#128196;',title:'Critical Intel',t:function(pl){return pl.name+' witnessed something they were absolutely not meant to see.';},xp:84,gold:0,infamy:1},
+     {w:1,em:'&#128556;',title:'Burned',t:function(pl){return pl.name+' made an error. The target is now aware of the surveillance entirely.';},xp:26,gold:0,infamy:3}
+   ]},
+  {id:'qa_haunt',em:'&#128123;',name:'Establish Presence',desc:'Make your mark on a place. Let them know who walks here.',
+   filter:function(pl,W){return pl.level>=3;},
+   outcomes:[
+     {w:3,em:'&#128123;',title:'Territory Marked',t:function(pl){return pl.name+' made their presence felt in a location that now carries their weight.';},xp:36,gold:0,infamy:1},
+     {w:2,em:'&#128165;',title:'Challenged',t:function(pl){return pl.name+' was immediately challenged by someone who thought they owned the territory.';},xp:58,gold:10,infamy:2},
+     {w:1,em:'&#128560;',title:'Run Off',t:function(pl){return pl.name+' was significantly outgunned and wisely chose to exit the situation.';},xp:20,gold:0}
+   ]},
+  {id:'qa_bargain_life',em:'&#128562;',name:'Intervene in an Execution',desc:'Someone is about to die publicly. Step forward.',
+   filter:function(pl,W){return pl.level>=5&&(pl.fame||0)>=50;},
+   outcomes:[
+     {w:2,em:'&#128562;',title:'Persuaded',t:function(pl){return pl.name+' made an argument compelling enough to stop an execution in its tracks.';},xp:105,gold:-32,infamy:-3},
+     {w:2,em:'&#128128;',title:'Failed',t:function(pl){return pl.name+' tried and could not turn the tide. The sentence was carried out.';},xp:42,gold:0},
+     {w:1,em:'&#127941;',title:'Legendary Speech',t:function(pl){return pl.name+' delivered something that will be retold for many, many years.';},xp:145,gold:0,infamy:-5}
+   ]},
+  {id:'qa_demon_deal',em:'&#128165;',name:'Accept a Dark Pact',desc:'Something in the shadows offered terms. Consider carefully.',
+   filter:function(pl,W){return pl.level>=7&&(W.infamy||0)>=15;},
+   outcomes:[
+     {w:2,em:'&#128165;',title:'Accepted',t:function(pl){return pl.name+' shook a hand that had no warmth. The power arrived immediately.';},xp:125,gold:0,infamy:10},
+     {w:2,em:'&#128547;',title:'Refused',t:function(pl){return pl.name+' rejected the offer without hesitation. The entity seemed almost impressed.';},xp:52,gold:0},
+     {w:1,em:'&#129302;',title:'Tricked',t:function(pl){return pl.name+' believed they understood the terms. They absolutely did not.';},xp:84,gold:0,infamy:15}
+   ]},
+  {id:'qa_perform',em:'&#127928;',name:'Perform for a Crowd',desc:'Put yourself on display. Bard, fighter, mage — all can perform.',
+   outcomes:[
+     {w:3,em:'&#127928;',title:'Decent Show',t:function(pl){return pl.name+' gave the crowd something worth watching. The hat came back with coin.';},xp:28,gold:20},
+     {w:2,em:'&#127881;',title:'Standing Ovation',t:function(pl){return pl.name+' put on a performance people in that district will not forget.';},xp:52,gold:45},
+     {w:1,em:'&#128565;',title:'Bombed',t:function(pl){return pl.name+' lost the crowd completely within the first minute. Character building.';},xp:12,gold:0}
+   ]},
+  {id:'qa_rob_traveler',em:'&#128081;',name:'Ambush a Traveler',desc:'Old-fashioned roadside robbery. High risk, fast coin.',
+   filter:function(pl,W){return pl.level>=5&&(W.infamy||0)>0;},
+   outcomes:[
+     {w:3,em:'&#128176;',title:'Clean Score',t:function(pl){return pl.name+' moved fast and walked away with a very heavy purse.';},xp:64,gold:85,infamy:4},
+     {w:2,em:'&#128073;',title:'Resistance',t:function(pl){return pl.name+' was fought back harder than expected but still came away with something.';},xp:38,gold:44,infamy:5},
+     {w:1,em:'&#128072;',title:'Witness',t:function(pl){return pl.name+' completed the job but a witness appeared. That will be a problem soon.';},xp:28,gold:62,infamy:8}
+   ]}
 ];
 
 // SOLO — quick personal actions (30min-4hr), player is "busy" during but CAN still do arc sub-actions
@@ -3413,6 +3669,11 @@ function patchW(w){
     if(pl.mentor===undefined)pl.mentor=null;
     if(pl.lordDisciple===undefined)pl.lordDisciple=null;
     if(!pl.metLords)pl.metLords=[];
+    if(pl.ap===undefined)pl.ap=5;
+    if(!pl.maxAP)pl.maxAP=5;
+    if(!pl.lastAPTime)pl.lastAPTime=Date.now();
+    if(!pl.storyFeed)pl.storyFeed=[];
+    if(!pl.qaDeck)pl.qaDeck=[];
   }
   ['p1','p2','p3','p4'].forEach(function(p){if(w[p])pP(w[p]);else w[p]={name:'--',classIdx:(p==='p1'?0:p==='p2'?1:p==='p3'?2:3),raceId:'human',level:1,xp:0,xpNeeded:100,skillPoints:3,unlockedNodes:{},lastSeen:0,spawnType:'',location:'',busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:{stone:0,wood:0,crystals:0,gold:0},hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{},hp:null,maxHP:null,unlockedAchievements:[],factionStanding:{},completedMilestones:[],mentor:null,lordDisciple:null,metLords:[]};});
 }
@@ -4441,7 +4702,7 @@ function switchTab(name){['you','world','skills','loot','lore'].forEach(function
 function xpN(lv){return Math.round(100*Math.pow(1.5,lv-1));}function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});}
 
 // ═══ RENDER ═══
-function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderP('p3');renderP('p4');renderOv();updateHints();renderInventory();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderAbilities();renderPartyPanel();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();renderSkSummary();renderGuide();var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}}
+function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderP('p3');renderP('p4');renderOv();updateHints();renderInventory();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderAbilities();renderPartyPanel();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();renderSkSummary();renderGuide();renderChronicle();var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}}
 function renderSubclassSummaryEl(){if(!W||!mySlot)return;var el=$g('subclass-summary');if(!el)return;var pl=W['p'+mySlot];el.innerHTML=renderSubclassSummary(pl);}
 function renderP(p){
   var pl=W[p];if(!pl)return;var c=CLS[pl.classIdx||0];var n=parseInt(p[1]);
@@ -4588,8 +4849,8 @@ function buildMA(p,pl,n){
   var isBusy=pl.busyAction&&pl.busyUntil&&pl.busyUntil>Date.now();
   $g('busy-'+p).style.display=isBusy?'flex':'none';if(isBusy){el.innerHTML='';return;}
   var sp=pl.skillPoints||0;
-  el.innerHTML='<button class="abtn hi" onclick="doQuickAct(\'brawl\')" title="Instant fight for quick XP (+45 XP, 5 min cooldown)">&#9876; Quick Fight</button>'
-    +'<button class="abtn hi" onclick="doQuickAct(\'scan\')" title="Scan for threats and opportunities (+20 XP, 3 min cooldown)">&#128269; Scan Area</button>'
+  el.innerHTML='<button class="abtn hi" onclick="doQuickAct(\'qa_spar\')" title="Spar with a fighter for instant XP">&#9876; Quick Spar</button>'
+    +'<button class="abtn hi" onclick="doQuickAct(\'qa_scout\')" title="Scout the area for instant XP">&#128269; Scout</button>'
     +'<button class="abtn" onclick="openSkTree('+n+')" style="position:relative" title="Spend skill points to unlock abilities">&#9737; Skill Tree'+(sp>0?'<span class="sp-badge">'+sp+'</span>':'')+'</button>';
 }
 function buildActBtns(){
@@ -4716,32 +4977,7 @@ async function soloXP(amt){
     await writeW(W);lastLogLen=W.log.length;renderAll();renderIntel();
   }catch(e){}busy=false;syn('live');
 }
-async function doQuickAct(id){
-  if(busy)return;busy=true;syn('p');
-  try{
-    var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
-    var mp='p'+mySlot;var pl=W[mp];
-    var acts={
-      brawl:{xp:45,msg:'Got into a street fight. Won. Obviously.',infamy:1,cd:300000},
-      scan:{xp:20,msg:'Scanned the surroundings. Filed it away.',infamy:0,cd:180000},
-    };
-    var act=acts[id];if(!act){busy=false;return;}
-    if(!pl.abilityCooldowns)pl.abilityCooldowns={};
-    var cdKey='quick_'+id;
-    var cdUntil=pl.abilityCooldowns[cdKey]||0;
-    if(cdUntil>Date.now()){
-      pushLog(pl.name+': '+id+' on cooldown for '+fmtDur(cdUntil-Date.now())+'.','l'+mp);
-      busy=false;syn('live');return;
-    }
-    pl.xp=(pl.xp||0)+act.xp;
-    if(act.infamy)W.infamy=(W.infamy||0)+act.infamy;
-    pl.abilityCooldowns[cdKey]=Date.now()+act.cd;
-    pl.lastSeen=Date.now();
-    var lv=doLvl(pl,mp);
-    if(!lv)pushLog(pl.name+': '+act.msg+' (+'+act.xp+' XP)','l'+mp);
-    await writeW(W);lastLogLen=W.log.length;renderAll();renderIntel();
-  }catch(e){}busy=false;syn('live');
-}
+// doQuickAct is defined in the Chronicle section below
 async function doSolo(id){
   if(busy)return;
   var mp='p'+mySlot;
@@ -6788,6 +7024,211 @@ function renderPersonalQuests(){
       '</div>';
   }).join('');
 }
+
+/* =========================================================
+   CHRONICLE — BitLife-adjacent instant action system
+   ========================================================= */
+function getQAAvailable(pl){
+  var out=[];
+  for(var i=0;i<QUICK_ACTS.length;i++){
+    var a=QUICK_ACTS[i];
+    if(a.filter&&!a.filter(pl,W))continue;
+    out.push(a.id);
+  }
+  return out;
+}
+function getNewQADeck(pl,excludeId){
+  var avail=getQAAvailable(pl);
+  // Remove excluded id if present
+  if(excludeId){avail=avail.filter(function(id){return id!==excludeId;});}
+  // Shuffle Fisher-Yates
+  for(var j=avail.length-1;j>0;j--){
+    var k=Math.floor(Math.random()*(j+1));
+    var tmp=avail[j];avail[j]=avail[k];avail[k]=tmp;
+  }
+  return avail.slice(0,3);
+}
+function tickQAAP(pl){
+  if(!pl.lastAPTime)pl.lastAPTime=Date.now();
+  var msPerAP=3*60*1000; // 1 AP every 3 minutes
+  var elapsed=Date.now()-pl.lastAPTime;
+  if(elapsed>=msPerAP){
+    var gained=Math.floor(elapsed/msPerAP);
+    var oldAP=pl.ap||0;
+    pl.ap=Math.min(pl.maxAP||5,oldAP+gained);
+    pl.lastAPTime=(pl.lastAPTime||Date.now())+gained*msPerAP;
+  }
+}
+function renderChronicle(){
+  var card=$g('chronicle-card');
+  if(!card)return;
+  if(!W||!mySlot||!W['p'+mySlot]||W['p'+mySlot].name==='--'){card.style.display='none';return;}
+  card.style.display='';
+  var pl=W['p'+mySlot];
+  // Tick AP refill
+  tickQAAP(pl);
+  // AP dots
+  var apRow=$g('ap-row');
+  if(apRow){
+    var maxAP=pl.maxAP||5;
+    var curAP=pl.ap||0;
+    var dh='';
+    for(var d=0;d<maxAP;d++)dh+='<div class="ap-dot'+(d<curAP?' full':'')+'"></div>';
+    dh+='<span class="ap-lbl">'+curAP+'/'+maxAP+' AP</span>';
+    apRow.innerHTML=dh;
+  }
+  // Init deck if empty
+  if(!pl.qaDeck||pl.qaDeck.length===0)pl.qaDeck=getNewQADeck(pl,null);
+  // Remove cards that no longer pass filter
+  pl.qaDeck=pl.qaDeck.filter(function(id){
+    for(var i=0;i<QUICK_ACTS.length;i++){if(QUICK_ACTS[i].id===id){var a=QUICK_ACTS[i];return !a.filter||a.filter(pl,W);}}
+    return false;
+  });
+  while(pl.qaDeck.length<3){
+    var extra=getNewQADeck(pl,null);
+    for(var ex=0;ex<extra.length;ex++){
+      if(pl.qaDeck.indexOf(extra[ex])<0){pl.qaDeck.push(extra[ex]);if(pl.qaDeck.length>=3)break;}
+    }
+    break; // safety
+  }
+  // Render cards
+  var grid=$g('qa-grid');
+  if(grid){
+    var gh='';
+    var noAP=(pl.ap||0)<=0;
+    for(var q=0;q<pl.qaDeck.length&&q<3;q++){
+      var act=null;
+      for(var ai=0;ai<QUICK_ACTS.length;ai++){if(QUICK_ACTS[ai].id===pl.qaDeck[q]){act=QUICK_ACTS[ai];break;}}
+      if(!act)continue;
+      var cls='qa-card'+(noAP?' no-ap':'');
+      var oc=noAP?'':'onclick="doQuickAct(\''+act.id+'\')"';
+      gh+='<button class="'+cls+'" '+oc+' style="font-family:Rajdhani,sans-serif">';
+      gh+='<div class="qa-em">'+act.em+'</div>';
+      gh+='<div class="qa-name">'+act.name+'</div>';
+      gh+='<div class="qa-desc">'+act.desc+'</div>';
+      gh+='</button>';
+    }
+    grid.innerHTML=gh;
+  }
+  // Story feed
+  var feedEl=$g('story-feed');
+  var entriesEl=$g('story-entries');
+  if(feedEl&&entriesEl){
+    if(pl.storyFeed&&pl.storyFeed.length>0){
+      feedEl.style.display='';
+      var fh='';
+      var shown=pl.storyFeed.slice(0,8);
+      for(var se=0;se<shown.length;se++){
+        fh+='<div class="story-entry"><span class="sentry-em">'+shown[se].em+'</span><span>'+shown[se].txt+'</span></div>';
+      }
+      entriesEl.innerHTML=fh;
+    }else{
+      feedEl.style.display='none';
+    }
+  }
+}
+function doQuickAct(id){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if(!pl||pl.name==='--')return;
+  tickQAAP(pl);
+  if((pl.ap||0)<=0)return;
+  // Find action
+  var act=null;
+  for(var i=0;i<QUICK_ACTS.length;i++){if(QUICK_ACTS[i].id===id){act=QUICK_ACTS[i];break;}}
+  if(!act)return;
+  if(act.filter&&!act.filter(pl,W))return;
+  // Spend AP
+  pl.ap=Math.max(0,(pl.ap||0)-1);
+  // Weighted random outcome
+  var totalW=0;
+  var outs=act.outcomes;
+  for(var j=0;j<outs.length;j++)totalW+=(outs[j].w||1);
+  var r=Math.random()*totalW;
+  var outcome=outs[outs.length-1];
+  var cur=0;
+  for(var k=0;k<outs.length;k++){cur+=(outs[k].w||1);if(r<cur){outcome=outs[k];break;}}
+  // Calculate rewards — scale XP with level
+  var lvScl=1+(pl.level||1)*0.04;
+  var xpGain=Math.round((outcome.xp||0)*(0.85+Math.random()*0.3)*lvScl);
+  var goldGain=outcome.gold||0;
+  var infamyGain=outcome.infamy||0;
+  // Apply XP
+  pl.xp=(pl.xp||0)+xpGain;
+  doLvl(pl,'p'+mySlot);
+  // Apply gold
+  if(goldGain!==0){
+    if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
+    pl.resources.gold=Math.max(0,(pl.resources.gold||0)+goldGain);
+  }
+  // Apply infamy
+  if(infamyGain>0){W.infamy=(W.infamy||0)+infamyGain;}
+  else if(infamyGain<0){W.infamy=Math.max(0,(W.infamy||0)+infamyGain);}
+  // Apply resources
+  if(outcome.res){
+    if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
+    var rk=outcome.res;
+    if(rk.gold)pl.resources.gold=(pl.resources.gold||0)+rk.gold;
+    if(rk.wood)pl.resources.wood=(pl.resources.wood||0)+rk.wood;
+    if(rk.stone)pl.resources.stone=(pl.resources.stone||0)+rk.stone;
+    if(rk.crystals)pl.resources.crystals=(pl.resources.crystals||0)+rk.crystals;
+  }
+  // AP bonus outcome
+  if(outcome.apBonus){pl.ap=Math.min(pl.maxAP||5,(pl.ap||0)+outcome.apBonus);}
+  // Career progress tracking
+  if(id==='qa_barter'||id==='qa_caravan'){if(!pl.careerProgress)pl.careerProgress={merchantActions:0};pl.careerProgress.merchantActions=(pl.careerProgress.merchantActions||0)+1;}
+  if(id==='qa_meditate'){if(!pl.careerProgress)pl.careerProgress={meditateActions:0};pl.careerProgress.meditateActions=(pl.careerProgress.meditateActions||0)+1;}
+  if(id==='qa_investigate'||id==='qa_spy'||id==='qa_steal_info'){if(!pl.careerProgress)pl.careerProgress={investigateActions:0};pl.careerProgress.investigateActions=(pl.careerProgress.investigateActions||0)+1;}
+  // Story feed entry
+  if(!pl.storyFeed)pl.storyFeed=[];
+  var storyTxt=outcome.t?outcome.t(pl):outcome.title;
+  pl.storyFeed.unshift({em:outcome.em,txt:storyTxt,ts:Date.now()});
+  if(pl.storyFeed.length>10)pl.storyFeed=pl.storyFeed.slice(0,10);
+  // Log
+  pushLog(storyTxt,'lp'+mySlot);
+  // Achievements check
+  checkAchievements(pl,W);
+  // Refresh deck — rotate out used card
+  pl.qaDeck=getNewQADeck(pl,id);
+  // Show outcome popup
+  showQO(outcome,xpGain,goldGain,outcome.res,outcome.infamy);
+  // Save
+  writeW(W).catch(function(){});
+}
+function showQO(outcome,xpGain,goldGain,res,infamyGain){
+  var emEl=$g('qo-em');
+  var titleEl=$g('qo-title');
+  var textEl=$g('qo-text');
+  var rwdEl=$g('qo-rewards');
+  var wrap=$g('qo-wrap');
+  if(!wrap)return;
+  if(emEl){emEl.innerHTML=outcome.em||'&#10022;';emEl.className='qo-em pop';}
+  if(titleEl)titleEl.textContent=outcome.title||'Outcome';
+  var pl=W&&mySlot?W['p'+mySlot]:null;
+  if(textEl)textEl.textContent=outcome.t&&pl?outcome.t(pl):'';
+  if(rwdEl){
+    var rh='';
+    if(xpGain>0)rh+='<div class="qo-reward">+'+xpGain+' XP</div>';
+    if(goldGain>0)rh+='<div class="qo-reward">+'+goldGain+' gold</div>';
+    if(goldGain<0)rh+='<div class="qo-reward neg">'+goldGain+' gold</div>';
+    if(res){
+      if(res.wood&&res.wood>0)rh+='<div class="qo-reward">+'+res.wood+' wood</div>';
+      if(res.stone&&res.stone>0)rh+='<div class="qo-reward">+'+res.stone+' stone</div>';
+      if(res.crystals&&res.crystals>0)rh+='<div class="qo-reward">+'+res.crystals+' crystals</div>';
+    }
+    if(infamyGain&&infamyGain>0)rh+='<div class="qo-reward neg">+'+infamyGain+' infamy</div>';
+    if(infamyGain&&infamyGain<0)rh+='<div class="qo-reward">'+Math.abs(infamyGain)+' infamy lost</div>';
+    rwdEl.innerHTML=rh;
+  }
+  wrap.className='qo-wrap on';
+  // Remove pop animation class after it fires
+  setTimeout(function(){var e=$g('qo-em');if(e)e.className='qo-em';},400);
+}
+function closeQO(){
+  var wrap=$g('qo-wrap');
+  if(wrap)wrap.className='qo-wrap';
+  renderChronicle();
+}
 </script>
 <!-- PWA INSTALL BANNER -->
 <div id="pwa-banner" style="display:none;position:fixed;bottom:calc(16px + var(--sfb));left:16px;right:16px;background:var(--s2);border:1px solid var(--gold-d);border-radius:16px;padding:16px;z-index:9000;box-shadow:0 8px 32px rgba(0,0,0,.6)">
@@ -6881,5 +7322,13 @@ function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
   </div>
 </div>
 <style>#death-overlay.on{display:block}</style>
+<!-- QUICK OUTCOME -->
+<div class="qo-wrap" id="qo-wrap">
+  <div class="qo-em" id="qo-em">&#10022;</div>
+  <div class="qo-title" id="qo-title">Outcome</div>
+  <div class="qo-text" id="qo-text"></div>
+  <div class="qo-rewards" id="qo-rewards"></div>
+  <button class="qo-btn" onclick="closeQO()">CONTINUE &#8250;</button>
+</div>
 </body>
 </html>
