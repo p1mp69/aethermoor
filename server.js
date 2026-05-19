@@ -27,17 +27,19 @@ function freshPlayer(classIdx) {
     completedQuests: [], shadowGovHints: 0, politicsFactions: {},
     npcParty: [], questProgress: {}, worldModifiers: {},
     subClass: null, subClassPending: 0,
-    learnedSpells: {}, magicMastery: {}, spellCooldowns: {}
+    learnedSpells: {}, magicMastery: {}, spellCooldowns: {},
+    hp: null, maxHP: null,
+    unlockedAchievements: [], factionStanding: {}, completedMilestones: []
   };
 }
 
 function freshW() {
   return {
-    p1: freshPlayer(0), p2: freshPlayer(1), p3: freshPlayer(2),
+    p1: freshPlayer(0), p2: freshPlayer(1), p3: freshPlayer(2), p4: freshPlayer(3),
     arcs: [], nemesis: null, log: [], dungeons: 0, bosses: 0, wars: 0, infamy: 0,
     worldEvent: null, worldEventExpiry: 0, worldBosses: [],
     createdAt: Date.now(), partyStatus: null, org: null,
-    pvpState: {}, worldModifiers: {}, worldXPBoost: 1, maxPlayers: 2
+    pvpState: {}, worldModifiers: {}, worldXPBoost: 1, maxPlayers: 4
   };
 }
 
@@ -76,6 +78,14 @@ function patchPlayer(p) {
   if (!p.bossesKilled) p.bossesKilled = 0;
   if (!p.warsWon) p.warsWon = 0;
   if (!p.dungeonsCleared) p.dungeonsCleared = 0;
+  if (p.hp === undefined) p.hp = null;
+  if (p.maxHP === undefined) p.maxHP = null;
+  if (!p.unlockedAchievements) p.unlockedAchievements = [];
+  if (!p.factionStanding) p.factionStanding = {};
+  if (!p.completedMilestones) p.completedMilestones = [];
+  if (p.mentor === undefined) p.mentor = null;
+  if (p.lordDisciple === undefined) p.lordDisciple = null;
+  if (!p.metLords) p.metLords = [];
   return p;
 }
 
@@ -84,6 +94,7 @@ function patchWorld(w) {
   if (!w.p1) w.p1 = freshPlayer(0); else w.p1 = patchPlayer(w.p1);
   if (!w.p2) w.p2 = freshPlayer(1); else w.p2 = patchPlayer(w.p2);
   if (!w.p3) w.p3 = freshPlayer(2); else w.p3 = patchPlayer(w.p3);
+  if (!w.p4) w.p4 = freshPlayer(3); else w.p4 = patchPlayer(w.p4);
   if (!w.arcs) w.arcs = [];
   if (!w.log) w.log = [];
   if (!w.worldBosses) w.worldBosses = [];
@@ -93,7 +104,7 @@ function patchWorld(w) {
   if (w.worldEvent === undefined) w.worldEvent = null;
   if (w.worldEventExpiry === undefined) w.worldEventExpiry = 0;
   if (!w.worldXPBoost) w.worldXPBoost = 1;
-  if (!w.maxPlayers) w.maxPlayers = 2;
+  if (!w.maxPlayers) w.maxPlayers = 4;
   if (w.org === undefined) w.org = null;
   if (w.partyStatus === undefined) w.partyStatus = null;
   if (!w.createdAt) w.createdAt = Date.now();
