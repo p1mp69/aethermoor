@@ -2282,27 +2282,7 @@ function connectAndJoin(){
       var msg=JSON.parse(e.data);
       if(msg.type==='world'&&!got){
         got=true;W=msg.world;
-        ['p1','p2'].forEach(function(p){
-          if(!W[p].unlockedNodes)W[p].unlockedNodes={};
-          if(!W[p].busyUntil)W[p].busyUntil=0;
-          if(!W[p].busyAction)W[p].busyAction=null;
-          if(!W[p].busyXP)W[p].busyXP=0;
-          if(!W[p].busyMsg)W[p].busyMsg='';
-          if(!W[p].inventory)W[p].inventory=[];
-          if(!W[p].equipped)W[p].equipped={weapon:null,armor:null,accessory:null};
-          if(!W[p].resources)W[p].resources={stone:0,wood:0,crystals:0,gold:0};
-          if(W[p].hasOrg===undefined)W[p].hasOrg=false;
-          if(!W[p].baseLevel)W[p].baseLevel=0;
-          if(!W[p].fame)W[p].fame=0;
-          if(!W[p].fameActions)W[p].fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
-          if(!W[p].metNpcs)W[p].metNpcs=[];
-          if(!W[p].completedQuests)W[p].completedQuests=[];
-          if(W[p].shadowGovHints===undefined)W[p].shadowGovHints=0;
-          if(!W[p].politicsFactions)W[p].politicsFactions={};
-          if(!W[p].npcParty)W[p].npcParty=[];
-          if(!W[p].crew)W[p].crew=[];
-          if(!W[p].careerProgress)W[p].careerProgress={merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0};
-        });
+        patchW(W);
         if(!W.log)W.log=[];if(!W.arcs)W.arcs=[];if(W.nemesis===undefined)W.nemesis=null;
         if(!W.worldBosses)W.worldBosses=[];
         if(!W.pvpState)W.pvpState={};
@@ -2315,30 +2295,56 @@ function connectAndJoin(){
     ws.onclose=function(){if(!got)reject(new Error('Connection closed'));syn('err');};
   });
 }
+function patchW(w){
+  function pP(pl){
+    if(!pl)return;
+    if(!pl.inventory)pl.inventory=[];
+    if(!pl.equipped)pl.equipped={weapon:null,armor:null,accessory:null};
+    if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
+    if(!pl.raceId)pl.raceId='human';
+    if(!pl.unlockedNodes)pl.unlockedNodes={};
+    if(!pl.metNpcs)pl.metNpcs=[];
+    if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+    if(!pl.npcRelationships)pl.npcRelationships={};
+    if(!pl.crew)pl.crew=[];
+    if(!pl.npcParty)pl.npcParty=[];
+    if(!pl.completedQuests)pl.completedQuests=[];
+    if(!pl.revealedIntel)pl.revealedIntel=[];
+    if(!pl.politicsFactions)pl.politicsFactions={};
+    if(!pl.careerProgress)pl.careerProgress={merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0};
+    if(!pl.questProgress)pl.questProgress={};
+    if(!pl.worldModifiers)pl.worldModifiers={};
+    if(!pl.fameActions)pl.fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
+    if(!pl.spellCooldowns)pl.spellCooldowns={};
+    if(!pl.magicMastery)pl.magicMastery={};
+    if(!pl.learnedSpells)pl.learnedSpells={};
+    if(!pl.properties)pl.properties=[];
+    if(pl.hasOrg===undefined)pl.hasOrg=false;
+    if(pl.shadowGovHints===undefined)pl.shadowGovHints=0;
+    if(pl.subClass===undefined)pl.subClass=null;
+    if(pl.subClassPending===undefined)pl.subClassPending=0;
+    if(pl.nextActionBoost===undefined)pl.nextActionBoost=null;
+    if(pl.soulLinkActive===undefined)pl.soulLinkActive=false;
+    if(pl.career===undefined)pl.career=null;
+    if(!pl.fame)pl.fame=0;
+    if(!pl.baseLevel)pl.baseLevel=0;
+    if(!pl.bossesKilled)pl.bossesKilled=0;
+    if(!pl.warsWon)pl.warsWon=0;
+    if(!pl.dungeonsCleared)pl.dungeonsCleared=0;
+    if(!pl.busyUntil)pl.busyUntil=0;
+    if(pl.busyAction===undefined)pl.busyAction=null;
+    if(!pl.busyXP)pl.busyXP=0;
+    if(!pl.busyMsg)pl.busyMsg='';
+  }
+  ['p1','p2','p3'].forEach(function(p){if(w[p])pP(w[p]);else w[p]={name:'--',classIdx:(p==='p1'?0:p==='p2'?1:2),raceId:'human',level:1,xp:0,xpNeeded:100,skillPoints:3,unlockedNodes:{},lastSeen:0,spawnType:'',location:'',busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:{stone:0,wood:0,crystals:0,gold:0},hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{}};});
+}
 function handleWsMsg(e){
   var msg=JSON.parse(e.data);
   if(msg.type==='world'){
     W=msg.world;
+    patchW(W);
     if(!W.log)W.log=[];if(!W.arcs)W.arcs=[];if(W.nemesis===undefined)W.nemesis=null;
     if(!W.worldBosses)W.worldBosses=[];
-    ['p1','p2'].forEach(function(p){
-      if(!W[p].unlockedNodes)W[p].unlockedNodes={};
-      if(!W[p].busyUntil)W[p].busyUntil=0;
-      if(!W[p].inventory)W[p].inventory=[];
-      if(!W[p].equipped)W[p].equipped={weapon:null,armor:null,accessory:null};
-      if(!W[p].resources)W[p].resources={stone:0,wood:0,crystals:0,gold:0};
-      if(W[p].hasOrg===undefined)W[p].hasOrg=false;
-      if(!W[p].baseLevel)W[p].baseLevel=0;
-      if(!W[p].fame)W[p].fame=0;
-      if(!W[p].fameActions)W[p].fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
-      if(!W[p].metNpcs)W[p].metNpcs=[];
-      if(!W[p].completedQuests)W[p].completedQuests=[];
-      if(W[p].shadowGovHints===undefined)W[p].shadowGovHints=0;
-      if(!W[p].politicsFactions)W[p].politicsFactions={};
-      if(!W[p].npcParty)W[p].npcParty=[];
-      if(!W[p].crew)W[p].crew=[];
-      if(!W[p].careerProgress)W[p].careerProgress={merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0};
-    });
     if(!W.pvpState)W.pvpState={};
     if(W.log.length>lastLogLen){W.log.slice(lastLogLen).forEach(function(entry){appLog(entry.t,entry.c,entry.ts);});lastLogLen=W.log.length;}
     renderAll();syn('live');
@@ -2366,8 +2372,9 @@ async function enterWorld(){
   showLd('entering the world...');setErr('');
   try{
     await connectAndJoin();if(!W||!W.p1)W=freshW();
+    patchW(W);
     if(!W.createdAt)W.createdAt=Date.now();
-    var mp='p'+mySlot;var isNew=!W[mp].name||W[mp].name==='--';
+    var mp='p'+mySlot;if(!W[mp])W[mp]=freshW()['p'+mySlot];var isNew=!W[mp].name||W[mp].name==='--';
     if(isNew){
       W[mp].classIdx=Math.floor(Math.random()*CLS.length);
       W[mp].skillPoints=3;W[mp].unlockedNodes={};W[mp].spawnType=mySpawn;W[mp].location=myLocation;
@@ -2384,7 +2391,7 @@ async function enterWorld(){
     await writeW(W);lastLogLen=W.log.length;hideLd();
     localStorage.setItem('am_session',JSON.stringify({sid:sid,slot:mySlot,name:W['p'+mySlot].name}));
     $g('pg-join').classList.remove('on');$g('pg-game').classList.add('on');
-    $g('sbdg').textContent='# '+sid;$g('you-'+mp).style.display='inline';
+    $g('sbdg').textContent='# '+sid;var youEl=$g('you-'+mp);if(youEl)youEl.style.display='inline';
     buildActBtns();buildLoreCls();renderAll();renderIntel();renderWorldStatus();
     startClock();checkDone();maybeEvent();maybeNemesis();
     if(isNew)showIntro(mySpawn);
