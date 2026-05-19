@@ -501,10 +501,82 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
 .qo-reward.neg{border-color:rgba(255,68,85,0.3);color:#ff6677;background:rgba(255,68,85,0.06)}
 .qo-btn{background:transparent;border:1px solid rgba(212,168,67,0.4);color:var(--gold);padding:14px 38px;border-radius:12px;font-size:12px;letter-spacing:4px;cursor:pointer;font-family:"Rajdhani",sans-serif;margin-top:4px;transition:all .2s}
 .qo-btn:active{background:rgba(212,168,67,0.12);transform:scale(.97)}
+/* MAIN MENU */
+#mainmenu-wrap{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:800;background:#030310;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;overflow-y:auto}
+#mainmenu-wrap.on{display:flex}
+.mm-logo{font-family:"Cinzel",serif;font-size:38px;font-weight:700;color:var(--gold);letter-spacing:10px;text-align:center;text-shadow:0 0 60px rgba(212,168,67,0.5);margin-bottom:6px}
+.mm-sub{font-size:10px;letter-spacing:8px;color:var(--tx3);text-transform:uppercase;text-align:center;margin-bottom:8px}
+.mm-flavor{font-size:12px;color:var(--tx3);text-align:center;font-style:italic;margin-bottom:40px;line-height:1.8;max-width:340px}
+.mm-inner{width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px}
+.mm-continue{background:linear-gradient(135deg,rgba(212,168,67,0.15),rgba(212,168,67,0.06));border:1px solid var(--gold-d);border-radius:20px;padding:20px;cursor:pointer;transition:all .2s}
+.mm-continue:active{transform:scale(.97)}
+.mm-continue-label{font-size:9px;letter-spacing:4px;color:var(--gold);margin-bottom:6px;text-transform:uppercase}
+.mm-continue-name{font-family:"Cinzel",serif;font-size:16px;color:var(--tx);margin-bottom:4px}
+.mm-continue-meta{font-size:11px;color:var(--tx3);margin-bottom:14px}
+.mm-continue-btn{width:100%;background:var(--gold);color:#030310;font-family:"Cinzel",serif;font-size:13px;letter-spacing:4px;padding:14px;border-radius:12px;border:none;cursor:pointer;font-weight:700;transition:all .2s}
+.mm-continue-btn:active{opacity:.85;transform:scale(.98)}
+.mm-btn{width:100%;background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx);font-family:"Rajdhani",sans-serif;font-size:14px;letter-spacing:3px;padding:16px;border-radius:14px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.mm-btn:active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,0.06)}
+/* SETTINGS OVERLAY */
+#settings-wrap{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:900;background:rgba(3,3,16,.97);flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;overflow-y:auto}
+#settings-wrap.on{display:flex}
+.st-inner{width:100%;max-width:380px}
+.st-title{font-family:"Cinzel",serif;font-size:18px;color:var(--gold);letter-spacing:4px;text-align:center;margin-bottom:28px}
+.st-card{background:rgba(13,13,40,0.8);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:12px}
+.st-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.st-row:last-child{border-bottom:none}
+.st-label{font-size:13px;color:var(--tx)}
+.st-val{font-size:11px;color:var(--tx3)}
+.st-toggle{background:transparent;border:1px solid var(--gold-d);color:var(--gold);padding:7px 16px;border-radius:10px;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.st-toggle:active{background:rgba(212,168,67,0.1)}
+.st-danger{background:transparent;border:1px solid rgba(255,61,90,0.4);color:var(--red);padding:10px 20px;border-radius:10px;font-size:11px;letter-spacing:2px;cursor:pointer;width:100%;margin-top:8px;transition:all .2s}
+.st-danger:active{background:rgba(255,61,90,0.08)}
+.st-close{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx3);padding:14px;border-radius:12px;font-size:12px;letter-spacing:3px;cursor:pointer;width:100%;margin-top:16px;transition:all .2s;text-transform:uppercase}
+.st-close:active{color:var(--tx);border-color:rgba(255,255,255,0.2)}
+/* SHOP OVERLAY */
+#shop-overlay{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:500;background:rgba(4,4,8,.97);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#shop-overlay.on{display:block}
 </style>
 </head>
 <body>
-<div id="pg-join" class="page on">
+<div id="mainmenu-wrap">
+  <div class="mm-logo">AETHERMOOR</div>
+  <div class="mm-sub">Chronicle Edition &mdash; v1.0</div>
+  <div class="mm-flavor">The world is still running. Your choices still matter. Welcome back.</div>
+  <div class="mm-inner">
+    <div id="mm-continue-card" style="display:none" class="mm-continue">
+      <div class="mm-continue-label">Continue Where You Left Off</div>
+      <div class="mm-continue-name" id="mm-cont-name"></div>
+      <div class="mm-continue-meta" id="mm-cont-meta"></div>
+      <button class="mm-continue-btn" onclick="doRejoin()">CONTINUE</button>
+    </div>
+    <button class="mm-btn" onclick="closeMainMenuToJoin()">&#9876; Join / New Session</button>
+    <button class="mm-btn" onclick="openSettings()">&#9737; Settings</button>
+  </div>
+</div>
+<div id="settings-wrap">
+  <div class="st-inner">
+    <div class="st-title">Settings</div>
+    <div class="st-card">
+      <div class="st-row">
+        <span class="st-label">&#9834; Ambient Music</span>
+        <button class="st-toggle" onclick="toggleMusic();renderMusicBtn();" id="st-music-btn">Toggle</button>
+      </div>
+    </div>
+    <div class="st-card">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;text-transform:uppercase">About</div>
+      <div style="font-size:13px;color:var(--tx2)">AETHERMOOR &mdash; Chronicle Edition</div>
+      <div style="font-size:11px;color:var(--tx3);margin-top:4px">Version v1.0 &mdash; A collaborative world-building RPG.</div>
+    </div>
+    <div class="st-card">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--red);margin-bottom:8px;text-transform:uppercase">Danger Zone</div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:12px">This clears your saved session from this device only. Your world data on the server is preserved.</div>
+      <button class="st-danger" onclick="clearSavedSession()">&#9888; Clear Saved Session</button>
+    </div>
+    <button class="st-close" onclick="closeSettings()">Close</button>
+  </div>
+</div>
+<div id="pg-join" class="page">
   <div class="jglow"></div>
   <div class="jinner">
     <div class="jlogo">AETHERMOOR</div>
@@ -706,13 +778,6 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
           <div id="factions-list" style="margin-top:6px"></div>
         </div>
       </div>
-      <!-- ACHIEVEMENTS -->
-      <div class="card">
-        <div class="card-body">
-          <div class="ctitle">Achievements</div>
-          <div id="achievements-list" style="margin-top:6px"></div>
-        </div>
-      </div>
       <div class="card"><div class="card-body"><div class="ctitle">World Log</div><div class="logsc" id="logsc"></div></div></div>
     </div>
 
@@ -787,6 +852,21 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
       </div>
       <div class="card" id="org-summary-card" style="display:none">
         <div class="card-body" id="org-summary-body"></div>
+      </div>
+      <!-- ACHIEVEMENTS (moved from You tab) -->
+      <div class="card">
+        <div class="card-body">
+          <div class="ctitle">Achievements</div>
+          <div id="achievements-list" style="margin-top:6px"></div>
+        </div>
+      </div>
+      <!-- MERCHANT SHOPS -->
+      <div class="card">
+        <div class="card-body">
+          <div class="ctitle">Merchant Shops</div>
+          <div style="font-size:11px;color:var(--tx3);margin-bottom:12px;line-height:1.7">Five shops. Stock rotates hourly. Spend gold to gear up.</div>
+          <div id="shops-panel"></div>
+        </div>
       </div>
     </div>
 
@@ -1885,9 +1965,6 @@ var PARTY=[
   {id:'org',em:'&#128100;',name:'Org Mission',time:'2 days',dMs:172800000,xM:2.8,
    subActions:['debrief-live','adjust-the-plan','go-in-yourself'],
    msgs:["The organization completed its mission. Mostly as planned.","Subordinates returned. Results exceed projections. Mostly.","The mission is done. The intel was worth more than expected."]},
-  {id:'rival',em:'&#9670;',name:'Rival Fight',time:'1 hr',dMs:3600000,xM:3,
-   subActions:['hold-nothing-back','feel-them-out','trash-talk'],
-   msgs:["The rival encounter. Neither held back. Both grew.","The fight that people will write about for a century.","When the dust settled, both understood something new."]},
   {id:'secret',em:'&#9737;',name:'Secret Op',time:'8 hrs',dMs:28800000,xM:3,
    subActions:['go-quiet','improvise','abort-and-escape'],
    msgs:["[CLASSIFIED] The log cannot even fully describe this.","They moved through the shadows and changed the fate of something important.","Secret operation complete. The world does not know. It will feel the effects anyway."]},
@@ -3492,6 +3569,163 @@ var NAMED_BOSS_POOL=[
   {id:'the_herald_of_ends',em:'&#9760;',name:'Herald of Ends',title:'Advance Notice of the Next Threshold',desc:'The Herald appears approximately eight to twelve months before major threshold events — the kind that end ages. Its presence has been recorded seven times. Each time, an age ended within the year. It has been sighted twice in the past six months in different locations. Both sightings were confirmed. Both locations are on the same approximate trajectory. The trajectory leads here.',xpMult:8,infamyGain:20},
 ];
 
+// ═══ MERCHANT SHOPS ═══
+var SHOP_ITEM_POOLS={
+  general:[
+    {id:'health_potion',name:'Health Potion',em:'&#128138;',price:30,type:'consumable',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'Restores 30 HP when used.',stats:{}},
+    {id:'iron_ration',name:'Iron Ration',em:'&#127858;',price:15,type:'consumable',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+20 XP bonus on next action.',stats:{}},
+    {id:'rope_bundle',name:'Rope Bundle',em:'&#129532;',price:10,type:'accessory',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+1 AGI. Utility item.',stats:{AGI:1}},
+    {id:'lantern',name:'Dungeon Lantern',em:'&#129681;',price:25,type:'accessory',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+2 INT. Reveals hidden passages.',stats:{INT:2}},
+    {id:'lucky_charm',name:'Lucky Charm',em:'&#127808;',price:40,type:'accessory',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+3 LUK.',stats:{LUK:3}},
+    {id:'revival_herb',name:'Revival Herb',em:'&#127807;',price:60,type:'consumable',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'Prevents death once. Auto-activates.',stats:{}}
+  ],
+  weapons:[
+    {id:'iron_sword',name:'Iron Sword',em:'&#9876;',price:45,type:'weapon',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+5 STR. Standard issue.',stats:{STR:5}},
+    {id:'steel_axe',name:'Steel Axe',em:'&#129683;',price:80,type:'weapon',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+8 STR, +2 VIT.',stats:{STR:8,VIT:2}},
+    {id:'swift_dagger',name:'Swift Dagger',em:'&#128481;',price:55,type:'weapon',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+3 STR, +4 AGI.',stats:{STR:3,AGI:4}},
+    {id:'war_hammer',name:'War Hammer',em:'&#9874;',price:120,type:'weapon',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+12 STR. Slow but devastating.',stats:{STR:12}},
+    {id:'mage_staff',name:'Apprentice Staff',em:'&#129686;',price:70,type:'weapon',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+3 STR, +6 INT.',stats:{STR:3,INT:6}},
+    {id:'crossbow',name:'Light Crossbow',em:'&#127993;',price:90,type:'weapon',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+6 STR, +4 AGI.',stats:{STR:6,AGI:4}}
+  ],
+  armor:[
+    {id:'leather_armor',name:'Leather Armor',em:'&#128084;',price:40,type:'armor',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+4 VIT.',stats:{VIT:4}},
+    {id:'chain_mail',name:'Chain Mail',em:'&#9812;',price:90,type:'armor',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+7 VIT, +2 STR.',stats:{VIT:7,STR:2}},
+    {id:'mage_robe',name:'Mage Robes',em:'&#129536;',price:65,type:'armor',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+4 INT, +3 VIT.',stats:{INT:4,VIT:3}},
+    {id:'shadow_cloak',name:'Shadow Cloak',em:'&#127752;',price:110,type:'armor',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+5 AGI, +4 VIT.',stats:{AGI:5,VIT:4}},
+    {id:'iron_shield',name:'Iron Shield',em:'&#9872;',price:55,type:'armor',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'+6 VIT. Blocks basic attacks.',stats:{VIT:6}}
+  ],
+  arcane:[
+    {id:'mana_crystal',name:'Mana Crystal',em:'&#128142;',price:50,type:'consumable',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+50 XP and +2 crystals.',stats:{}},
+    {id:'spell_tome',name:'Basic Spell Tome',em:'&#128218;',price:80,type:'consumable',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'+8 INT permanently (one use).',stats:{}},
+    {id:'focus_ring',name:'Focus Ring',em:'&#9900;',price:120,type:'accessory',rarity:'rare',rarityName:'Rare',rarityColor:'#6688ff',effect:'+8 INT, +4 LUK.',stats:{INT:8,LUK:4}},
+    {id:'void_shard',name:'Void Shard',em:'&#9737;',price:200,type:'accessory',rarity:'rare',rarityName:'Rare',rarityColor:'#6688ff',effect:'+10 INT, +5 AGI.',stats:{INT:10,AGI:5}},
+    {id:'mana_potion',name:'Mana Draught',em:'&#128139;',price:45,type:'consumable',rarity:'common',rarityName:'Common',rarityColor:'#aaaacc',effect:'Reduces next action cooldown by 20%.',stats:{}}
+  ],
+  black:[
+    {id:'assassin_blade',name:'Assassin\'s Blade',em:'&#9760;',price:180,type:'weapon',rarity:'rare',rarityName:'Rare',rarityColor:'#6688ff',effect:'+10 STR, +8 AGI. No questions.',stats:{STR:10,AGI:8}},
+    {id:'shadow_dust',name:'Shadow Dust',em:'&#9783;',price:90,type:'consumable',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'Next action undetectable. +20% XP.',stats:{}},
+    {id:'cursed_ring',name:'Cursed Ring',em:'&#128282;',price:150,type:'accessory',rarity:'rare',rarityName:'Rare',rarityColor:'#6688ff',effect:'+12 LUK, -2 VIT. Worth it.',stats:{LUK:12,VIT:-2}},
+    {id:'marked_contract',name:'Sealed Contract',em:'&#128196;',price:250,type:'consumable',rarity:'rare',rarityName:'Rare',rarityColor:'#6688ff',effect:'+200 XP. Do not read the fine print.',stats:{}},
+    {id:'poison_vial',name:'Vial of Silence',em:'&#9879;',price:120,type:'consumable',rarity:'uncommon',rarityName:'Uncommon',rarityColor:'#44cc88',effect:'Used against a target: delays their next action by 30 min.',stats:{}}
+  ]
+};
+var SHOPS=[
+  {id:'sh_general',name:'General Store',em:'&#127978;',desc:'Basic supplies for any adventurer.',color:'#aaaacc',pool:'general'},
+  {id:'sh_weapons',name:'Ironclad Arms',em:'&#9876;',desc:'Weapons, shields, and fighting gear.',color:'#ff8844',pool:'weapons'},
+  {id:'sh_armor',name:'The Ironcloak',em:'&#9812;',desc:'Armor, robes, and protective gear.',color:'#4488ff',pool:'armor'},
+  {id:'sh_arcane',name:'The Arcane Curio',em:'&#9737;',desc:'Magical items and spell components.',color:'#aa44ff',pool:'arcane'},
+  {id:'sh_black',name:'The Night Stall',em:'&#9760;',desc:'Things that cannot be found elsewhere. Do not ask questions.',color:'#ff4455',pool:'black'}
+];
+function getShopStock(shopId,seed){
+  var sh=SHOPS.find(function(s){return s.id===shopId;});if(!sh)return[];
+  var pool=SHOP_ITEM_POOLS[sh.pool]||[];
+  var result=[];var used={};
+  var count=Math.min(pool.length,4+Math.floor(seed%3));
+  var attempts=0;
+  while(result.length<count&&attempts<50){
+    attempts++;
+    var idx=Math.floor(((seed*1234567+attempts*7919)%99991)/99991*pool.length);
+    idx=Math.abs(idx)%pool.length;
+    if(!used[idx]){used[idx]=true;var it=pool[idx];result.push({uid:seed*1000+idx,id:it.id,name:it.name,em:it.em,price:it.price,type:it.type,rarity:it.rarity,rarityName:it.rarityName,rarityColor:it.rarityColor,effect:it.effect,stats:it.stats||{}});}
+  }
+  return result;
+}
+function ensureShopData(){
+  if(!W)return;
+  if(!W.shopRestocks)W.shopRestocks={};
+  if(!W.shopInventories)W.shopInventories={};
+  var now=Date.now();var hour=3600000;
+  SHOPS.forEach(function(sh){
+    var last=W.shopRestocks[sh.id]||0;
+    if(!W.shopInventories[sh.id]||W.shopInventories[sh.id].length===0||(now-last)>=hour){
+      var seed=Math.floor(now/hour)*31337+sh.id.length*997;
+      W.shopInventories[sh.id]=getShopStock(sh.id,seed);
+      W.shopRestocks[sh.id]=now;
+    }
+  });
+}
+var currentShopId=null;
+function openShop(shopId){
+  if(!W||!mySlot)return;
+  ensureShopData();
+  currentShopId=shopId;
+  var sh=SHOPS.find(function(s){return s.id===shopId;});if(!sh)return;
+  var items=W.shopInventories[shopId]||[];
+  var pl=W['p'+mySlot];
+  var gold=(pl.resources&&pl.resources.gold)||0;
+  var nextRestock=W.shopRestocks[shopId]?Math.max(0,W.shopRestocks[shopId]+3600000-Date.now()):0;
+  var html='<div style="padding:20px 16px;max-width:500px;margin:auto">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+    +'<div style="display:flex;align-items:center;gap:10px">'
+    +'<span style="font-size:28px">'+sh.em+'</span>'
+    +'<div><div style="font-family:Cinzel,serif;font-size:16px;color:'+sh.color+'">'+sh.name+'</div>'
+    +'<div style="font-size:10px;color:var(--tx3)">'+sh.desc+'</div></div>'
+    +'</div>'
+    +'<button onclick="closeShop()" style="background:none;border:none;color:var(--tx3);font-size:24px;cursor:pointer">&times;</button>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--gold);margin-bottom:4px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06)">&#128176; Your gold: '+fmtGold(gold)+'</div>'
+    +'<div style="font-size:10px;color:var(--tx3);margin-bottom:16px">Restocks in: '+fmtDur(nextRestock)+'</div>';
+  if(!items.length){html+='<div style="font-size:12px;color:var(--tx3);padding:20px;text-align:center">Stall is empty. Check back later.</div>';}
+  else{
+    items.forEach(function(it,idx){
+      var canAfford=gold>=it.price;
+      html+='<div style="background:var(--s2);border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+it.rarityColor+';border-radius:12px;padding:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px">'
+        +'<div style="font-size:24px;flex-shrink:0">'+it.em+'</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;color:'+it.rarityColor+';font-weight:700">'+it.name+'</div>'
+        +'<div style="font-size:9px;color:var(--tx3);letter-spacing:2px;margin-bottom:4px">'+it.rarityName.toUpperCase()+' \xb7 '+it.type.toUpperCase()+'</div>'
+        +'<div style="font-size:11px;color:var(--tx2)">'+it.effect+'</div>'
+        +'</div>'
+        +'<div style="text-align:right;flex-shrink:0">'
+        +'<div style="font-size:13px;color:var(--gold);font-weight:700;margin-bottom:6px">'+it.price+'g</div>'
+        +'<button onclick="buyShopItem(\''+shopId+'\','+idx+')" '+(canAfford?'':'disabled')+' style="background:transparent;border:1px solid '+(canAfford?'var(--gold)':'rgba(255,255,255,0.1)')+';color:'+(canAfford?'var(--gold)':'var(--tx3)')+';padding:6px 14px;border-radius:8px;font-size:10px;letter-spacing:1px;cursor:'+(canAfford?'pointer':'not-allowed')+';white-space:nowrap">BUY</button>'
+        +'</div>'
+        +'</div>';
+    });
+  }
+  html+='</div>';
+  var ov=$g('shop-overlay');if(!ov)return;
+  ov.innerHTML=html;
+  ov.classList.add('on');
+}
+function closeShop(){var ov=$g('shop-overlay');if(ov)ov.classList.remove('on');currentShopId=null;}
+function buyShopItem(shopId,itemIdx){
+  if(!W||!mySlot)return;
+  ensureShopData();
+  var items=W.shopInventories[shopId];if(!items||!items[itemIdx])return;
+  var it=items[itemIdx];
+  var pl=W['p'+mySlot];
+  var gold=(pl.resources&&pl.resources.gold)||0;
+  if(gold<it.price){showToast('Not enough gold!',3000);return;}
+  pl.resources.gold=gold-it.price;
+  if(!pl.inventory)pl.inventory=[];
+  var newIt={uid:Date.now()+Math.floor(Math.random()*9999),id:it.id,name:it.name,em:it.em,type:it.type,rarity:it.rarity,rarityName:it.rarityName,rarityColor:it.rarityColor,effect:it.effect,stats:it.stats||{},xpBonus:0};
+  pl.inventory.push(newIt);
+  items.splice(itemIdx,1);
+  pushLog(pl.name+' purchased '+it.name+' from '+SHOPS.find(function(s){return s.id===shopId;}).name+' for '+it.price+'g.','lsk');
+  writeW(W).catch(function(){});
+  renderAll();
+  openShop(shopId);
+}
+function showToast(msg,dur){
+  var t=$g('toast-msg');if(!t)return;
+  t.textContent=msg;t.style.display='block';
+  clearTimeout(t._timer);t._timer=setTimeout(function(){t.style.display='none';},dur||3000);
+}
+function renderShops(){
+  var el=$g('shops-panel');if(!el||!W)return;
+  var html='';
+  SHOPS.forEach(function(sh){
+    html+='<div onclick="openShop(\''+sh.id+'\')" style="background:var(--s2);border:1px solid rgba(255,255,255,0.07);border-left:3px solid '+sh.color+';border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;margin-bottom:8px" onmouseover="this.style.borderColor=\''+sh.color+'\'" onmouseout="this.style.borderLeftColor=\''+sh.color+'\';this.style.borderTopColor=\'rgba(255,255,255,0.07)\';this.style.borderRightColor=\'rgba(255,255,255,0.07)\';this.style.borderBottomColor=\'rgba(255,255,255,0.07)\'">'
+      +'<div style="font-size:26px">'+sh.em+'</div>'
+      +'<div><div style="font-family:Cinzel,serif;font-size:12px;color:'+sh.color+'">'+sh.name+'</div>'
+      +'<div style="font-size:10px;color:var(--tx3);margin-top:2px">'+sh.desc+'</div></div>'
+      +'<div style="margin-left:auto;font-size:16px;color:var(--tx3)">&#8250;</div>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+
 // ═══ NEMESIS STAGES (info revealed progressively) ═══
 var NEMESIS_STAGES=[
   {id:'watching', min:0,  max:20,
@@ -3553,12 +3787,41 @@ function pickSpawn(id){mySpawn=id;document.querySelectorAll('.spawn-card').forEa
 function pickSlot(n){mySlot=n;$g('sl1').className='slot'+(n===1?' sel1':'');$g('sl2').className='slot'+(n===2?' sel2':'');var sl3=$g('sl3');if(sl3)sl3.className='slot'+(n===3?' sel3':'');var sl4=$g('sl4');if(sl4)sl4.className='slot'+(n===4?' sel4':'');chk();}
 function genCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',s='';for(var i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];$g('inp-sid').value=s;chk();}
 function chk(){var ok=mySlot&&mySpawn&&$g('inp-sid').value.trim()&&$g('inp-name').value.trim()&&$g('spawn-location').value;$g('enterbtn').disabled=!ok;}
+function showMainMenu(){
+  var wrap=$g('mainmenu-wrap');if(!wrap)return;
+  if(savedSession){
+    var cc=$g('mm-continue-card');var cn=$g('mm-cont-name');var cm=$g('mm-cont-meta');
+    if(cc&&cn&&cm){
+      cn.textContent=savedSession.name;
+      cm.textContent='Session '+savedSession.sid+' \xb7 Slot '+savedSession.slot;
+      cc.style.display='block';
+    }
+  }
+  wrap.classList.add('on');
+}
+function closeMainMenuToJoin(){
+  var wrap=$g('mainmenu-wrap');if(wrap)wrap.classList.remove('on');
+  var pg=$g('pg-join');if(pg)pg.classList.add('on');
+}
+function openSettings(){
+  var wrap=$g('settings-wrap');if(wrap)wrap.classList.add('on');
+}
+function closeSettings(){
+  var wrap=$g('settings-wrap');if(wrap)wrap.classList.remove('on');
+}
+function clearSavedSession(){
+  localStorage.removeItem('am_session');
+  location.reload();
+}
 function checkRejoin(){
-  if(!savedSession)return;
-  var banner=$g('rejoin-banner');var txt=$g('rejoin-text');
-  if(!banner||!txt)return;
-  txt.textContent=savedSession.name+' · Session '+savedSession.sid+' · Slot '+savedSession.slot;
-  banner.style.display='block';
+  if(savedSession){
+    var banner=$g('rejoin-banner');var txt=$g('rejoin-text');
+    if(banner&&txt){
+      txt.textContent=savedSession.name+' \xb7 Session '+savedSession.sid+' \xb7 Slot '+savedSession.slot;
+      banner.style.display='block';
+    }
+  }
+  showMainMenu();
 }
 function doRejoin(){
   if(!savedSession)return;
@@ -3745,7 +4008,7 @@ async function enterWorld(){
     pushLog(lines[Math.floor(Math.random()*3)],'lwrld');
     await writeW(W);lastLogLen=W.log.length;hideLd();
     localStorage.setItem('am_session',JSON.stringify({sid:sid,slot:mySlot,name:W['p'+mySlot].name,spawn:mySpawn,location:myLocation}));
-    $g('pg-join').classList.remove('on');$g('pg-game').classList.add('on');
+    $g('pg-join').classList.remove('on');var mmw=$g('mainmenu-wrap');if(mmw)mmw.classList.remove('on');$g('pg-game').classList.add('on');
     $g('sbdg').textContent='# '+sid;var youEl=$g('you-'+mp);if(youEl)youEl.style.display='inline';
     buildActBtns();buildLoreCls();renderAll();renderIntel();renderWorldStatus();
     startClock();checkDone();maybeEvent();maybeNemesis();
@@ -3757,7 +4020,7 @@ function leaveWorld(){
   if(ws){ws.close();ws=null;}
   clearInterval(clockTimer);
   W=null;lastLogLen=0;mySlot=0;mySpawn=null;busy=false;cbBusy=false;
-  $g('pg-game').classList.remove('on');$g('pg-join').classList.add('on');
+  $g('pg-game').classList.remove('on');$g('pg-join').classList.remove('on');showMainMenu();
   $g('logsc').innerHTML='';
   ['p1','p2','p3','p4'].forEach(function(p){var el=$g('you-'+p);if(el)el.style.display='none';});
 }
@@ -4445,7 +4708,7 @@ function renderWorldStatus(){
     +'<div class="res-chip"><span class="res-em">&#128697;</span><span class="res-v">'+res.stone+'</span><span class="res-lbl">stone</span></div>'
     +'<div class="res-chip"><span class="res-em">&#127795;</span><span class="res-v">'+res.wood+'</span><span class="res-lbl">wood</span></div>'
     +'<div class="res-chip"><span class="res-em">&#128142;</span><span class="res-v">'+res.crystals+'</span><span class="res-lbl">crystals</span></div>'
-    +'<div class="res-chip"><span class="res-em">&#128176;</span><span class="res-v">'+res.gold+'</span><span class="res-lbl">gold</span></div>'
+    +'<div class="res-chip" style="border-color:rgba(212,168,67,0.35);background:rgba(212,168,67,0.06)"><span class="res-em">&#128176;</span><span class="res-v" style="color:var(--gold)">'+fmtGold(res.gold)+'</span><span class="res-lbl">gold</span></div>'
     +'</div>';
   if(pl.baseLevel>0)html+='<div style="font-size:11px;color:var(--green);margin-bottom:6px">&#127968; Base established (Lv '+pl.baseLevel+')'+(pl.hasOrg?' &nbsp;&#128100; Org active':'')+'</div>';
   html+='</div>';
@@ -4700,9 +4963,10 @@ function switchTab(name){['you','world','skills','loot','lore'].forEach(function
 
 // ═══ UTIL ═══
 function xpN(lv){return Math.round(100*Math.pow(1.5,lv-1));}function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});}
+function fmtGold(n){n=Math.floor(n||0);if(n===0)return'0g';var s=String(n);var out='';for(var i=0;i<s.length;i++){if(i>0&&(s.length-i)%3===0)out+=',';out+=s[i];}return out+'g';}
 
 // ═══ RENDER ═══
-function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderP('p3');renderP('p4');renderOv();updateHints();renderInventory();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderAbilities();renderPartyPanel();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();renderSkSummary();renderGuide();renderChronicle();var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}}
+function renderAll(){if(!W)return;renderP('p1');renderP('p2');renderP('p3');renderP('p4');renderOv();updateHints();renderInventory();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderAbilities();renderPartyPanel();renderOrgSummary();renderQuestBoard();renderPvpPanel();renderMusicBtn();renderMagicSummary();renderSubclassSummaryEl();renderSkSummary();renderGuide();renderChronicle();renderShops();var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}}
 function renderSubclassSummaryEl(){if(!W||!mySlot)return;var el=$g('subclass-summary');if(!el)return;var pl=W['p'+mySlot];el.innerHTML=renderSubclassSummary(pl);}
 function renderP(p){
   var pl=W[p];if(!pl)return;var c=CLS[pl.classIdx||0];var n=parseInt(p[1]);
@@ -5031,9 +5295,21 @@ async function cancelAction(playerNum){
     await writeW(W);lastLogLen=W.log.length;renderAll();
   }catch(e){}busy=false;
 }
+function showLevelUp(pl,oldLevel,newLevel){
+  var wrap=$g('lvlup-wrap');if(!wrap)return;
+  var c=CLS[pl.classIdx||0];
+  $g('lvlup-em').innerHTML=c.e;
+  $g('lvlup-num').textContent=oldLevel+' -> '+newLevel;
+  var statGains=Object.entries(c.stats).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+  $g('lvlup-stats').innerHTML=statGains.map(function(kv){return'+2 '+kv[0];}).join(' &nbsp; ')+'<br>+2 Skill Points';
+  wrap.style.display='flex';
+  clearTimeout(wrap._lvTimer);
+  wrap._lvTimer=setTimeout(function(){wrap.style.display='none';},2500);
+}
 function doLvl(pl,p){
   var lv=false;
   while(pl.xp>=pl.xpNeeded){
+    var oldLevel=pl.level;
     pl.xp-=pl.xpNeeded;pl.level++;pl.xpNeeded=xpN(pl.level);pl.skillPoints=(pl.skillPoints||0)+2;lv=true;
     // Full HP restore on level up
     pl.hp=getMaxHP(pl);pl.maxHP=pl.hp;
@@ -5041,7 +5317,7 @@ function doLvl(pl,p){
     c.branches.forEach(function(br){br.nodes.forEach(function(nd){if(nd.uLv===pl.level&&!na)na=nd;});});
     pushLog(pl.name+' ascended to level '+pl.level+'! +2 skill points. HP fully restored.','llv');
     if(na)pushLog('System: New ability available for '+pl.name+': '+na.name+'. Check skill tree.','lsk');
-    if(p==='p'+mySlot)showLu(pl.name,pl.level,c.n,na?na.name:null);
+    if(p==='p'+mySlot){showLu(pl.name,pl.level,c.n,na?na.name:null);showLevelUp(pl,oldLevel,pl.level);}
     if(pl.level===10||pl.level===20){pl.subClassPending=(pl.level===10?1:2);if(p==='p'+mySlot)(function(tier){setTimeout(function(){showSubclassOverlay(tier);},600);})(pl.level===10?1:2);}
   }
   if(lv&&p==='p'+mySlot)setTimeout(maybeEncounterLord,800);
@@ -5145,19 +5421,20 @@ function selN(nd,ctx,W2,H2,cls){
 }
 function showBrI(nd){$g('sk-hint').style.display='none';var dn=$g('sk-dn');dn.style.display='block';dn.textContent=nd.fullName;dn.style.color=nd.color;var db=$g('sk-db');db.style.display='block';db.textContent=nd.desc;db.style.color=nd.color+'77';$g('sk-de').style.display='none';$g('sk-ubtn').style.display='none';}
 function resetSkD(){$g('sk-hint').style.display='block';['sk-dn','sk-db','sk-de','sk-ubtn'].forEach(function(id){$g(id).style.display='none';});}
-async function unlockNode(){
-  if(!skSelNode||!W||busy)return;busy=true;
-  try{
-    var fresh=await readW();if(!fresh){busy=false;return;}W=fresh;
-    var mp='p'+skTreePlayer;var pl=W[mp];
-    if((pl.skillPoints||0)<=0){busy=false;return;}
-    if(!pl.unlockedNodes)pl.unlockedNodes={};
-    var cur=pl.unlockedNodes[skSelNode.id]||0;pl.unlockedNodes[skSelNode.id]=cur+1;pl.skillPoints=(pl.skillPoints||0)-1;
-    pushLog(pl.name+(cur===0?' unlocked: ':' ranked up '+skSelNode.label+' to Rank '+(cur+1)+'.'),'lsk');
-    await writeW(W);lastLogLen=W.log.length;renderAll();
-    $g('sk-pts').textContent=(pl.skillPoints||0)+' pts';
-    var c=CLS[pl.classIdx||0];buildSkC(c,pl);skSelNode=null;resetSkD();
-  }catch(e){}busy=false;
+function unlockNode(){
+  if(!skSelNode||!W)return;
+  var mp='p'+skTreePlayer;var pl=W[mp];
+  if(!pl)return;
+  if((pl.skillPoints||0)<=0){return;}
+  if(!pl.unlockedNodes)pl.unlockedNodes={};
+  var cur=pl.unlockedNodes[skSelNode.id]||0;
+  pl.unlockedNodes[skSelNode.id]=cur+1;
+  pl.skillPoints=(pl.skillPoints||0)-1;
+  pushLog(pl.name+(cur===0?' unlocked: '+skSelNode.label:' ranked up '+skSelNode.label+' to Rank '+(cur+1)+'.'),'lsk');
+  writeW(W).catch(function(){});
+  $g('sk-pts').textContent=(pl.skillPoints||0)+' pts';
+  var c=CLS[pl.classIdx||0];buildSkC(c,pl);skSelNode=null;resetSkD();
+  renderAll();
 }
 
 // ═══ INVENTORY ═══
@@ -6223,7 +6500,7 @@ function renderGuide(){
   var hints=[];
   if(!pl.busyAction)hints.push({em:'&#9876;',t:'Start a solo action below — Grind, Explore, or Meditate are great starting points.'});
   if(pl.level<3)hints.push({em:'&#11088;',t:'Actions give XP when they finish. Keep doing actions to level up.'});
-  if(!pl.career&&pl.level>=3)hints.push({em:'&#9874;',t:'You can pick a Career now! Check the Lore tab.'});
+  if(!pl.career&&pl.level>=3)hints.push({em:'&#9874;',t:'You can pick a Career now! Go to the Skills tab and tap the Career button.'});
   if(pl.metNpcs&&pl.metNpcs.length<2)hints.push({em:'&#10022;',t:'Go to the World tab and meet NPCs. Relationships unlock favors and mentorship.'});
   if((pl.skillPoints||0)>0)hints.push({em:'&#128161;',t:'You have '+pl.skillPoints+' skill point'+(pl.skillPoints>1?'s':'')+' to spend! Go to the Skills tab.'});
   if(pl.inventory&&pl.inventory.length&&!pl.equipped.weapon&&!pl.equipped.armor)hints.push({em:'&#9872;',t:'Equip your items! Open inventory in the Lore tab.'});
@@ -6518,9 +6795,30 @@ function renderPvpPanel(){
     return;
   }
   var now2=Date.now();
+  // Show pending duel status
+  var pd=pvpState.pendingDuel;
+  if(pd&&pd.expiresAt>now2){
+    if(pd.target===mySlot){
+      st.innerHTML+='<br><span style="color:var(--red);font-size:11px">You have been challenged to a duel by Player '+pd.challenger+'!</span>';
+      acts.innerHTML=
+        '<button onclick="acceptDuelNew()" style="background:transparent;border:1px solid var(--red);color:var(--red);padding:10px;border-radius:10px;font-size:11px;cursor:pointer;width:100%;margin-bottom:6px">&#9876; ACCEPT DUEL</button>'+
+        '<button onclick="declineDuel()" style="background:transparent;border:1px solid var(--tx3);color:var(--tx3);padding:10px;border-radius:10px;font-size:11px;cursor:pointer;width:100%">Decline</button>';
+      return;
+    } else if(pd.challenger===mySlot){
+      st.innerHTML+='<br><span style="color:var(--orange);font-size:11px">Duel challenge pending... '+fmtDur(pd.expiresAt-now2)+' for response.</span>';
+      acts.innerHTML='<button onclick="declineDuel()" style="background:transparent;border:1px solid var(--tx3);color:var(--tx3);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%">Withdraw Challenge</button>';
+      return;
+    }
+  }
   var sabotageCd=pl.abilityCooldowns&&pl.abilityCooldowns['pvp_sabotage']||0;
   var stealCd=pl.abilityCooldowns&&pl.abilityCooldowns['pvp_steal']||0;
   var challengeCd=pl.abilityCooldowns&&pl.abilityCooldowns['pvp_challenge']||0;
+  // Show active debuffs on target
+  var targetSlot=mySlot===1?2:1;
+  var scrutinyActive=pvpState.scrutiny&&pvpState.scrutiny[mySlot]&&pvpState.scrutiny[mySlot]>now2;
+  var embargoActive=pvpState.embargo&&pvpState.embargo[mySlot]&&pvpState.embargo[mySlot]>now2;
+  if(scrutinyActive)st.innerHTML+='<br><span style="font-size:10px;color:var(--orange)">&#9888; Public Scrutiny: -25% XP for '+fmtDur(pvpState.scrutiny[mySlot]-now2)+'</span>';
+  if(embargoActive)st.innerHTML+='<br><span style="font-size:10px;color:var(--orange)">&#128176; Embargo: shop prices +50% for '+fmtDur(pvpState.embargo[mySlot]-now2)+'</span>';
   acts.innerHTML=
     '<button '+(challengeCd>now2?'disabled':'')+' onclick="challengeRival()" style="background:transparent;border:1px solid var(--red);color:var(--red);padding:10px;border-radius:10px;font-size:11px;cursor:pointer;width:100%;opacity:'+(challengeCd>now2?.4:1)+'">'+
     (challengeCd>now2?'Challenge: '+fmtDur(challengeCd-now2):'&#9876; Issue a Challenge')+'</button>'+
@@ -6528,7 +6826,11 @@ function renderPvpPanel(){
     '<button '+(sabotageCd>now2?'disabled':'')+' onclick="sabotageRival()" style="background:transparent;border:1px solid var(--orange);color:var(--orange);padding:10px;border-radius:10px;font-size:11px;cursor:pointer;width:100%;opacity:'+(sabotageCd>now2?.4:1)+'">'+
     (sabotageCd>now2?'Sabotage: '+fmtDur(sabotageCd-now2):'&#9760; Sabotage Their Action (delays +25%)')+'</button>':'<div style="font-size:10px;color:var(--tx3)">Sabotage: rival not currently active</div>')+
     '<button '+(stealCd>now2?'disabled':'')+' onclick="stealResources()" style="background:transparent;border:1px solid var(--purple);color:var(--purple);padding:10px;border-radius:10px;font-size:11px;cursor:pointer;width:100%;opacity:'+(stealCd>now2?.4:1)+'">'+
-    (stealCd>now2?'Espionage: '+fmtDur(stealCd-now2):'&#9670; Espionage (steal 10-30 gold)')+'</button>';
+    (stealCd>now2?'Espionage: '+fmtDur(stealCd-now2):'&#9670; Espionage (steal 10-30 gold)')+'</button>'+
+    '<div style="border-top:1px solid rgba(255,255,255,0.05);margin:8px 0;padding-top:8px"><div style="font-size:9px;letter-spacing:2px;color:var(--tx3);margin-bottom:6px">ADVANCED TACTICS</div></div>'+
+    ((pl.baseLevel||0)>=3?'<button onclick="dispatchAgents('+targetSlot+')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx2);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%;margin-bottom:5px">&#128100; Dispatch Agents (200g) &mdash; -50% their XP</button>':'')+
+    ((pl.fame||0)>=200?'<button onclick="swayPublic('+targetSlot+')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx2);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%;margin-bottom:5px">&#127908; Sway Public (50 fame) &mdash; -25% XP 6h</button>':'')+
+    '<button onclick="embargoPlayer('+targetSlot+')" style="background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--tx2);padding:8px;border-radius:8px;font-size:10px;cursor:pointer;width:100%">&#128196; Embargo (100g) &mdash; +50% shop prices 12h</button>';
 }
 
 function challengeRival(){
@@ -6608,6 +6910,89 @@ function stealResources(){
   if(stolen>0)pushLog(pl.name+' ran espionage against rival. +'+stolen+' gold acquired.','lpty');
   else pushLog('Espionage attempted but rival had no gold to take.','lpty');
   writeW(W).catch(function(){});renderPvpPanel();renderAll();
+}
+
+// ═══ EXTENDED PVP ACTIONS ═══
+function challengeDuel(targetSlot){
+  if(!W||!mySlot)return;
+  if(!W.pvpState)W.pvpState={};
+  if(W.pvpState.pendingDuel){pushLog('A duel is already pending.','lpty');return;}
+  var pl=W['p'+mySlot];
+  var now2=Date.now();
+  W.pvpState.pendingDuel={challenger:mySlot,target:targetSlot,expiresAt:now2+3600000};
+  pushLog(pl.name+' challenged Player '+targetSlot+' to a duel! They have 1 hour to respond.','lpty');
+  writeW(W).catch(function(){});renderPvpPanel();
+}
+function acceptDuelNew(){
+  if(!W||!W.pvpState||!W.pvpState.pendingDuel)return;
+  var duel=W.pvpState.pendingDuel;
+  if(duel.target!==mySlot)return;
+  var challenger=W['p'+duel.challenger];var target=W['p'+duel.target];
+  if(!challenger||!target)return;
+  var cScore=(challenger.level||1)*10+Math.random()*50;
+  var tScore=(target.level||1)*10+Math.random()*50;
+  var winner=cScore>tScore?duel.challenger:duel.target;
+  var loser=winner===duel.challenger?duel.target:duel.challenger;
+  var winXP=2000+Math.floor(Math.random()*1000);var loseXP=400;
+  var bounty=Math.min(100,(W['p'+loser].resources&&W['p'+loser].resources.gold)||0);
+  W['p'+winner].xp=(W['p'+winner].xp||0)+winXP;
+  W['p'+loser].xp=(W['p'+loser].xp||0)+loseXP;
+  if(W['p'+loser].resources&&W['p'+loser].resources.gold>=bounty){
+    W['p'+loser].resources.gold-=bounty;
+    if(!W['p'+winner].resources)W['p'+winner].resources={stone:0,wood:0,crystals:0,gold:0};
+    W['p'+winner].resources.gold=(W['p'+winner].resources.gold||0)+bounty;
+  }
+  if(!W.pvpState.duelHistory)W.pvpState.duelHistory=[];
+  W.pvpState.duelHistory.push({challenger:duel.challenger,target:duel.target,winner:winner,xpGain:winXP,ts:Date.now()});
+  W.pvpState.pendingDuel=null;
+  doLvl(W['p'+winner],'p'+winner);doLvl(W['p'+loser],'p'+loser);
+  pushLog('DUEL RESOLVED: '+W['p'+winner].name+' wins! +'+winXP+' XP, +'+bounty+'g. '+W['p'+loser].name+' gets '+loseXP+' consolation XP.','lpty');
+  writeW(W).catch(function(){});renderAll();
+}
+function declineDuel(){
+  if(!W||!W.pvpState||!W.pvpState.pendingDuel)return;
+  var duel=W.pvpState.pendingDuel;
+  var decliner=W['p'+mySlot];
+  W.pvpState.pendingDuel=null;
+  pushLog((decliner?decliner.name:'Player '+mySlot)+' declined the duel.','lpty');
+  writeW(W).catch(function(){});renderPvpPanel();
+}
+function dispatchAgents(targetSlot){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if((pl.baseLevel||0)<3){pushLog('Requires base level 3 to dispatch agents.','lpty');return;}
+  if((pl.resources&&pl.resources.gold||0)<200){pushLog('Requires 200 gold to dispatch agents.','lpty');return;}
+  pl.resources.gold-=200;
+  if(!W.pvpState)W.pvpState={};
+  if(!W.pvpState.agentTargets)W.pvpState.agentTargets={};
+  W.pvpState.agentTargets[targetSlot]={reducedBy:0.5,expiresAt:Date.now()+86400000};
+  pushLog(pl.name+' dispatched agents against Player '+targetSlot+'. Their next solo XP reduced by 50% for 24h.','lpty');
+  writeW(W).catch(function(){});renderAll();
+}
+function swayPublic(targetSlot){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if((pl.fame||0)<200){pushLog('Requires 200 fame to sway the public.','lpty');return;}
+  pl.fame-=50;
+  if(!W.pvpState)W.pvpState={};
+  if(!W.pvpState.scrutiny)W.pvpState.scrutiny={};
+  W.pvpState.scrutiny[targetSlot]=Date.now()+21600000;
+  pushLog(pl.name+' swayed public opinion against Player '+targetSlot+'. Their XP gain reduced by 25% for 6h.','lpty');
+  writeW(W).catch(function(){});renderAll();
+}
+function embargoPlayer(targetSlot){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  var hasBusiness=pl.properties&&pl.properties.some(function(p){return p.type==='business';});
+  var hasMerchantFriend=pl.npcRelationships&&Object.keys(pl.npcRelationships).some(function(k){return pl.npcRelationships[k]>=60;});
+  if(!hasBusiness&&!hasMerchantFriend){pushLog('Requires a business property or merchant ally (60+ rel) to embargo.','lpty');return;}
+  if((pl.resources&&pl.resources.gold||0)<100){pushLog('Requires 100 gold to place embargo.','lpty');return;}
+  pl.resources.gold-=100;
+  if(!W.pvpState)W.pvpState={};
+  if(!W.pvpState.embargo)W.pvpState.embargo={};
+  W.pvpState.embargo[targetSlot]=Date.now()+43200000;
+  pushLog(pl.name+' placed an embargo on Player '+targetSlot+'. Their shop prices increased by 50% for 12h.','lpty');
+  writeW(W).catch(function(){});renderAll();
 }
 
 // ═══ NPC PARTY MEMBERS ═══
@@ -6857,11 +7242,18 @@ function renderMagicSummary(){
   var el=$g('magic-panel-summary');if(!el||!W||!mySlot)return;
   var pl=W['p'+mySlot];
   if(!pl.magicMastery)pl.magicMastery={};
+  var c=CLS[pl.classIdx||0];
+  var affinitySchool=MAGIC_SCHOOLS[pl.classIdx%MAGIC_SCHOOLS.length]||MAGIC_SCHOOLS[0];
   var keys=Object.keys(pl.magicMastery);
   var totalCasts=0;
   for(var i=0;i<keys.length;i++){totalCasts+=pl.magicMastery[keys[i]];}
-  var schoolsUsed=keys.filter(function(k){return pl.magicMastery[k]>0;}).length;
-  el.textContent=totalCasts>0?(schoolsUsed+' school'+(schoolsUsed!==1?'s':'')+' mastered · '+totalCasts+' total cast'+(totalCasts!==1?'s':'')):'No spells cast yet. Tap OPEN to access all 5 schools.';
+  var autoSpells=Math.floor((pl.level||1)/5);
+  var spellList=affinitySchool.spells.slice(0,autoSpells).map(function(s){return s.name;});
+  var html='<span style="color:'+affinitySchool.color+'">Affinity: '+affinitySchool.name+'</span>';
+  if(spellList.length)html+='<br><span style="color:var(--tx2)">Passive spells: '+spellList.join(', ')+'</span>';
+  else html+='<br><span style="color:var(--tx3)">Passive spells unlock every 5 levels.</span>';
+  if(totalCasts>0)html+='<br><span style="color:var(--tx3)">'+totalCasts+' spell cast'+(totalCasts!==1?'s':'')+' total.</span>';
+  el.innerHTML=html;
 }
 function renderMagicPanel(){
   var el=$g('magic-panel');if(!el||!W||!mySlot)return;
@@ -7322,6 +7714,15 @@ function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
   </div>
 </div>
 <style>#death-overlay.on{display:block}</style>
+<!-- SHOP OVERLAY -->
+<div id="shop-overlay"></div>
+<!-- LEVEL UP CELEBRATION -->
+<div id="lvlup-wrap" style="display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:400;background:rgba(4,4,8,.92);flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;pointer-events:none">
+  <div id="lvlup-em" style="font-size:64px;filter:drop-shadow(0 0 30px rgba(212,168,67,.6))"></div>
+  <div style="font-family:Cinzel,serif;font-size:11px;color:var(--gold);letter-spacing:8px">LEVEL UP</div>
+  <div id="lvlup-num" style="font-family:Cinzel,serif;font-size:48px;color:#fff;letter-spacing:4px"></div>
+  <div id="lvlup-stats" style="font-size:13px;color:var(--tx2);line-height:2"></div>
+</div>
 <!-- QUICK OUTCOME -->
 <div class="qo-wrap" id="qo-wrap">
   <div class="qo-em" id="qo-em">&#10022;</div>

@@ -91,6 +91,7 @@ function patchPlayer(p) {
   if (!p.lastAPTime) p.lastAPTime = Date.now();
   if (!p.storyFeed) p.storyFeed = [];
   if (!p.qaDeck) p.qaDeck = [];
+  if (!p.pvpState) p.pvpState = {};
   return p;
 }
 
@@ -104,6 +105,8 @@ function patchWorld(w) {
   if (!w.log) w.log = [];
   if (!w.worldBosses) w.worldBosses = [];
   if (!w.pvpState) w.pvpState = {};
+  if (!w.shopRestocks) w.shopRestocks = {};
+  if (!w.shopInventories) w.shopInventories = {};
   if (!w.worldModifiers) w.worldModifiers = {};
   if (w.nemesis === undefined) w.nemesis = null;
   if (w.worldEvent === undefined) w.worldEvent = null;
