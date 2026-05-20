@@ -4185,7 +4185,9 @@ function tick(){
   updateBars();renderArcs();checkAutoArcs();
   // Auto-complete solo actions every tick (critical for solo players)
   checkDone();
-  var wt=$g('tab-world');if(wt&&wt.classList.contains('on')){renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();}
+  // Keep AP regen ticking even when not on the You tab
+  try{var _mp='p'+mySlot;if(W&&W[_mp]&&W[_mp].name&&W[_mp].name!=='--')tickQAAP(W[_mp]);}catch(e){}
+  var wt=$g('tab-world');if(wt&&wt.classList.contains('on')){renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();try{renderEncounterPanel();}catch(e){}}
 }
 
 // ═══ BUSY BARS ═══
@@ -8456,26 +8458,43 @@ function applyCombatRewards(){
   var ac=activeCombat;
   var pl=W['p'+mySlot];
   var mp='p'+mySlot;
-  if(ac.rewards.xp>0){pl.xp=(pl.xp||0)+ac.rewards.xp;doLvl(pl,mp);}
+  // Set HP from combat first, then let doLvl override with full restore if level-up happens
+  pl.hp=Math.max(1,ac.playerHp);pl.maxHP=ac.playerMaxHp;
+  if(ac.rewards.xp>0){pl.xp=(pl.xp||0)+ac.rewards.xp;doLvl(pl,mp);} // doLvl may restore full HP on level-up
   if(ac.rewards.gold>0){
     if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
     pl.resources.gold=(pl.resources.gold||0)+ac.rewards.gold;
   }
   if(ac.rewards.item)giveItemToPlayer(mp,ac.rewards.item);
-  pl.hp=Math.max(1,ac.playerHp);pl.maxHP=ac.playerMaxHp;
+  var isBossContext=ac.context&&(ac.context.indexOf('Elite')>=0||ac.context.indexOf('Boss')>=0||ac.context.indexOf('Dungeon')>=0);
   if(ac.result==='win'){
     var msg2=pl.name+' defeated '+ac.enemy.name+'!';
     if(ac.rewards.xp)msg2+=' (+'+ac.rewards.xp+' XP)';
     if(ac.rewards.gold)msg2+=' (+'+ac.rewards.gold+'g)';
     if(ac.rewards.item)msg2+=' Found: '+ac.rewards.item.name+'.';
     pushLog(msg2,'lsk');
-    pl.fame=(pl.fame||0)+2;
-    if(ac.enemy.isPlayer)pl.infamy=(pl.infamy||0)+3;
+    if(!pl.fameActions)pl.fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
     if(!pl.careerProgress)pl.careerProgress={};
-    pl.careerProgress.bossesKilled=(pl.careerProgress.bossesKilled||0)+1;
+    if(ac.enemy.isPlayer){
+      pl.infamy=(pl.infamy||0)+3;
+      pl.fame=(pl.fame||0)+15;
+    } else if(isBossContext||ac.enemy.tier>=3){
+      // Boss / elite / dungeon kill
+      pl.bossesKilled=(pl.bossesKilled||0)+1;
+      pl.careerProgress.bossesKilled=(pl.careerProgress.bossesKilled||0)+1;
+      W.bosses=(W.bosses||0)+1;
+      pl.fame=(pl.fame||0)+20;
+      pl.fameActions.boss=(pl.fameActions.boss||0)+1;
+    } else {
+      // Standard combat win
+      pl.fame=(pl.fame||0)+2;
+    }
     checkAchievements(pl,W);
   }else if(ac.result==='lose'){
     pushLog(pl.name+' was beaten by '+ac.enemy.name+'. Survived with 1 HP.','lpty');
+    checkAchievements(pl,W);
+  }else if(ac.result==='flee'){
+    if(ac.rewards.xp>0)pushLog(pl.name+' escaped from '+ac.enemy.name+'. (+'+ac.rewards.xp+' XP)','lpty');
   }
   writeW(W).catch(function(){});
 }
