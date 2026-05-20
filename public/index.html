@@ -542,6 +542,53 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
 /* SHOP OVERLAY */
 #shop-overlay{display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:500;background:rgba(4,4,8,.97);overflow-y:auto;-webkit-overflow-scrolling:touch}
 #shop-overlay.on{display:block}
+/* ── COMBAT OVERLAY ── */
+#combat-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:600;background:rgba(3,3,12,.97);flex-direction:column;align-items:stretch;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#combat-overlay.on{display:flex}
+.cov-arena{display:flex;align-items:flex-end;justify-content:center;gap:0;padding:20px 16px 0;position:relative;min-height:190px}
+.cov-fighter{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 6px}
+.cov-fighter-em{font-size:48px;line-height:1;filter:drop-shadow(0 0 12px rgba(212,168,67,0.3))}
+.cov-fighter-name{font-family:"Cinzel",serif;font-size:13px;color:var(--gold);letter-spacing:1px;text-align:center;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cov-fighter-lv{font-size:10px;color:var(--tx3);letter-spacing:2px;margin-bottom:4px}
+.cov-hp-wrap{width:100%;background:rgba(255,255,255,0.08);border-radius:4px;height:7px;overflow:hidden;margin-bottom:2px}
+.cov-hp-fill{height:100%;border-radius:4px;transition:width .5s ease;background:linear-gradient(90deg,#44ff88,#88ffcc)}
+.cov-hp-fill.low{background:linear-gradient(90deg,#ff3355,#ff7755)}
+.cov-hp-fill.mid{background:linear-gradient(90deg,#ffaa00,#ffdd44)}
+.cov-hp-text{font-size:10px;color:var(--tx3);letter-spacing:1px}
+.cov-vs-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 8px 16px;gap:4px}
+.cov-vs{font-family:"Cinzel",serif;font-size:18px;color:rgba(212,168,67,0.5);letter-spacing:4px}
+.cov-prob-badge{font-size:10px;color:var(--tx3);letter-spacing:1px;text-align:center}
+.cov-divider{width:100%;height:1px;background:rgba(255,255,255,0.06);margin:0}
+.cov-log{padding:10px 16px;min-height:72px;max-height:96px;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
+.cov-log-line{font-family:Rajdhani,sans-serif;font-size:12px;color:var(--tx2);line-height:1.5;padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.cov-log-line.hit{color:#ff9966}
+.cov-log-line.win{color:#44ff88;font-weight:700}
+.cov-log-line.miss{color:var(--tx3);font-style:italic}
+.cov-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 16px}
+.cov-action{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 10px 9px;cursor:pointer;text-align:left;transition:all .15s;display:flex;flex-direction:column;gap:2px}
+.cov-action:active:not(:disabled){transform:scale(.96);background:rgba(212,168,67,0.1);border-color:var(--gold)}
+.cov-action:disabled{opacity:0.38;cursor:not-allowed}
+.cov-action.danger{border-color:rgba(255,61,90,0.3)}
+.cov-action.danger:active{background:rgba(255,61,90,0.1)}
+.cov-act-name{font-family:"Cinzel",serif;font-size:12px;color:var(--tx);letter-spacing:1px}
+.cov-act-desc{font-family:Rajdhani,sans-serif;font-size:10px;color:var(--tx3);letter-spacing:1px}
+.cov-act-cost{font-size:9px;color:var(--gold);letter-spacing:2px}
+.cov-waiting{text-align:center;padding:20px;font-family:Rajdhani,sans-serif;font-size:13px;color:var(--tx3);letter-spacing:3px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.cov-result-wrap{display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px 32px;gap:10px;flex:1}
+.cov-result-wrap.on{display:flex}
+.cov-result-em{font-size:64px;animation:bounceIn .4s ease}
+@keyframes bounceIn{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.cov-result-title{font-family:"Cinzel",serif;font-size:22px;letter-spacing:4px}
+.cov-result-title.win{color:#44ff88}
+.cov-result-title.lose{color:#ff4455}
+.cov-result-title.flee{color:var(--gold)}
+.cov-result-rewards{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 18px;width:100%;max-width:280px;display:flex;flex-direction:column;gap:6px}
+.cov-reward-line{font-family:Rajdhani,sans-serif;font-size:13px;display:flex;align-items:center;gap:8px}
+.cov-continue-btn{background:linear-gradient(135deg,rgba(212,168,67,0.85),rgba(160,110,30,0.85));color:#07040f;border:none;border-radius:12px;padding:14px 32px;font-family:"Cinzel",serif;font-size:13px;letter-spacing:3px;cursor:pointer;margin-top:8px;font-weight:700}
+.cov-header-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
+.cov-header-title{font-family:"Cinzel",serif;font-size:11px;color:var(--tx3);letter-spacing:4px;text-transform:uppercase}
+.cov-flee-btn{background:none;border:none;color:var(--tx3);font-size:11px;cursor:pointer;letter-spacing:2px;padding:4px 8px;font-family:Rajdhani,sans-serif}
 /* ── TUTORIAL ── */
 #tut-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:3000;pointer-events:none}
 #tut-wrap.on{display:block}
@@ -840,6 +887,12 @@ canvas#sk-canvas{width:100%;height:100%;display:block;touch-action:none}
         </div>
       </div></div>
       <div class="card"><div class="card-body"><div class="ctitle">World Status</div><div id="world-status-board"></div></div></div>
+      <!-- COMBAT ENCOUNTERS -->
+      <div class="card"><div class="card-body">
+        <div class="ctitle">&#9876; Combat Encounters</div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:12px;line-height:1.7">Pick a fight. Enemy difficulty scales to your level. Stronger enemies give better loot.</div>
+        <div id="encounter-panel" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+      </div></div>
       <div class="card"><div class="card-body"><div class="ctitle">Solo Actions</div><div id="solo-acts" style="display:flex;flex-direction:column;gap:9px"></div></div></div>
       <div class="card">
         <div class="card-body">
@@ -5051,7 +5104,7 @@ async function doBossFight(bossId){
 }
 
 // ═══ TABS ═══
-function switchTab(name){['you','world','skills','loot','lore'].forEach(function(t){var tab=$g('tab-'+t);var btn=$g('bn-'+t);if(tab)tab.classList.toggle('on',t===name);if(btn)btn.classList.toggle('act',t===name);});if(name==='skills')renderSkSummary();if(name==='lore'){$g('nd-lore').classList.remove('on');renderKnownFaces();renderNemesis();renderPersonalQuests();renderWorldHistory();}if(name==='world'){$g('nd-world').classList.remove('on');renderEvent();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderQuestBoard();}if(name==='loot'){$g('nd-loot').classList.remove('on');renderInventory();}if(name==='you'){renderAbilities();renderPartyPanel();renderPvpPanel();}}
+function switchTab(name){['you','world','skills','loot','lore'].forEach(function(t){var tab=$g('tab-'+t);var btn=$g('bn-'+t);if(tab)tab.classList.toggle('on',t===name);if(btn)btn.classList.toggle('act',t===name);});if(name==='skills')renderSkSummary();if(name==='lore'){$g('nd-lore').classList.remove('on');renderKnownFaces();renderNemesis();renderPersonalQuests();renderWorldHistory();}if(name==='world'){$g('nd-world').classList.remove('on');renderEvent();renderWorldStatus();renderExpeditions();renderCrafting();renderCareerActionsPanel();renderQuestBoard();try{renderEncounterPanel();}catch(e){}}if(name==='loot'){$g('nd-loot').classList.remove('on');renderInventory();}if(name==='you'){renderAbilities();renderPartyPanel();renderPvpPanel();}}
 
 // ═══ UTIL ═══
 function xpN(lv){return Math.round(100*Math.pow(1.5,lv-1));}function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a;}function ts(){return new Date().toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});}
@@ -5068,6 +5121,7 @@ function renderAll(){
   try{renderChronicle();}catch(e){}
   try{renderShops();}catch(e){}
   var mp='p'+mySlot;if(W[mp]){renderAchievements(W[mp]);renderFactions(W[mp]);}
+  try{renderEncounterPanel();}catch(e){}
 }
 function renderSubclassSummaryEl(){if(!W||!mySlot)return;var el=$g('subclass-summary');if(!el)return;var pl=W['p'+mySlot];el.innerHTML=renderSubclassSummary(pl);}
 function renderP(p){
@@ -5981,6 +6035,14 @@ function renderNPCOverlay(){
     }else{
       acts+='<div style="font-size:10px;color:var(--tx3);margin-bottom:6px">You already serve another Lord. Renounce your current allegiance first.</div>';
     }
+  }
+  // ── FIGHT button — always available ──
+  var fightEnemy=pickNPCEnemy(currentNPCId);
+  if(fightEnemy){
+    acts+='<div style="border-top:1px solid rgba(255,255,255,0.06);margin:10px 0 8px"></div>'+
+      '<button onclick="closeNPCOverlay();startCombat(pickNPCEnemy(\''+currentNPCId+'\'),\'&#9876; Fight &mdash; '+npc.name+'\')" style="background:rgba(255,68,85,0.1);border:1px solid rgba(255,68,85,0.3);color:var(--red);padding:10px 14px;border-radius:10px;font-size:11px;text-align:left;width:100%;display:block;cursor:pointer">'+
+      '<div style="font-size:9px;letter-spacing:2px;margin-bottom:3px">INITIATE COMBAT</div>'+
+      'Challenge '+npc.name+' to battle. Win for XP &amp; loot, lose for infamy.</button>';
   }
   $g('npc-actions').innerHTML=acts||'<div style="font-size:11px;color:var(--tx3)">Cultivate relationship to unlock actions.</div>';
 }
@@ -7111,22 +7173,10 @@ function challengePlayerCombat(targetSlot){
   var tpl=W['p'+targetSlot];
   if(!tpl||!tpl.name||tpl.name==='--'){pushLog('That player is not active.','lpty');return;}
   if(targetSlot===mySlot){pushLog('Cannot challenge yourself.','lpty');return;}
-  if(!W.pvpCombat)W.pvpCombat={active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:[]};
-  if(W.pvpCombat.active){pushLog('A combat is already in progress.','lpty');return;}
-  var pl=W['p'+mySlot];
-  var myHp=getMaxHP(pl);
-  W.pvpCombat.pending=true;
-  W.pvpCombat.pendingFrom=mySlot;
-  W.pvpCombat.challenger=mySlot;
-  W.pvpCombat.defender=targetSlot;
-  W.pvpCombat.hp={};
-  W.pvpCombat.maxHp={};
-  W.pvpCombat.hp[mySlot]=myHp;
-  W.pvpCombat.maxHp[mySlot]=myHp;
-  W.pvpCombat.round=1;
-  W.pvpCombat.log=[];
-  pushLog(pl.name+' challenges Player '+targetSlot+' to combat!','lpty');
-  writeW(W).catch(function(){});renderPvpPanel();
+  if(activeCombat&&!activeCombat.over){pushLog('Already in combat!','lpty');return;}
+  var enemy=pickPlayerEnemy(targetSlot);
+  if(!enemy){pushLog('Could not load player data.','lpty');return;}
+  startCombat(enemy,'⚔️ PvP — Duel vs '+enemy.name);
 }
 function acceptCombat(){
   if(!W||!mySlot||!W.pvpCombat||!W.pvpCombat.pending)return;
@@ -7951,6 +8001,519 @@ function closeQO(){
 }
 
 // ═══════════════════════════════════════════════════
+//  COMBAT SYSTEM
+// ═══════════════════════════════════════════════════
+var ENEMIES=[
+  // TIER 1 — Lv 1-4
+  {id:'goblin_scout',em:'&#128122;',name:'Goblin Scout',tier:1,minLv:1,maxLv:4,hp:28,atk:6,def:2,agi:6,luk:2,xp:30,gold:8,loot:'common',
+   attacks:['slashes with a rusty blade','jabs with a crude spear','bites at your arm'],
+   taunt:'The goblin grins, showing yellow teeth.'},
+  {id:'bandit',em:'&#128296;',name:'Road Bandit',tier:1,minLv:1,maxLv:5,hp:45,atk:10,def:4,agi:5,luk:3,xp:48,gold:20,loot:'common',
+   attacks:['swings a club at your ribs','rushes with a rusted knife','throws dirt in your eyes and charges'],
+   taunt:'The bandit cracks their knuckles.'},
+  {id:'rabid_wolf',em:'&#128062;',name:'Rabid Wolf',tier:1,minLv:2,maxLv:5,hp:40,atk:13,def:3,agi:10,luk:4,xp:55,gold:4,loot:'common',
+   attacks:['lunges for your throat','rakes with sharp claws','feints and bites your ankle'],
+   taunt:'The wolf circles you with low growling.'},
+  {id:'cultist',em:'&#9766;',name:'Cultist Initiate',tier:1,minLv:2,maxLv:6,hp:35,atk:9,def:3,agi:5,luk:6,xp:52,gold:14,loot:'uncommon',
+   attacks:['hurls a bolt of dark energy','chants a weakening curse','strikes with a ritual dagger'],
+   taunt:'The cultist mutters something and the air goes cold.'},
+  {id:'forest_imp',em:'&#128027;',name:'Forest Imp',tier:1,minLv:1,maxLv:4,hp:22,atk:8,def:1,agi:12,luk:8,xp:38,gold:6,loot:'uncommon',
+   attacks:['stings with a barbed tail','hurls a rock at your head','bites and vanishes'],
+   taunt:'The imp chittering.'},
+  // TIER 2 — Lv 4-8
+  {id:'orc_warrior',em:'&#9876;',name:'Orc Warrior',tier:2,minLv:4,maxLv:9,hp:80,atk:19,def:8,agi:4,luk:2,xp:95,gold:28,loot:'uncommon',
+   attacks:['crashes an axe into your guard','roars and headbutts','hurls you into a wall'],
+   taunt:'The orc slams their chest twice.'},
+  {id:'bone_knight',em:'&#128128;',name:'Bone Knight',tier:2,minLv:5,maxLv:10,hp:90,atk:17,def:13,agi:5,luk:3,xp:115,gold:22,loot:'uncommon',
+   attacks:['slashes with a cracked longsword','parries and ripostes immediately','rattles bones for a terrifying noise'],
+   taunt:'The undead knight raises its blade without sound.'},
+  {id:'cave_troll',em:'&#129490;',name:'Cave Troll',tier:2,minLv:5,maxLv:11,hp:120,atk:24,def:6,agi:2,luk:1,xp:135,gold:12,loot:'common',
+   attacks:['smashes the ground near you sending shrapnel','hurls a boulder','grabs and squeezes'],
+   taunt:'The troll scratches its head slowly and sniffs.'},
+  {id:'shadow_thief',em:'&#128373;',name:'Shadow Thief',tier:2,minLv:4,maxLv:9,hp:58,atk:22,def:5,agi:15,luk:9,xp:105,gold:44,loot:'rare',
+   attacks:['vanishes and strikes from behind','throws a smoke bomb and strikes twice','poisons the blade mid-slash'],
+   taunt:'The thief smiles thinly and disappears.'},
+  {id:'corrupted_guard',em:'&#9872;',name:'Corrupted Guard',tier:2,minLv:6,maxLv:10,hp:95,atk:16,def:15,agi:6,luk:4,xp:120,gold:30,loot:'uncommon',
+   attacks:['shield-bashes into your ribs','drives a spear with full weight','roars a corrupted oath'],
+   taunt:'The guard\'s eyes glow wrong.'},
+  // TIER 3 — Lv 9-14
+  {id:'lich_fragment',em:'&#9760;',name:'Lich Fragment',tier:3,minLv:9,maxLv:14,hp:130,atk:30,def:10,agi:7,luk:7,xp:210,gold:38,loot:'rare',
+   attacks:['fires a necrotic bolt that rots on contact','drains vitality directly','raises nearby bones to assist'],
+   taunt:'The fragment pulses with cold ancient light.'},
+  {id:'void_hound',em:'&#9675;',name:'Void Hound',tier:3,minLv:9,maxLv:15,hp:140,atk:34,def:8,agi:13,luk:6,xp:230,gold:30,loot:'rare',
+   attacks:['tears through reality to bite from behind','howls a frequency that disrupts thought','phases through your defense entirely'],
+   taunt:'The void hound exists in two places at once.'},
+  {id:'nightmare_mage',em:'&#9730;',name:'Nightmare Mage',tier:3,minLv:10,maxLv:15,hp:110,atk:38,def:7,agi:8,luk:10,xp:260,gold:50,loot:'rare',
+   attacks:['blasts a concentrated nightmare bolt','warps gravity around you','shatters your mental defenses'],
+   taunt:'The mage says something in a language that predates words.'},
+  {id:'fallen_paladin',em:'&#9768;',name:'Fallen Paladin',tier:3,minLv:11,maxLv:16,hp:160,atk:28,def:20,agi:6,luk:4,xp:280,gold:60,loot:'rare',
+   attacks:['strikes with corrupted holy power','unleashes a burst of dark consecration','calls divine fire that burns black'],
+   taunt:'The paladin kneels briefly. It is not prayer.'},
+  // TIER 4 — Lv 14-19
+  {id:'demon_scout',em:'&#128165;',name:'Demon Scout',tier:4,minLv:14,maxLv:19,hp:210,atk:42,def:16,agi:17,luk:9,xp:370,gold:65,loot:'epic',
+   attacks:['rakes with burning claws','breathes dark flame in a concentrated stream','teleports behind you and strikes twice'],
+   taunt:'The demon looks at you like prey that already knows it.'},
+  {id:'ancient_golem',em:'&#129505;',name:'Ancient Golem',tier:4,minLv:14,maxLv:20,hp:300,atk:36,def:30,agi:2,luk:2,xp:410,gold:48,loot:'rare',
+   attacks:['slams with a stone fist that cracks the floor','activates rune shields briefly','sends a shockwave through the ground'],
+   taunt:'The golem turns to face you. Ancient runes illuminate in sequence.'},
+  {id:'void_serpent',em:'&#9681;',name:'Void Serpent',tier:4,minLv:15,maxLv:20,hp:240,atk:48,def:14,agi:20,luk:12,xp:440,gold:80,loot:'epic',
+   attacks:['strikes faster than sight','constricts and drains life force','injects void-venom directly'],
+   taunt:'The serpent\'s eyes are the absence of light.'},
+  // TIER 5 — Lv 19+
+  {id:'void_sovereign',em:'&#9671;',name:'Void Sovereign',tier:5,minLv:19,maxLv:99,hp:420,atk:58,def:26,agi:19,luk:14,xp:720,gold:130,loot:'legendary',
+   attacks:['collapses local reality for a moment','fires a void lance that pierces armor','unmakes a portion of your offense'],
+   taunt:'The sovereign does not speak. It simply waits for you to make a mistake.'},
+  {id:'wound_aspect',em:'&#9680;',name:'Aspect of the Wound',tier:5,minLv:20,maxLv:99,hp:550,atk:70,def:22,agi:22,luk:18,xp:1100,gold:220,loot:'legendary',
+   attacks:['pulls you toward the Wound\'s edge','tears at your awakening core','collapses a memory and deals psychic damage'],
+   taunt:'It doesn\'t have eyes. You feel watched regardless.'}
+];
+
+var ENCOUNTER_TYPES=[
+  {id:'random_encounter',em:'&#9876;',name:'Random Encounter',desc:'Fight whatever finds you. Scales to your level.',tier:'any',label:'Encounter'},
+  {id:'monster_hunt',em:'&#128062;',name:'Monster Hunt',desc:'Seek out a monster in the wilds. Better loot chance.',tier:'wild',label:'Hunt'},
+  {id:'dungeon_mob',em:'&#128128;',name:'Dungeon Mob',desc:'Clear a dungeon mob for XP. Tougher enemies inside.',tier:'tough',label:'Dungeon'},
+  {id:'boss_attempt',em:'&#9760;',name:'Elite Enemy',desc:'Fight a significantly stronger foe. High risk, high reward.',tier:'elite',label:'Elite'}
+];
+
+var activeCombat=null;
+var cmbTauntActive=false;
+
+function getPlayerCombatStats(pl){
+  var cls=CLS[pl.classIdx||0];
+  var lv=pl.level||1;
+  var cs=cls?cls.stats||{}:{};
+  var str=(cs.STR||0)+lv*2;
+  var agi=(cs.AGI||0)+lv*1.5;
+  var int_=(cs.INT||0)+lv*2;
+  var vit=(cs.VIT||0)+lv*2;
+  var luk=(cs.LUK||0)+lv;
+  if(pl.equipped){
+    ['weapon','armor','accessory'].forEach(function(slot){
+      var item=pl.equipped[slot];
+      if(item&&item.stats){
+        str+=(item.stats.STR||0);agi+=(item.stats.AGI||0);
+        int_+=(item.stats.INT||0);vit+=(item.stats.VIT||0);luk+=(item.stats.LUK||0);
+      }
+    });
+  }
+  var maxHp=getMaxHP(pl);
+  var curHp=(pl.hp!==null&&pl.hp!==undefined)?pl.hp:maxHp;
+  return {str:Math.round(str),agi:Math.round(agi),int:Math.round(int_),vit:Math.round(vit),luk:Math.round(luk),maxHp:maxHp,curHp:Math.max(1,curHp)};
+}
+
+function scaleEnemy(base,playerLevel){
+  var midLv=Math.round((base.minLv+base.maxLv)/2);
+  var diff=playerLevel-midLv;
+  var scale=Math.max(0.6,1+diff*0.08);
+  return {
+    id:base.id,em:base.em,name:base.name,tier:base.tier,
+    hp:Math.max(10,Math.round(base.hp*scale)),
+    maxHp:Math.max(10,Math.round(base.hp*scale)),
+    atk:Math.max(3,Math.round(base.atk*scale)),
+    def:Math.max(0,Math.round(base.def*Math.max(0.7,scale))),
+    agi:base.agi,luk:base.luk,
+    xp:Math.max(15,Math.round(base.xp*Math.max(0.7,scale))),
+    gold:Math.max(3,Math.round(base.gold*Math.max(0.7,scale))),
+    loot:base.loot,attacks:base.attacks,taunt:base.taunt,
+    level:Math.max(1,midLv+Math.max(-3,Math.min(3,diff)))
+  };
+}
+
+function pickEnemy(encounterType,playerLevel){
+  var candidates=ENEMIES.filter(function(e){
+    if(encounterType==='dungeon_mob')return e.tier>=2&&e.minLv<=playerLevel+3&&e.maxLv>=playerLevel-3;
+    if(encounterType==='boss_attempt')return e.tier>=3&&e.minLv<=playerLevel+5&&e.maxLv>=playerLevel-2;
+    if(encounterType==='monster_hunt')return e.id==='rabid_wolf'||e.id==='cave_troll'||e.id==='void_hound'||e.id==='void_serpent'||e.id==='forest_imp';
+    return e.minLv<=playerLevel+2&&e.maxLv>=playerLevel-3;
+  });
+  if(!candidates.length)candidates=ENEMIES.filter(function(e){return e.tier===1;});
+  var base=candidates[Math.floor(Math.random()*candidates.length)];
+  return scaleEnemy(base,playerLevel);
+}
+
+function pickNPCEnemy(npcId){
+  var npc=null;
+  for(var i=0;i<NPC_POOL.length;i++){if(NPC_POOL[i].id===npcId){npc=NPC_POOL[i];break;}}
+  if(!npc)return null;
+  var pl=W&&mySlot?W['p'+mySlot]:null;
+  var lv=pl?pl.level||1:1;
+  return {
+    id:'npc_'+npcId,em:npc.em||'&#128100;',name:npc.name,tier:Math.ceil(lv/4),
+    hp:40+lv*15,maxHp:40+lv*15,atk:6+lv*3,def:3+lv*2,agi:5+lv,luk:3+lv,
+    xp:35+lv*22,gold:12+lv*8,loot:'uncommon',
+    attacks:['strikes decisively','uses precise technique','counters at the right moment'],
+    taunt:npc.name+' takes a combat stance.',level:lv
+  };
+}
+
+function pickPlayerEnemy(targetSlot){
+  var target=W&&W['p'+targetSlot];
+  if(!target||target.name==='--')return null;
+  var stats=getPlayerCombatStats(target);
+  var cls=CLS[target.classIdx||0];
+  return {
+    id:'pvp_'+targetSlot,em:cls?cls.e:'&#9876;',name:target.name,tier:Math.ceil((target.level||1)/4),
+    hp:stats.maxHp,maxHp:stats.maxHp,atk:stats.str+2,def:Math.round(stats.vit*0.4),
+    agi:stats.agi,luk:stats.luk,xp:(target.level||1)*45,
+    gold:Math.min(60,Math.round(((target.resources&&target.resources.gold)||0)*0.12)),
+    loot:'uncommon',
+    attacks:['attacks with practiced skill','reads your movement and counters','drives forward with class technique'],
+    taunt:target.name+' raises their weapon.',level:target.level||1,isPlayer:true,playerSlot:targetSlot
+  };
+}
+
+function getCombatSpecial(cls){
+  var n=cls?cls.n||'':'';
+  if(n.indexOf('Mage')>=0||n.indexOf('Arcanist')>=0||n.indexOf('Wizard')>=0)
+    return {name:'Arcane Bolt',desc:'INT-based magic dmg',type:'magic'};
+  if(n.indexOf('Rogue')>=0||n.indexOf('Shadow')>=0||n.indexOf('Assassin')>=0)
+    return {name:'Shadow Strike',desc:'Guaranteed crit',type:'crit'};
+  if(n.indexOf('Healer')>=0||n.indexOf('Priest')>=0||n.indexOf('Cleric')>=0)
+    return {name:'Holy Surge',desc:'Full heal + damage shield',type:'heal'};
+  if(n.indexOf('Tank')>=0||n.indexOf('Knight')>=0||n.indexOf('Guardian')>=0)
+    return {name:'Iron Wall',desc:'Block all + stun strike',type:'tank'};
+  if(n.indexOf('Ranger')>=0||n.indexOf('Hunter')>=0||n.indexOf('Archer')>=0)
+    return {name:'Aimed Shot',desc:'Pierces all defense',type:'pierce'};
+  if(n.indexOf('Bard')>=0||n.indexOf('Merchant')>=0)
+    return {name:'Silver Tongue',desc:'Confuse enemy 1 turn',type:'confuse'};
+  return {name:'Power Surge',desc:'1.8x damage burst',type:'burst'};
+}
+
+function calcWinChance(){
+  if(!activeCombat)return 50;
+  var ac=activeCombat;
+  var pl=W['p'+mySlot];
+  var plLv=pl.level||1;
+  var eLv=ac.enemy.level||1;
+  var lvAdv=(plLv-eLv)*6;
+  var pPow=(ac.pStats.str||0)+(ac.pStats.agi||0)*0.4+(ac.pStats.vit||0)*0.4;
+  var ePow=(ac.enemy.atk||0)+(ac.enemy.agi||0)*0.4+(ac.enemy.def||0)*0.4;
+  var statAdv=pPow+ePow>0?Math.round((pPow/(pPow+ePow))*30-15):0;
+  var hpMod=Math.round((ac.playerHp/ac.playerMaxHp-0.5)*20);
+  return Math.max(5,Math.min(95,50+lvAdv+statAdv+hpMod));
+}
+
+function startCombat(enemy,contextLabel){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if(!pl||pl.name==='--')return;
+  var pStats=getPlayerCombatStats(pl);
+  var cls=CLS[pl.classIdx||0];
+  var spec=getCombatSpecial(cls);
+  activeCombat={
+    enemy:enemy,
+    playerHp:pStats.curHp,playerMaxHp:pStats.maxHp,
+    pStats:pStats,cls:cls,spec:spec,
+    specialCharges:2,
+    defendNext:false,confusedTurns:0,taunted:false,
+    log:[enemy.taunt||enemy.name+' appears!'],
+    over:false,result:null,
+    rewards:{xp:0,gold:0,item:null},
+    context:contextLabel||'Encounter'
+  };
+  cmbTauntActive=false;
+  var ov=$g('combat-overlay');if(ov)ov.classList.add('on');
+  renderCombat();
+}
+
+function renderCombat(){
+  if(!activeCombat)return;
+  var ac=activeCombat;
+  var pl=W['p'+mySlot];
+  var cls=ac.cls;
+  // Context label
+  var lbl=$g('cov-context-lbl');if(lbl)lbl.textContent=ac.context||'Encounter';
+  // Player side
+  if($g('cov-p-em'))$g('cov-p-em').innerHTML=cls?cls.e:'&#9876;';
+  if($g('cov-p-name'))$g('cov-p-name').textContent=pl.name;
+  if($g('cov-p-lv'))$g('cov-p-lv').textContent='Lv '+(pl.level||1);
+  var pPct=Math.max(0,Math.min(100,Math.round(ac.playerHp/ac.playerMaxHp*100)));
+  var pFill=$g('cov-p-hpf');
+  if(pFill){pFill.style.width=pPct+'%';pFill.className='cov-hp-fill'+(pPct<25?' low':pPct<50?' mid':'');}
+  if($g('cov-p-hpt'))$g('cov-p-hpt').textContent=Math.max(0,ac.playerHp)+' / '+ac.playerMaxHp+' HP';
+  // Enemy side
+  if($g('cov-e-em'))$g('cov-e-em').innerHTML=ac.enemy.em;
+  if($g('cov-e-name'))$g('cov-e-name').textContent=ac.enemy.name;
+  if($g('cov-e-lv'))$g('cov-e-lv').textContent='Lv '+(ac.enemy.level||1);
+  var ePct=Math.max(0,Math.min(100,Math.round(ac.enemy.hp/ac.enemy.maxHp*100)));
+  var eFill=$g('cov-e-hpf');
+  if(eFill){eFill.style.width=ePct+'%';eFill.className='cov-hp-fill'+(ePct<25?' low':ePct<50?' mid':'');}
+  if($g('cov-e-hpt'))$g('cov-e-hpt').textContent=Math.max(0,ac.enemy.hp)+' / '+ac.enemy.maxHp+' HP';
+  // Win chance
+  var probEl=$g('cov-prob');
+  if(probEl&&!ac.over){
+    var pct=calcWinChance();
+    var pColor=pct>=60?'#44ff88':pct>=40?'var(--gold)':'#ff4455';
+    probEl.innerHTML='<span style="color:'+pColor+';font-weight:700;font-size:12px">'+pct+'%</span><br><span style="font-size:9px">win chance</span>';
+  }
+  // Log
+  var logEl=$g('cov-log');
+  if(logEl){
+    var shown=ac.log.slice(-6);
+    logEl.innerHTML=shown.map(function(l){
+      var cls2=l.indexOf('CRITICAL')>=0||l.indexOf('Victory')>=0?'win':l.indexOf('miss')>=0||l.indexOf('Miss')>=0?'miss':'hit';
+      return '<div class="cov-log-line '+cls2+'">'+l+'</div>';
+    }).join('');
+    logEl.scrollTop=logEl.scrollHeight;
+  }
+  // Special button
+  var spBtn=$g('cov-special-btn');
+  if(spBtn){
+    spBtn.disabled=ac.specialCharges<=0||ac.over;
+    var spDesc=$g('cov-sp-desc');
+    var spCh=$g('cov-sp-charges');
+    if(spDesc)spDesc.textContent=ac.spec?ac.spec.desc:'Class ability';
+    if(spCh)spCh.textContent=ac.specialCharges+' charge'+(ac.specialCharges!==1?'s':'');
+    var spName=spBtn.querySelector('.cov-act-name');
+    if(spName)spName.innerHTML='&#10024; '+(ac.spec?ac.spec.name:'Special');
+  }
+  // Item button
+  var itemBtn=$g('cov-item-btn');
+  if(itemBtn){
+    var hasItem=pl.inventory&&pl.inventory.some(function(it){return it.type==='potion'||it.type==='consumable';});
+    itemBtn.disabled=!hasItem||ac.over;
+    var ia=$g('cov-item-avail');if(ia)ia.textContent=hasItem?'potion in bag':'no potions';
+  }
+  // Actions vs result
+  var acts=$g('cov-actions');
+  var flee=document.querySelector('.cov-flee-btn');
+  var res=$g('cov-result');
+  if(acts)acts.style.display=ac.over?'none':'grid';
+  if(flee)flee.style.display=ac.over?'none':'';
+  if(res)res.className='cov-result-wrap'+(ac.over?' on':'');
+  if(ac.over){
+    var resEm=$g('cov-res-em');
+    var resTitle=$g('cov-res-title');
+    var resRwds=$g('cov-res-rewards');
+    if(resEm)resEm.innerHTML=ac.result==='win'?'&#127942;':ac.result==='flee'?'&#128168;':'&#128128;';
+    if(resTitle){resTitle.textContent=ac.result==='win'?'Victory!':ac.result==='flee'?'Escaped.':'Defeated.';resTitle.className='cov-result-title '+(ac.result||'');}
+    if(resRwds){
+      var rh='';
+      if(ac.rewards.xp)rh+='<div class="cov-reward-line"><span style="color:var(--gold)">&#9733;</span><span>+'+ac.rewards.xp+' XP</span></div>';
+      if(ac.rewards.gold)rh+='<div class="cov-reward-line"><span style="color:#ffcc44">&#128176;</span><span>+'+ac.rewards.gold+' gold</span></div>';
+      if(ac.rewards.item)rh+='<div class="cov-reward-line"><span>'+ac.rewards.item.em+'</span><span style="color:#aa88ff">'+ac.rewards.item.name+'</span></div>';
+      if(ac.result==='lose')rh+='<div class="cov-reward-line"><span style="color:#ff4455">&#128128;</span><span>Survived with 1 HP. Rest up.</span></div>';
+      if(ac.result==='flee')rh+='<div class="cov-reward-line"><span style="color:var(--tx3)">&#128168;</span><span>Left the fight. No shame in it.</span></div>';
+      if(!ac.rewards.xp&&!ac.rewards.gold&&!ac.rewards.item&&ac.result!=='lose'&&ac.result!=='flee')rh+='<div style="color:var(--tx3);font-size:11px">No loot this time.</div>';
+      resRwds.innerHTML=rh;
+    }
+  }
+}
+
+function combatAct(action){
+  if(!activeCombat||activeCombat.over)return;
+  var ac=activeCombat;
+  var pl=W['p'+mySlot];
+  var ps=ac.pStats;
+  var dmgMult=ac.taunted?1.5:1;
+  var msg='';
+  var playerDmg=0;
+  var skipEnemyTurn=false;
+
+  if(action==='attack'){
+    var hitChance=Math.min(0.95,0.65+(ps.agi||0)*0.005);
+    if(Math.random()<hitChance){
+      var base=Math.max(1,(ps.str||5)*1.2+5);
+      var crit=Math.random()<Math.min(0.45,0.05+(ps.luk||0)*0.005);
+      playerDmg=Math.max(1,Math.round((base*(0.85+Math.random()*0.3)-(ac.enemy.def||0)*0.4)*dmgMult));
+      if(crit){playerDmg=Math.round(playerDmg*1.8);msg='&#9889; CRITICAL! You hit for '+playerDmg+' damage!';}
+      else msg='&#9876; Strike lands — '+playerDmg+' damage.';
+    }else{msg='&#128168; Your attack missed!';}
+  }else if(action==='power'){
+    if(Math.random()<0.65){
+      var pdmg=Math.max(1,(ps.str||5)*2.2+10);
+      playerDmg=Math.max(1,Math.round((pdmg*(0.9+Math.random()*0.2)-(ac.enemy.def||0)*0.25)*dmgMult));
+      msg='&#128165; Power Strike! '+playerDmg+' damage!';
+    }else{msg='&#128565; Power Strike missed — left wide open.';}
+  }else if(action==='defend'){
+    ac.defendNext=true;
+    var ctr=Math.max(1,Math.round((ps.str||5)*0.45+rnd(3,9)));
+    playerDmg=ctr;
+    msg='&#128737; Defending. Counter strike: '+ctr+' damage.';
+  }else if(action==='special'){
+    if(ac.specialCharges<=0)return;
+    ac.specialCharges--;
+    var spec=ac.spec||{type:'burst'};
+    if(spec.type==='magic'){
+      playerDmg=Math.max(1,Math.round(((ps.int||5)*2.2+18)*dmgMult));
+      msg='&#9730; '+spec.name+'! '+playerDmg+' magic damage (ignores defense).';
+      // Pierces defense — apply directly
+      ac.enemy.hp=Math.max(0,ac.enemy.hp-playerDmg);
+      playerDmg=0;
+    }else if(spec.type==='crit'){
+      playerDmg=Math.max(1,Math.round(((ps.str||5)*1.8+12)*1.8*dmgMult));
+      msg='&#9670; '+spec.name+'! Guaranteed critical — '+playerDmg+' damage!';
+    }else if(spec.type==='heal'){
+      var heal=Math.round(ac.playerMaxHp*(0.45+Math.random()*0.2));
+      ac.playerHp=Math.min(ac.playerMaxHp,ac.playerHp+heal);
+      msg='&#10024; '+spec.name+'! Restored '+heal+' HP.';
+    }else if(spec.type==='tank'){
+      ac.defendNext=true;
+      playerDmg=Math.max(1,Math.round((ps.str||5)*1.6+15));
+      msg='&#128737; '+spec.name+'! Blocked and struck for '+playerDmg+'.';
+    }else if(spec.type==='pierce'){
+      playerDmg=Math.max(1,Math.round(((ps.str||5)*1.5+(ps.agi||0)*0.8+20)*dmgMult));
+      // Pierces all defense
+      ac.enemy.hp=Math.max(0,ac.enemy.hp-playerDmg);
+      msg='&#127993; '+spec.name+'! '+playerDmg+' piercing damage (defense ignored).';
+      playerDmg=0;
+    }else if(spec.type==='confuse'){
+      ac.confusedTurns=2;
+      skipEnemyTurn=true;
+      msg='&#127928; '+spec.name+'! Enemy is confused for 2 turns.';
+    }else{
+      playerDmg=Math.max(1,Math.round((ps.str||5)*1.8+15));
+      msg='&#128165; '+spec.name+'! '+playerDmg+' damage!';
+    }
+  }else if(action==='taunt'){
+    ac.taunted=true;
+    msg='&#128516; Taunt! Both sides deal +50% damage this combat.';
+  }else if(action==='item'){
+    var inv=pl.inventory||[];
+    var potIdx=-1;
+    for(var ii=0;ii<inv.length;ii++){if(inv[ii].type==='potion'||inv[ii].type==='consumable'){potIdx=ii;break;}}
+    if(potIdx<0){msg='No usable items in bag.';ac.log.push(msg);renderCombat();return;}
+    var pot=inv.splice(potIdx,1)[0];
+    var heal2=rnd(25,50);
+    ac.playerHp=Math.min(ac.playerMaxHp,ac.playerHp+heal2);
+    msg='&#128138; Used '+pot.name+'! Recovered '+heal2+' HP.';
+  }else if(action==='flee'){
+    var fleeOk=Math.random()<(0.55+(ps.agi||0)*0.003);
+    if(fleeOk){
+      ac.over=true;ac.result='flee';
+      ac.rewards.xp=Math.round((ac.enemy.xp||20)*0.12);
+      ac.log.push('&#128168; You broke off the fight and escaped.');
+      applyCombatRewards();renderCombat();return;
+    }else{
+      msg='&#128072; Failed to escape! Enemy gets a free hit.';
+      ac.log.push(msg);
+      enemyCombatAttack(true);
+      renderCombat();return;
+    }
+  }
+
+  if(playerDmg>0)ac.enemy.hp=Math.max(0,ac.enemy.hp-playerDmg);
+  if(msg)ac.log.push(msg);
+
+  if(ac.enemy.hp<=0){
+    ac.over=true;ac.result='win';
+    var xpG=Math.round((ac.enemy.xp||30)*(0.85+Math.random()*0.3));
+    var goldG=ac.enemy.gold||0;
+    ac.rewards={xp:xpG,gold:goldG,item:rollCombatLoot(ac.enemy)};
+    ac.log.push('&#127942; '+ac.enemy.name+' is defeated!');
+    applyCombatRewards();renderCombat();return;
+  }
+
+  if(!skipEnemyTurn){
+    setTimeout(function(){if(!activeCombat||activeCombat.over)return;enemyCombatAttack(false);renderCombat();},350);
+  }else{
+    renderCombat();
+  }
+}
+
+function enemyCombatAttack(isFree){
+  if(!activeCombat||activeCombat.over)return;
+  var ac=activeCombat;
+  var e=ac.enemy;
+  var doHit=function(){
+    if(ac.confusedTurns>0){
+      ac.confusedTurns--;
+      ac.log.push('&#127925; '+e.name+' is confused and stumbles!');
+      return;
+    }
+    var atk=e.attacks[Math.floor(Math.random()*e.attacks.length)];
+    var hitChance=Math.min(0.9,0.5+(e.agi||0)*0.005);
+    if(Math.random()<hitChance){
+      var rawDmg=Math.max(1,(e.atk||5)*(0.85+Math.random()*0.3));
+      var dmg=Math.round(rawDmg*(ac.taunted?1.5:1));
+      if(ac.defendNext){dmg=Math.round(dmg*0.35);ac.defendNext=false;}
+      ac.playerHp=Math.max(0,ac.playerHp-dmg);
+      ac.log.push('&#128122; '+e.name+' '+atk+'. (&#9660;'+dmg+' HP)');
+    }else{
+      ac.log.push('&#10024; '+e.name+' '+atk+' — dodged!');
+    }
+  };
+  doHit();
+  if(isFree)doHit();
+  if(ac.playerHp<=0){
+    ac.over=true;ac.result='lose';ac.playerHp=1;
+    ac.rewards.xp=Math.round((ac.enemy.xp||20)*0.08);
+    ac.log.push('&#128128; Defeated. You barely survive.');
+    applyCombatRewards();
+  }
+}
+
+function rollCombatLoot(enemy){
+  var loot=enemy.loot||'common';
+  var chance=loot==='legendary'?0.82:loot==='epic'?0.65:loot==='rare'?0.42:loot==='uncommon'?0.28:0.18;
+  if(Math.random()>chance)return null;
+  var mult=loot==='legendary'?4.5:loot==='epic'?3.2:loot==='rare'?2.2:loot==='uncommon'?1.6:1.1;
+  return rollItem(mult);
+}
+
+function applyCombatRewards(){
+  if(!activeCombat)return;
+  var ac=activeCombat;
+  var pl=W['p'+mySlot];
+  var mp='p'+mySlot;
+  if(ac.rewards.xp>0){pl.xp=(pl.xp||0)+ac.rewards.xp;doLvl(pl,mp);}
+  if(ac.rewards.gold>0){
+    if(!pl.resources)pl.resources={stone:0,wood:0,crystals:0,gold:0};
+    pl.resources.gold=(pl.resources.gold||0)+ac.rewards.gold;
+  }
+  if(ac.rewards.item)giveItemToPlayer(mp,ac.rewards.item);
+  pl.hp=Math.max(1,ac.playerHp);pl.maxHP=ac.playerMaxHp;
+  if(ac.result==='win'){
+    var msg2=pl.name+' defeated '+ac.enemy.name+'!';
+    if(ac.rewards.xp)msg2+=' (+'+ac.rewards.xp+' XP)';
+    if(ac.rewards.gold)msg2+=' (+'+ac.rewards.gold+'g)';
+    if(ac.rewards.item)msg2+=' Found: '+ac.rewards.item.name+'.';
+    pushLog(msg2,'lsk');
+    pl.fame=(pl.fame||0)+2;
+    if(ac.enemy.isPlayer)pl.infamy=(pl.infamy||0)+3;
+    if(!pl.careerProgress)pl.careerProgress={};
+    pl.careerProgress.bossesKilled=(pl.careerProgress.bossesKilled||0)+1;
+    checkAchievements(pl,W);
+  }else if(ac.result==='lose'){
+    pushLog(pl.name+' was beaten by '+ac.enemy.name+'. Survived with 1 HP.','lpty');
+  }
+  writeW(W).catch(function(){});
+}
+
+function closeCombat(){
+  activeCombat=null;cmbTauntActive=false;
+  var ov=$g('combat-overlay');if(ov)ov.classList.remove('on');
+  renderAll();
+}
+
+function startEncounter(type){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];
+  if(!pl||pl.name==='--'){pushLog('Enter the world first.','lpty');return;}
+  var labels={'random_encounter':'Encounter','monster_hunt':'Monster Hunt','dungeon_mob':'Dungeon Mob','boss_attempt':'Elite Enemy'};
+  var enemy=pickEnemy(type,pl.level||1);
+  startCombat(enemy,labels[type]||'Encounter');
+}
+
+function renderEncounterPanel(){
+  var el=$g('encounter-panel');if(!el)return;
+  if(!W||!mySlot||!W['p'+mySlot]||W['p'+mySlot].name==='--'){el.innerHTML='<div style="color:var(--tx3);font-size:11px;grid-column:span 2">Enter the world to fight.</div>';return;}
+  var pl=W['p'+mySlot];
+  var lv=pl.level||1;
+  var html='';
+  ENCOUNTER_TYPES.forEach(function(enc){
+    var locked=enc.id==='boss_attempt'&&lv<5||enc.id==='dungeon_mob'&&lv<3;
+    var lockMsg=enc.id==='boss_attempt'?'Lv 5+':enc.id==='dungeon_mob'?'Lv 3+':'';
+    html+='<button class="cov-action'+(locked?' ':' ')+'" '+(locked?'disabled':'onclick="startEncounter(\''+enc.id+'\')"')+' style="min-height:72px">'
+      +'<span class="cov-act-name">'+enc.em+' '+enc.label+'</span>'
+      +'<span class="cov-act-desc">'+enc.desc+'</span>'
+      +(locked?'<span class="cov-act-cost" style="color:#ff4455">'+lockMsg+'</span>':'')
+      +'</button>';
+  });
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
 //  TUTORIAL SYSTEM
 // ═══════════════════════════════════════════════════
 var TUT_IDX=0;
@@ -8206,6 +8769,75 @@ function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
   <div class="qo-text" id="qo-text"></div>
   <div class="qo-rewards" id="qo-rewards"></div>
   <button class="qo-btn" onclick="closeQO()">CONTINUE &#8250;</button>
+</div>
+<!-- COMBAT OVERLAY -->
+<div id="combat-overlay">
+  <div class="cov-header-bar">
+    <span class="cov-header-title" id="cov-context-lbl">Encounter</span>
+    <button class="cov-flee-btn" onclick="combatAct('flee')">&#128168; Flee</button>
+  </div>
+  <div class="cov-arena">
+    <div class="cov-fighter">
+      <div class="cov-fighter-em" id="cov-p-em">&#9876;</div>
+      <div class="cov-fighter-name" id="cov-p-name">Hero</div>
+      <div class="cov-fighter-lv" id="cov-p-lv">Lv 1</div>
+      <div class="cov-hp-wrap"><div class="cov-hp-fill" id="cov-p-hpf" style="width:100%"></div></div>
+      <div class="cov-hp-text" id="cov-p-hpt">100 HP</div>
+    </div>
+    <div class="cov-vs-col">
+      <div class="cov-vs">VS</div>
+      <div class="cov-prob-badge" id="cov-prob">—</div>
+    </div>
+    <div class="cov-fighter">
+      <div class="cov-fighter-em" id="cov-e-em">&#128122;</div>
+      <div class="cov-fighter-name" id="cov-e-name">Enemy</div>
+      <div class="cov-fighter-lv" id="cov-e-lv">Lv 1</div>
+      <div class="cov-hp-wrap"><div class="cov-hp-fill" id="cov-e-hpf" style="width:100%"></div></div>
+      <div class="cov-hp-text" id="cov-e-hpt">30 HP</div>
+    </div>
+  </div>
+  <div class="cov-divider"></div>
+  <div class="cov-log" id="cov-log"></div>
+  <div class="cov-divider"></div>
+  <div class="cov-actions" id="cov-actions">
+    <button class="cov-action" onclick="combatAct('attack')">
+      <span class="cov-act-name">&#9876; Attack</span>
+      <span class="cov-act-desc">Standard strike</span>
+      <span class="cov-act-cost">65–95% hit</span>
+    </button>
+    <button class="cov-action" onclick="combatAct('power')" id="cov-power-btn">
+      <span class="cov-act-name">&#128165; Power Strike</span>
+      <span class="cov-act-desc">Heavy damage</span>
+      <span class="cov-act-cost">65% hit, 2x dmg</span>
+    </button>
+    <button class="cov-action" onclick="combatAct('defend')">
+      <span class="cov-act-name">&#128737; Defend</span>
+      <span class="cov-act-desc">Block + counter</span>
+      <span class="cov-act-cost">-65% dmg taken</span>
+    </button>
+    <button class="cov-action" onclick="combatAct('special')" id="cov-special-btn">
+      <span class="cov-act-name">&#10024; Special</span>
+      <span class="cov-act-desc" id="cov-sp-desc">Class ability</span>
+      <span class="cov-act-cost" id="cov-sp-charges">2 charges</span>
+    </button>
+    <button class="cov-action" onclick="combatAct('item')" id="cov-item-btn">
+      <span class="cov-act-name">&#128138; Use Item</span>
+      <span class="cov-act-desc">Heal from inventory</span>
+      <span class="cov-act-cost" id="cov-item-avail">checking...</span>
+    </button>
+    <button class="cov-action danger" onclick="combatAct('taunt')">
+      <span class="cov-act-name">&#128516; Taunt</span>
+      <span class="cov-act-desc">Enemy attack boost</span>
+      <span class="cov-act-cost">+50% dmg both ways</span>
+    </button>
+  </div>
+  <div class="cov-waiting" id="cov-waiting" style="display:none">&#9651; Enemy is acting...</div>
+  <div class="cov-result-wrap" id="cov-result">
+    <div class="cov-result-em" id="cov-res-em">&#127942;</div>
+    <div class="cov-result-title" id="cov-res-title">Victory!</div>
+    <div class="cov-result-rewards" id="cov-res-rewards"></div>
+    <button class="cov-continue-btn" onclick="closeCombat()">CONTINUE &#8250;</button>
+  </div>
 </div>
 <!-- TUTORIAL -->
 <div id="tut-wrap">
