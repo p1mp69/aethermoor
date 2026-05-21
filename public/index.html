@@ -4039,6 +4039,7 @@ function handleWsMsg(e){
     if(!W.worldBosses)W.worldBosses=[];
     if(!W.pvpState)W.pvpState={};
     if(!W.pvpCombat)W.pvpCombat={active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:[]};
+    if(!W.deadNPCs)W.deadNPCs=[];
     if(W.log.length>lastLogLen){W.log.slice(lastLogLen).forEach(function(entry){appLog(entry.t,entry.c,entry.ts);});lastLogLen=W.log.length;}
     renderAll();syn('live');
     checkDone();renderEvent();renderArcs();renderNemesis();renderIntel();renderWorldStatus();
@@ -4054,6 +4055,7 @@ function freshW(){
     arcs:[],nemesis:null,log:[],dungeons:0,bosses:0,wars:0,infamy:0,
     worldEvent:null,worldEventExpiry:0,worldBosses:[],createdAt:Date.now(),
     partyStatus:null,org:null,pvpState:{},worldModifiers:{},worldXPBoost:1,maxPlayers:4,
+    deadNPCs:[],
   };
 }
 
@@ -5909,6 +5911,7 @@ function setShare(level){if(!W||!W.partyStatus||!W.partyStatus.active)return;W.p
 var currentNPCId=null;
 function openNPCOverlay(npcId){
   var npc=NPC_POOL.find(function(n){return n.id===npcId;});if(!npc)return;
+  if(W&&W.deadNPCs&&W.deadNPCs.indexOf(npcId)>=0){pushLog(npc.name+' is dead. You cannot interact with them.','lpty');return;}
   currentNPCId=npcId;
   $g('npc-ov-title').textContent=npc.name;
   $g('npc-ov-faction').textContent=npc.faction;
@@ -5924,6 +5927,7 @@ function closeNPCOverlay(){$g('npc-overlay').classList.remove('on');currentNPCId
 function fightNPC(npcId){
   if(!W||!mySlot)return;
   var pl=W['p'+mySlot];if(!pl||pl.name==='--')return;
+  if(W.deadNPCs&&W.deadNPCs.indexOf(npcId)>=0){pushLog('They are already dead.','lpty');return;}
   if(!pl.abilityCooldowns)pl.abilityCooldowns={};
   var recUntil=pl.abilityCooldowns['combat_recovery']||0;
   if(recUntil>Date.now()){pushLog('Still recovering. '+fmtDur(recUntil-Date.now())+' left.','lpty');return;}
@@ -5944,6 +5948,7 @@ function fightNPC(npcId){
 function renderNPCOverlay(){
   if(!currentNPCId||!W||!mySlot)return;
   var npc=NPC_POOL.find(function(n){return n.id===currentNPCId;});if(!npc)return;
+  if(W.deadNPCs&&W.deadNPCs.indexOf(currentNPCId)>=0){closeNPCOverlay();pushLog(npc.name+' is gone. They died.','lpty');return;}
   var pl=W['p'+mySlot];
   if(!pl.npcRelationships)pl.npcRelationships={};
   var rel=pl.npcRelationships[currentNPCId]||0;
@@ -6071,12 +6076,13 @@ function renderNPCOverlay(){
     acts+='<div style="border-top:1px solid rgba(255,255,255,0.06);margin:10px 0 8px"></div>'+
       '<button '+(npcFightDisabled?'disabled':'onclick="fightNPC(\''+currentNPCId+'\')"')+' style="background:rgba(255,68,85,'+(npcFightDisabled?'0.04':'0.1')+');border:1px solid rgba(255,68,85,'+(npcFightDisabled?'0.15':'0.3')+');color:'+(npcFightDisabled?'var(--tx3)':'var(--red)')+';padding:10px 14px;border-radius:10px;font-size:11px;text-align:left;width:100%;display:block;cursor:'+(npcFightDisabled?'not-allowed':'pointer')+'">'+
       '<div style="font-size:9px;letter-spacing:2px;margin-bottom:3px">'+npcFightLabel+'</div>'+
-      'Challenge '+npc.name+' to battle. Win for XP &amp; loot. Lose and recover 5 min.</button>';
+      'Challenge '+npc.name+' to battle. Win and they die permanently. Lose: -35% gold, -40% XP, 30 min recovery.</button>';
   }
   $g('npc-actions').innerHTML=acts||'<div style="font-size:11px;color:var(--tx3)">Cultivate relationship to unlock actions.</div>';
 }
 function cultivateNPC(npcId){
   if(!W||!mySlot)return;var pl=W['p'+mySlot];
+  if(W.deadNPCs&&W.deadNPCs.indexOf(npcId)>=0){pushLog('They are gone. You cannot cultivate a relationship with the dead.','lpty');closeNPCOverlay();return;}
   if(pl.busyAction){pushLog('Already busy with another action.','lpty');return;}
   var npc=NPC_POOL.find(function(n){return n.id===npcId;});
   var cl=W.p1.level+W.p2.level+(W.p3&&W.p3.name&&W.p3.name!=='--'?W.p3.level:0)+(W.p4&&W.p4.name&&W.p4.name!=='--'?W.p4.level:0);
@@ -6598,10 +6604,23 @@ function renderKnownFaces(){
   if(!met.length){el.innerHTML='<div style="font-size:11px;color:var(--tx3);padding:8px 0;line-height:1.8">No contacts yet.<br><span style="color:var(--tx2)">Go to <strong style="color:var(--gold)">World</strong> tab and do a <strong style="color:var(--gold)">Scout</strong> or <strong style="color:var(--gold)">Investigate</strong> action to meet people. You start with contacts based on your starting location — they appear here.</span></div>';return;}
   el.innerHTML=met.map(function(npcId){
     var npc=NPC_POOL.find(function(n){return n.id===npcId;});if(!npc)return'';
+    var isDead=W&&W.deadNPCs&&W.deadNPCs.indexOf(npcId)>=0;
     var rel=(pl&&pl.npcRelationships&&pl.npcRelationships[npcId])||0;
     var relLabel=rel<25?'Stranger':rel<50?'Acquaintance':rel<75?'Ally':'Trusted';
     var relColor=rel<25?'var(--tx3)':rel<50?'var(--tx2)':rel<75?'var(--green)':'var(--gold)';
     var inCrew=(pl&&pl.crew||[]).indexOf(npcId)>=0;
+    if(isDead){
+      return'<div class="npc-entry" style="opacity:0.4;cursor:default;filter:grayscale(1)">'+
+        '<div style="display:flex;gap:10px;align-items:flex-start">'+
+        '<span style="font-size:22px">&#9760;</span>'+
+        '<div style="flex:1">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center">'+
+        '<span style="font-family:Cinzel,serif;font-size:13px;text-decoration:line-through">'+npc.name+'</span>'+
+        '<span style="font-size:9px;color:#ff4455;letter-spacing:1px">DECEASED</span>'+
+        '</div>'+
+        '<div style="font-size:10px;color:var(--tx3);margin-top:2px;font-style:italic">Slain in combat. Gone from this world.</div>'+
+        '</div></div></div>';
+    }
     return'<div class="npc-entry" onclick="openNPCOverlay(\''+npcId+'\')">'+
       '<div style="display:flex;gap:10px;align-items:flex-start">'+
       '<span style="font-size:22px">'+npc.em+'</span>'+
@@ -8226,6 +8245,9 @@ function startCombat(enemy,contextLabel){
   if(!W||!mySlot)return;
   var pl=W['p'+mySlot];
   if(!pl||pl.name==='--')return;
+  if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+  var recUntil=pl.abilityCooldowns['combat_recovery']||0;
+  if(recUntil>Date.now()){pushLog('Still recovering from last defeat. '+fmtDur(recUntil-Date.now())+' left.','lpty');return;}
   var pStats=getPlayerCombatStats(pl);
   var cls=CLS[pl.classIdx||0];
   var spec=getCombatSpecial(cls);
@@ -8496,36 +8518,65 @@ function applyCombatRewards(){
   }
   if(ac.rewards.item)giveItemToPlayer(mp,ac.rewards.item);
   var isBossContext=ac.context&&(ac.context.indexOf('Elite')>=0||ac.context.indexOf('Boss')>=0||ac.context.indexOf('Dungeon')>=0);
+  var isNPCFight=ac.enemy.id&&ac.enemy.id.indexOf('npc_')===0;
+  var deadNPCId=isNPCFight?ac.enemy.id.slice(4):null;
+  if(!pl.fameActions)pl.fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
+  if(!pl.careerProgress)pl.careerProgress={};
+  if(!pl.abilityCooldowns)pl.abilityCooldowns={};
   if(ac.result==='win'){
     var msg2=pl.name+' defeated '+ac.enemy.name+'!';
     if(ac.rewards.xp)msg2+=' (+'+ac.rewards.xp+' XP)';
     if(ac.rewards.gold)msg2+=' (+'+ac.rewards.gold+'g)';
     if(ac.rewards.item)msg2+=' Found: '+ac.rewards.item.name+'.';
     pushLog(msg2,'lsk');
-    if(!pl.fameActions)pl.fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
-    if(!pl.careerProgress)pl.careerProgress={};
-    if(ac.enemy.isPlayer){
-      pl.infamy=(pl.infamy||0)+3;
-      pl.fame=(pl.fame||0)+15;
-    } else if(isBossContext||ac.enemy.tier>=3){
-      // Boss / elite / dungeon kill
+    if(isNPCFight&&deadNPCId){
+      // NPC fight to the death — NPC is permanently dead for all players
+      if(!W.deadNPCs)W.deadNPCs=[];
+      if(W.deadNPCs.indexOf(deadNPCId)<0){
+        W.deadNPCs.push(deadNPCId);
+        pushLog('&#9760; '+ac.enemy.name+' is dead. They are gone from this world — permanently.','lpty');
+      }
+      // Remove from all players crew, party, mentor, allegiance
+      ['p1','p2','p3','p4'].forEach(function(p){
+        var tp=W[p];if(!tp)return;
+        tp.crew=(tp.crew||[]).filter(function(id){return id!==deadNPCId;});
+        tp.npcParty=(tp.npcParty||[]).filter(function(id){return id!==deadNPCId;});
+        if(tp.mentor===deadNPCId){tp.mentor=null;if(p===mp)pushLog('Your mentor is gone.','lpty');}
+        if(tp.lordDisciple===deadNPCId){tp.lordDisciple=null;if(p===mp)pushLog('Your lord allegiance is severed by their death.','lpty');}
+      });
+      pl.fame=(pl.fame||0)+50;
+      pl.infamy=(pl.infamy||0)+15;
       pl.bossesKilled=(pl.bossesKilled||0)+1;
       pl.careerProgress.bossesKilled=(pl.careerProgress.bossesKilled||0)+1;
-      W.bosses=(W.bosses||0)+1;
-      pl.fame=(pl.fame||0)+20;
-      pl.fameActions.boss=(pl.fameActions.boss||0)+1;
+    } else if(ac.enemy.isPlayer){
+      pl.infamy=(pl.infamy||0)+3;pl.fame=(pl.fame||0)+15;
+    } else if(isBossContext||ac.enemy.tier>=3){
+      pl.bossesKilled=(pl.bossesKilled||0)+1;pl.careerProgress.bossesKilled=(pl.careerProgress.bossesKilled||0)+1;
+      W.bosses=(W.bosses||0)+1;pl.fame=(pl.fame||0)+20;pl.fameActions.boss=(pl.fameActions.boss||0)+1;
     } else {
-      // Standard combat win
       pl.fame=(pl.fame||0)+2;
     }
     checkAchievements(pl,W);
   }else if(ac.result==='lose'){
-    pushLog(pl.name+' was beaten by '+ac.enemy.name+'. Survived with 1 HP. Recovery needed before fighting again.','lpty');
-    if(!pl.abilityCooldowns)pl.abilityCooldowns={};
-    pl.abilityCooldowns['combat_recovery']=Date.now()+300000; // 5 min recovery
+    if(isNPCFight&&deadNPCId){
+      // Losing an NPC fight to the death — severe penalties
+      var goldLost=Math.floor(((pl.resources&&pl.resources.gold)||0)*0.35);
+      if(pl.resources)pl.resources.gold=Math.max(0,(pl.resources.gold||0)-goldLost);
+      var xpLost=Math.floor((pl.xp||0)*0.4);
+      pl.xp=Math.max(0,(pl.xp||0)-xpLost);
+      pl.abilityCooldowns['combat_recovery']=Date.now()+1800000; // 30 min
+      if(!pl.npcRelationships)pl.npcRelationships={};
+      pl.npcRelationships[deadNPCId]=0; // relationship destroyed
+      pl.infamy=(pl.infamy||0)+5;
+      pushLog(pl.name+' was slain by '+ac.enemy.name+'. Barely survived. Lost '+goldLost+'g & '+xpLost+' XP. 30 min recovery.','lpty');
+    } else {
+      pl.abilityCooldowns['combat_recovery']=Date.now()+300000; // 5 min for regular fights
+      pushLog(pl.name+' was beaten by '+ac.enemy.name+'. Survived with 1 HP. Recovery needed.','lpty');
+    }
     checkAchievements(pl,W);
   }else if(ac.result==='flee'){
-    if(ac.rewards.xp>0)pushLog(pl.name+' escaped from '+ac.enemy.name+'. (+'+ac.rewards.xp+' XP)','lpty');
+    if(isNPCFight){pushLog(pl.name+' fled from '+ac.enemy.name+'. Cowardice noted.','lpty');}
+    else if(ac.rewards.xp>0){pushLog(pl.name+' escaped from '+ac.enemy.name+'. (+'+ac.rewards.xp+' XP)','lpty');}
   }
   writeW(W).catch(function(){});
 }

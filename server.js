@@ -122,6 +122,7 @@ function patchWorld(w) {
   if (!w.wars) w.wars = 0;
   if (!w.infamy) w.infamy = 0;
   if (!w.pvpCombat) w.pvpCombat = {active:false,pending:false,pendingFrom:null,challenger:0,defender:0,turn:0,round:1,hp:{},maxHp:{},log:[]};
+  if (!w.deadNPCs) w.deadNPCs = [];
   return w;
 }
 
