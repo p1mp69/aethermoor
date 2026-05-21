@@ -4027,6 +4027,8 @@ function patchW(w){
     if(!pl.storyFeed)pl.storyFeed=[];
     if(!pl.qaDeck)pl.qaDeck=[];
     if(!pl.infamy)pl.infamy=0;
+    pl._dying=false; // always clear on patch — death state is ephemeral/session-local only
+    if(!pl.pvpState)pl.pvpState={};
   }
   ['p1','p2','p3','p4'].forEach(function(p){if(w[p])pP(w[p]);else w[p]={name:'--',classIdx:(p==='p1'?0:p==='p2'?1:p==='p3'?2:3),raceId:'human',level:1,xp:0,xpNeeded:100,skillPoints:3,unlockedNodes:{},lastSeen:0,spawnType:'',location:'',busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:{stone:0,wood:0,crystals:0,gold:0},hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{},hp:null,maxHP:null,unlockedAchievements:[],factionStanding:{},completedMilestones:[],mentor:null,lordDisciple:null,metLords:[]};});
 }
@@ -4661,9 +4663,8 @@ async function checkDone(){
         }
         changed=true;
         if(p==='p'+mySlot){
-          var soloDropItem=rollItem(act?act.xM:1.0);
-          var soloPendItems=[];
-          if(soloDropItem){pl.inventory=pl.inventory||[];if(pl.inventory.length<20){pl.inventory.push(soloDropItem);soloPendItems.push(soloDropItem);pushLog(pl.name+' found: ['+soloDropItem.rarityName+'] '+soloDropItem.name+'!','lp'+mySlot);$g('nd-loot').classList.add('on');}}
+          // Use the item already given by giveItemToPlayer — don't roll a second time
+          var soloPendItems=dropped?[dropped]:[];
           var soloRes=null;
           if(actId==='gather'&&pendingGatherRes)soloRes=pendingGatherRes;
           pendingDone={em:'&#10022;',title:'Action Complete',body:msg,xp:xp,items:soloPendItems,resources:soloRes};showDone();
@@ -5444,7 +5445,7 @@ async function doParty(id){
     var base=Math.round((15+cl*4)*act.xM);
     var msg=act.msgs[rnd(0,act.msgs.length-1)];
     var endsAt=Date.now()+act.dMs;
-    W.arcs.push({id:id,name:act.name,dMs:act.dMs,endsAt:endsAt,baseXP:base,bonusXP:0,usedSubs:{},msg:msg,completionMsg:msg});
+    W.arcs.push({id:id,name:act.name,dMs:act.dMs,endsAt:endsAt,baseXP:base,bonusXP:0,usedSubs:{},msg:msg,completionMsg:msg,initiator:mySlot});
     W.infamy=(W.infamy||0)+Math.floor(act.xM);
     var pnames=[W.p1.name,W.p2.name];if(W.p3&&W.p3.name&&W.p3.name!=='--')pnames.push(W.p3.name);if(W.p4&&W.p4.name&&W.p4.name!=='--')pnames.push(W.p4.name);
     pushLog(pnames.join(', ')+' — '+act.name+' started. Takes '+act.time+'. You can still act inside it.','lpty');
@@ -7483,6 +7484,7 @@ async function reincarnate(){
     var kept={name:pl.name,raceId:pl.raceId,spawnType:pl.spawnType,location:pl.location,lastSeen:Date.now()};
     W[mp]={name:kept.name,classIdx:newClassIdx,raceId:kept.raceId,level:newLevel,xp:0,xpNeeded:xpN(newLevel),skillPoints:Math.max(1,Math.floor(newLevel/2)),unlockedNodes:{},lastSeen:kept.lastSeen,spawnType:kept.spawnType,location:kept.location,busyUntil:0,busyAction:null,busyXP:0,busyMsg:'',inventory:[],equipped:{weapon:null,armor:null,accessory:null},resources:keptResources,hasOrg:false,baseLevel:0,fame:0,fameActions:{boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0},metNpcs:[],abilityCooldowns:{},nextActionBoost:null,soulLinkActive:false,npcRelationships:{},crew:[],career:null,careerProgress:{merchantActions:0,meditateActions:0,investigateActions:0,goldEarned:0,bossesKilled:0,warsWon:0,dungeonsCleared:0,exploreActions:0,grindActions:0},properties:[],revealedIntel:[],bossesKilled:0,warsWon:0,dungeonsCleared:0,completedQuests:[],shadowGovHints:0,politicsFactions:{},npcParty:[],questProgress:{},worldModifiers:{},subClass:null,subClassPending:0,learnedSpells:{},magicMastery:{},spellCooldowns:{},hp:null,maxHP:null};
     W[mp].hp=getMaxHP(W[mp]);W[mp].maxHP=W[mp].hp;
+    W=patchW(W); // fill in any missing fields (ap, storyFeed, achievements, etc.)
     var newCls=CLS[newClassIdx];
     pushLog(kept.name+' returned. Level '+oldLevel+' → '+newLevel+'. Now a '+newCls.n+'. The world does not remember the previous version.','llv');
     W.infamy=Math.max(0,(W.infamy||0)-20);
@@ -8325,6 +8327,9 @@ function renderCombat(){
     itemBtn.disabled=!hasItem||ac.over;
     var ia=$g('cov-item-avail');if(ia)ia.textContent=hasItem?'potion in bag':'no potions';
   }
+  // Taunt button — one-shot only; disable once active
+  var tauntBtn=$g('cov-taunt-btn');
+  if(tauntBtn){tauntBtn.disabled=ac.taunted||ac.over;if(ac.taunted)tauntBtn.title='Already taunting — both sides deal +50% damage.';}
   // Actions vs result
   var acts=$g('cov-actions');
   var flee=document.querySelector('.cov-flee-btn');
@@ -8338,12 +8343,18 @@ function renderCombat(){
     var resRwds=$g('cov-res-rewards');
     if(resEm)resEm.innerHTML=ac.result==='win'?'&#127942;':ac.result==='flee'?'&#128168;':'&#128128;';
     if(resTitle){resTitle.textContent=ac.result==='win'?'Victory!':ac.result==='flee'?'Escaped.':'Defeated.';resTitle.className='cov-result-title '+(ac.result||'');}
+    var acIsNPC=ac.enemy&&ac.enemy.id&&ac.enemy.id.indexOf('npc_')===0;
     if(resRwds){
       var rh='';
       if(ac.rewards.xp)rh+='<div class="cov-reward-line"><span style="color:var(--gold)">&#9733;</span><span>+'+ac.rewards.xp+' XP</span></div>';
       if(ac.rewards.gold)rh+='<div class="cov-reward-line"><span style="color:#ffcc44">&#128176;</span><span>+'+ac.rewards.gold+' gold</span></div>';
       if(ac.rewards.item)rh+='<div class="cov-reward-line"><span>'+ac.rewards.item.em+'</span><span style="color:#aa88ff">'+ac.rewards.item.name+'</span></div>';
-      if(ac.result==='lose')rh+='<div class="cov-reward-line"><span style="color:#ff4455">&#128128;</span><span>Survived with 1 HP. Rest up.</span></div>';
+      if(ac.result==='lose'&&acIsNPC){
+        rh+='<div class="cov-reward-line"><span style="color:#ff4455">&#9760;</span><span style="color:#ff4455">Lost 35% gold &amp; 40% XP</span></div>';
+        rh+='<div class="cov-reward-line"><span style="color:#ff6677">&#9203;</span><span style="color:#ff6677">30 min recovery — no combat</span></div>';
+      }else if(ac.result==='lose'){
+        rh+='<div class="cov-reward-line"><span style="color:#ff4455">&#128128;</span><span>Survived with 1 HP. 5 min recovery.</span></div>';
+      }
       if(ac.result==='flee')rh+='<div class="cov-reward-line"><span style="color:var(--tx3)">&#128168;</span><span>Left the fight. No shame in it.</span></div>';
       if(!ac.rewards.xp&&!ac.rewards.gold&&!ac.rewards.item&&ac.result!=='lose'&&ac.result!=='flee')rh+='<div style="color:var(--tx3);font-size:11px">No loot this time.</div>';
       resRwds.innerHTML=rh;
@@ -8509,6 +8520,12 @@ function applyCombatRewards(){
   var ac=activeCombat;
   var pl=W['p'+mySlot];
   var mp='p'+mySlot;
+  // Detect NPC fight context early — needed to zero consolation XP on NPC defeats
+  var isBossContext=ac.context&&(ac.context.indexOf('Elite')>=0||ac.context.indexOf('Boss')>=0||ac.context.indexOf('Dungeon')>=0);
+  var isNPCFight=ac.enemy.id&&ac.enemy.id.indexOf('npc_')===0;
+  var deadNPCId=isNPCFight?ac.enemy.id.slice(4):null;
+  // NPC defeats give no consolation XP — the 40% penalty below is consequence enough
+  if(ac.result==='lose'&&isNPCFight){ac.rewards.xp=0;}
   // Set HP from combat first, then let doLvl override with full restore if level-up happens
   pl.hp=Math.max(1,ac.playerHp);pl.maxHP=ac.playerMaxHp;
   if(ac.rewards.xp>0){pl.xp=(pl.xp||0)+ac.rewards.xp;doLvl(pl,mp);} // doLvl may restore full HP on level-up
@@ -8517,9 +8534,6 @@ function applyCombatRewards(){
     pl.resources.gold=(pl.resources.gold||0)+ac.rewards.gold;
   }
   if(ac.rewards.item)giveItemToPlayer(mp,ac.rewards.item);
-  var isBossContext=ac.context&&(ac.context.indexOf('Elite')>=0||ac.context.indexOf('Boss')>=0||ac.context.indexOf('Dungeon')>=0);
-  var isNPCFight=ac.enemy.id&&ac.enemy.id.indexOf('npc_')===0;
-  var deadNPCId=isNPCFight?ac.enemy.id.slice(4):null;
   if(!pl.fameActions)pl.fameActions={boss:0,explore:0,war:0,nemesis:0,org:0,grind:0,merchant:0};
   if(!pl.careerProgress)pl.careerProgress={};
   if(!pl.abilityCooldowns)pl.abilityCooldowns={};
@@ -8970,7 +8984,7 @@ function dismissPWA(){var b=$g('pwa-banner');if(b)b.style.display='none';}
       <span class="cov-act-desc">Heal from inventory</span>
       <span class="cov-act-cost" id="cov-item-avail">checking...</span>
     </button>
-    <button class="cov-action danger" onclick="combatAct('taunt')">
+    <button class="cov-action danger" id="cov-taunt-btn" onclick="combatAct('taunt')">
       <span class="cov-act-name">&#128516; Taunt</span>
       <span class="cov-act-desc">Enemy attack boost</span>
       <span class="cov-act-cost">+50% dmg both ways</span>
