@@ -5921,6 +5921,26 @@ function openNPCOverlay(npcId){
   renderNPCOverlay();
 }
 function closeNPCOverlay(){$g('npc-overlay').classList.remove('on');currentNPCId=null;}
+function fightNPC(npcId){
+  if(!W||!mySlot)return;
+  var pl=W['p'+mySlot];if(!pl||pl.name==='--')return;
+  if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+  var recUntil=pl.abilityCooldowns['combat_recovery']||0;
+  if(recUntil>Date.now()){pushLog('Still recovering. '+fmtDur(recUntil-Date.now())+' left.','lpty');return;}
+  var cdKey='npc_fight_'+npcId;
+  var cdUntil=pl.abilityCooldowns[cdKey]||0;
+  if(cdUntil>Date.now()){pushLog('Can\'t fight them again so soon. '+fmtDur(cdUntil-Date.now())+' left.','lpty');return;}
+  tickQAAP(pl);
+  if((pl.ap||0)<1){pushLog('Not enough AP to fight. Need 1 AP.','lpty');return;}
+  pl.ap=Math.max(0,(pl.ap||0)-1);
+  pl.abilityCooldowns[cdKey]=Date.now()+1200000; // 20 min cooldown per NPC
+  writeW(W).catch(function(){});
+  var npc=null;for(var i=0;i<NPC_POOL.length;i++){if(NPC_POOL[i].id===npcId){npc=NPC_POOL[i];break;}}
+  var enemy=pickNPCEnemy(npcId);
+  if(!enemy){pushLog('Could not load NPC data.','lpty');return;}
+  closeNPCOverlay();
+  startCombat(enemy,'&#9876; Fight — '+(npc?npc.name:npcId));
+}
 function renderNPCOverlay(){
   if(!currentNPCId||!W||!mySlot)return;
   var npc=NPC_POOL.find(function(n){return n.id===currentNPCId;});if(!npc)return;
@@ -6038,13 +6058,20 @@ function renderNPCOverlay(){
       acts+='<div style="font-size:10px;color:var(--tx3);margin-bottom:6px">You already serve another Lord. Renounce your current allegiance first.</div>';
     }
   }
-  // ── FIGHT button — always available ──
+  // ── FIGHT button — costs 1 AP, 20 min cooldown per NPC ──
   var fightEnemy=pickNPCEnemy(currentNPCId);
   if(fightEnemy){
+    var npcFightCdKey='npc_fight_'+currentNPCId;
+    var npcFightCd=(pl.abilityCooldowns&&pl.abilityCooldowns[npcFightCdKey])||0;
+    var npcFightOnCd=npcFightCd>Date.now();
+    var npcRecovering=(pl.abilityCooldowns&&pl.abilityCooldowns['combat_recovery']||0)>Date.now();
+    var npcNoAP=(pl.ap||0)<1;
+    var npcFightDisabled=npcFightOnCd||npcRecovering||npcNoAP;
+    var npcFightLabel=npcFightOnCd?('Cooldown: '+fmtDur(npcFightCd-Date.now())):npcRecovering?'Recovering...':npcNoAP?'Need 1 AP':'INITIATE COMBAT (1 AP)';
     acts+='<div style="border-top:1px solid rgba(255,255,255,0.06);margin:10px 0 8px"></div>'+
-      '<button onclick="closeNPCOverlay();startCombat(pickNPCEnemy(\''+currentNPCId+'\'),\'&#9876; Fight &mdash; '+npc.name+'\')" style="background:rgba(255,68,85,0.1);border:1px solid rgba(255,68,85,0.3);color:var(--red);padding:10px 14px;border-radius:10px;font-size:11px;text-align:left;width:100%;display:block;cursor:pointer">'+
-      '<div style="font-size:9px;letter-spacing:2px;margin-bottom:3px">INITIATE COMBAT</div>'+
-      'Challenge '+npc.name+' to battle. Win for XP &amp; loot, lose for infamy.</button>';
+      '<button '+(npcFightDisabled?'disabled':'onclick="fightNPC(\''+currentNPCId+'\')"')+' style="background:rgba(255,68,85,'+(npcFightDisabled?'0.04':'0.1')+');border:1px solid rgba(255,68,85,'+(npcFightDisabled?'0.15':'0.3')+');color:'+(npcFightDisabled?'var(--tx3)':'var(--red)')+';padding:10px 14px;border-radius:10px;font-size:11px;text-align:left;width:100%;display:block;cursor:'+(npcFightDisabled?'not-allowed':'pointer')+'">'+
+      '<div style="font-size:9px;letter-spacing:2px;margin-bottom:3px">'+npcFightLabel+'</div>'+
+      'Challenge '+npc.name+' to battle. Win for XP &amp; loot. Lose and recover 5 min.</button>';
   }
   $g('npc-actions').innerHTML=acts||'<div style="font-size:11px;color:var(--tx3)">Cultivate relationship to unlock actions.</div>';
 }
@@ -8071,10 +8098,10 @@ var ENEMIES=[
 ];
 
 var ENCOUNTER_TYPES=[
-  {id:'random_encounter',em:'&#9876;',name:'Random Encounter',desc:'Fight whatever finds you. Scales to your level.',tier:'any',label:'Encounter'},
-  {id:'monster_hunt',em:'&#128062;',name:'Monster Hunt',desc:'Seek out a monster in the wilds. Better loot chance.',tier:'wild',label:'Hunt'},
-  {id:'dungeon_mob',em:'&#128128;',name:'Dungeon Mob',desc:'Clear a dungeon mob for XP. Tougher enemies inside.',tier:'tough',label:'Dungeon'},
-  {id:'boss_attempt',em:'&#9760;',name:'Elite Enemy',desc:'Fight a significantly stronger foe. High risk, high reward.',tier:'elite',label:'Elite'}
+  {id:'random_encounter',em:'&#9876;',name:'Random Encounter',desc:'Fight whatever crosses your path. Scales to level.',tier:'any',label:'Encounter',apCost:1,cdMs:180000},
+  {id:'monster_hunt',em:'&#128062;',name:'Monster Hunt',desc:'Track and engage a monster in the wilds. Better loot odds.',tier:'wild',label:'Hunt',apCost:2,cdMs:480000},
+  {id:'dungeon_mob',em:'&#128128;',name:'Dungeon Mob',desc:'Push into a dungeon and clear what you find inside.',tier:'tough',label:'Dungeon',apCost:2,cdMs:720000},
+  {id:'boss_attempt',em:'&#9760;',name:'Elite Enemy',desc:'An apex predator or named threat. High risk, high reward.',tier:'elite',label:'Elite',apCost:3,cdMs:1200000}
 ];
 
 var activeCombat=null;
@@ -8426,7 +8453,9 @@ function enemyCombatAttack(isFree){
     var atk=e.attacks[Math.floor(Math.random()*e.attacks.length)];
     var hitChance=Math.min(0.9,0.5+(e.agi||0)*0.005);
     if(Math.random()<hitChance){
-      var rawDmg=Math.max(1,(e.atk||5)*(0.85+Math.random()*0.3));
+      // "Smell blood" — enemy hits harder when player is at low HP
+      var bloodMod=ac.playerHp/ac.playerMaxHp<0.25?1.35:ac.playerHp/ac.playerMaxHp<0.5?1.15:1;
+      var rawDmg=Math.max(1,(e.atk||5)*(0.85+Math.random()*0.3)*bloodMod);
       var dmg=Math.round(rawDmg*(ac.taunted?1.5:1));
       if(ac.defendNext){dmg=Math.round(dmg*0.35);ac.defendNext=false;}
       ac.playerHp=Math.max(0,ac.playerHp-dmg);
@@ -8491,7 +8520,9 @@ function applyCombatRewards(){
     }
     checkAchievements(pl,W);
   }else if(ac.result==='lose'){
-    pushLog(pl.name+' was beaten by '+ac.enemy.name+'. Survived with 1 HP.','lpty');
+    pushLog(pl.name+' was beaten by '+ac.enemy.name+'. Survived with 1 HP. Recovery needed before fighting again.','lpty');
+    if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+    pl.abilityCooldowns['combat_recovery']=Date.now()+300000; // 5 min recovery
     checkAchievements(pl,W);
   }else if(ac.result==='flee'){
     if(ac.rewards.xp>0)pushLog(pl.name+' escaped from '+ac.enemy.name+'. (+'+ac.rewards.xp+' XP)','lpty');
@@ -8503,12 +8534,34 @@ function closeCombat(){
   activeCombat=null;cmbTauntActive=false;
   var ov=$g('combat-overlay');if(ov)ov.classList.remove('on');
   renderAll();
+  try{renderChronicle();}catch(e){}
 }
 
 function startEncounter(type){
   if(!W||!mySlot)return;
   var pl=W['p'+mySlot];
   if(!pl||pl.name==='--'){pushLog('Enter the world first.','lpty');return;}
+  if(activeCombat&&!activeCombat.over){pushLog('Already in combat.','lpty');return;}
+  var enc=null;
+  for(var ei=0;ei<ENCOUNTER_TYPES.length;ei++){if(ENCOUNTER_TYPES[ei].id===type){enc=ENCOUNTER_TYPES[ei];break;}}
+  if(!enc)return;
+  // Recovery check
+  if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+  var recUntil=pl.abilityCooldowns['combat_recovery']||0;
+  if(recUntil>Date.now()){pushLog('Still recovering from last defeat. '+fmtDur(recUntil-Date.now())+' left.','lpty');try{renderEncounterPanel();}catch(e){}return;}
+  // Cooldown check
+  var cdKey='enc_cd_'+type;
+  var cdUntil=pl.abilityCooldowns[cdKey]||0;
+  if(cdUntil>Date.now()){pushLog(enc.label+' on cooldown for '+fmtDur(cdUntil-Date.now())+'.','lpty');try{renderEncounterPanel();}catch(e){}return;}
+  // AP check
+  tickQAAP(pl);
+  var apCost=enc.apCost||1;
+  if((pl.ap||0)<apCost){pushLog('Not enough AP for '+enc.label+'. Need '+apCost+' AP — current: '+(pl.ap||0)+'.','lpty');try{renderChronicle();}catch(e){}return;}
+  // Spend AP and set cooldown
+  pl.ap=Math.max(0,(pl.ap||0)-apCost);
+  pl.abilityCooldowns[cdKey]=Date.now()+enc.cdMs;
+  writeW(W).catch(function(){});
+  try{renderChronicle();}catch(e){}
   var labels={'random_encounter':'Encounter','monster_hunt':'Monster Hunt','dungeon_mob':'Dungeon Mob','boss_attempt':'Elite Enemy'};
   var enemy=pickEnemy(type,pl.level||1);
   startCombat(enemy,labels[type]||'Encounter');
@@ -8519,14 +8572,36 @@ function renderEncounterPanel(){
   if(!W||!mySlot||!W['p'+mySlot]||W['p'+mySlot].name==='--'){el.innerHTML='<div style="color:var(--tx3);font-size:11px;grid-column:span 2">Enter the world to fight.</div>';return;}
   var pl=W['p'+mySlot];
   var lv=pl.level||1;
+  var now=Date.now();
+  var curAP=pl.ap||0;
+  if(!pl.abilityCooldowns)pl.abilityCooldowns={};
+  var recUntil=pl.abilityCooldowns['combat_recovery']||0;
+  var recovering=recUntil>now;
   var html='';
+  // HP + AP + recovery status bar
+  var mhpD=getMaxHP(pl);var curHpD=(pl.hp===null||pl.hp===undefined)?mhpD:pl.hp;
+  var hpPctD=mhpD>0?Math.round(curHpD/mhpD*100):100;
+  var hpColorD=hpPctD>50?'#44cc66':hpPctD>25?'#ffaa00':'#ff4455';
+  var hpWarnD=hpPctD<=25?' &#9888; Low HP — enemies hit harder':'';
+  html+='<div style="grid-column:span 2;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-size:10px">'
+    +'<span style="color:'+hpColorD+'">&#9829; '+curHpD+'/'+mhpD+' HP'+hpWarnD+'</span>'
+    +'<span style="color:var(--tx3)">&#9670; '+curAP+' AP</span>'
+    +'</div>';
+  if(recovering){html+='<div style="grid-column:span 2;font-size:10px;color:#ff9966;margin-bottom:4px">&#9873; Recovering — '+fmtDur(recUntil-now)+' left before you can fight again</div>';}
   ENCOUNTER_TYPES.forEach(function(enc){
-    var locked=enc.id==='boss_attempt'&&lv<5||enc.id==='dungeon_mob'&&lv<3;
+    var locked=(enc.id==='boss_attempt'&&lv<5)||(enc.id==='dungeon_mob'&&lv<3);
     var lockMsg=enc.id==='boss_attempt'?'Lv 5+':enc.id==='dungeon_mob'?'Lv 3+':'';
-    html+='<button class="cov-action'+(locked?' ':' ')+'" '+(locked?'disabled':'onclick="startEncounter(\''+enc.id+'\')"')+' style="min-height:72px">'
+    var cdKey='enc_cd_'+enc.id;
+    var cdUntil=pl.abilityCooldowns[cdKey]||0;
+    var onCd=cdUntil>now;
+    var noAP=curAP<(enc.apCost||1);
+    var disabled=locked||onCd||recovering||noAP;
+    var costLabel=locked?lockMsg:onCd?('&#9201; '+fmtDur(cdUntil-now)):recovering?'recovering':('&#9670; '+enc.apCost+' AP');
+    var costColor=disabled?'#ff5566':'var(--tx3)';
+    html+='<button class="cov-action" '+(disabled?'disabled style="min-height:72px;opacity:0.45"':'onclick="startEncounter(\''+enc.id+'\')" style="min-height:72px"')+'>'
       +'<span class="cov-act-name">'+enc.em+' '+enc.label+'</span>'
-      +'<span class="cov-act-desc">'+enc.desc+'</span>'
-      +(locked?'<span class="cov-act-cost" style="color:#ff4455">'+lockMsg+'</span>':'')
+      +'<span class="cov-act-desc" style="font-size:10px;color:var(--tx3)">'+enc.desc+'</span>'
+      +'<span class="cov-act-cost" style="color:'+costColor+'">'+costLabel+'</span>'
       +'</button>';
   });
   el.innerHTML=html;
